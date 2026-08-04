@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // Bitta ulanish: ish vaqti ham, migratsiya ham shu URL'dan foydalanadi.
+  // Agar oldinda PgBouncer (transaction mode) tursa — DDL va advisory lock
+  // ishlamaydi, o'shanda `directUrl` ni qaytarish kerak bo'ladi.
+  url = env("DATABASE_URL")
+}
+
+// ── Narxlar (admin paneldan boshqariladi) ──
+// sku prefiksi landing tabini belgilaydi: "ovoz_*" | "xizmat_*"
+model Price {
+  id          String   @id @default(cuid())
+  sku         String   @unique // "ovoz_10", "xizmat_sms"
+  title       String // "10 ovoz"
+  amount      Int // nechta ovoz / birlik
+  priceUzs    Int // narx so'mda
+  oldPriceUzs Int? // chizilgan eski narx
+  badge       String? // "Ommabop", "Chegirma"
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  @@index([active, order])
+}
+
+// ── Sayt sozlamalari ──
+model Setting {
+  key   String @id // "bot_username", "hero_title"
+  value String
+}
+
+// ── Analitika: sessiya ──
+model Session {
+  id          String   @id // client generated uuid
+  createdAt   DateTime @default(now())
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String? // qaysi kreativ
+  referrer    String?
+  device      String? // mobile / desktop
+  os          String?
+  browser     String? // instagram / chrome / safari
+  country     String?
+  city        String?
+  landedAt    String? // qaysi sahifaga tushdi
+  converted   Boolean  @default(false)
+  events      Event[]
+
+  @@index([createdAt])
+  @@index([utmCampaign, createdAt])
+  @@index([converted])
+  @@index([utmContent, createdAt])
+}
+
+// ── Analitika: eventlar ──
+model Event {
+  id        BigInt   @id @default(autoincrement())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type      String // view, click, scroll, cta, exit
+  elId      String? // tugma id
+  elText    String? // tugma matni
+  page      String?
+  scrollPct Int? // 25/50/75/100
+  dwellMs   Int? // sahifada qancha turdi
+  ts        DateTime @default(now())
+
+  @@index([type, ts])
+  @@index([sessionId])
+  @@index([elId, ts])
+}
+
+// ── Lead (forma bo'lsa) ──
+model Lead {
+  id        String   @id @default(cuid())
+  name      String?
+  phone     String
+  sessionId String?
+  source    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// ── Admin ──
+model Admin {
+  id       String @id @default(cuid())
+  username String @unique
+  passHash String
+}

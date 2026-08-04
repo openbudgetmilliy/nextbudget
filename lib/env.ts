@@ -1,0 +1,39 @@
+/**
+ * Muhit o'zgaruvchilari. Server tomonda ishlaydi.
+ * Build paytida DB/Redis bo'lmasa ham yiqilmasin — shuning uchun hech narsa throw qilmaydi.
+ */
+
+export const env = {
+  DATABASE_URL: process.env.DATABASE_URL ?? '',
+  REDIS_URL: process.env.REDIS_URL ?? 'redis://127.0.0.1:6379',
+  JWT_SECRET: process.env.JWT_SECRET ?? '',
+
+  CF_ZONE_ID: process.env.CF_ZONE_ID ?? '',
+  CF_API_TOKEN: process.env.CF_API_TOKEN ?? '',
+
+  /** Turnstile (kirish darvozasi) */
+  TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
+  TURNSTILE_SECRET: process.env.TURNSTILE_SECRET_KEY ?? '',
+
+  SITE_URL: process.env.SITE_URL ?? 'https://milliyjamoasimiz.uz',
+  BOT: process.env.NEXT_PUBLIC_BOT ?? 'OpenBudgetBot',
+
+  /** Redis key prefiksi — bitta Redis'ni ikki brend baham ko'radi */
+  KEY_PREFIX: process.env.REDIS_KEY_PREFIX ?? 'sp',
+
+  IS_PROD: process.env.NODE_ENV === 'production',
+} as const;
+
+/**
+ * Darvoza yoqilganmi?
+ *
+ * `GATE_ENABLED=0` — o'chirish tugmasi (kalitlar yo'q bo'lsa ham o'chadi).
+ * Bu qiymat middleware'da ham hisoblanadi — u yerda `lib/env` emas,
+ * `process.env` to'g'ridan-to'g'ri o'qiladi (edge runtime).
+ */
+export const GATE_ON =
+  process.env.GATE_ENABLED !== '0' &&
+  Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && process.env.TURNSTILE_SECRET_KEY);
+
+/** Analitika navbati */
+export const EV_QUEUE = `${env.KEY_PREFIX}:ev`;

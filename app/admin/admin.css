@@ -1,0 +1,532 @@
+/* ==========================================================================
+   Admin panel — landing CSS'idan alohida. Bu fayl foydalanuvchi bundle'iga
+   TUSHMAYDI (faqat /admin/* route'larida yuklanadi).
+   ========================================================================== */
+
+/* ── Landing temasidan ajratish ───────────────────────────────────────────
+   Root layout `globals.css` ni ham ulaydi va u `body` ga o'z rangini beradi.
+   Landing yorug' rejimda qora matn ishlatadi, admin esa doim qorong'i —
+   ya'ni ranglar meros olinsa matn fonga qo'shilib ketadi.
+
+   Shuning uchun admin O'Z ildizida rangni va color-scheme'ni qayta belgilaydi.
+   Selektor `body` dan aniqroq, shuning uchun CSS tartibiga bog'liq emas.
+   ------------------------------------------------------------------------ */
+.a-shell,
+.a-login {
+  color: #eef2f8;
+  color-scheme: dark;
+}
+
+.a-shell {
+  min-height: 100vh;
+  background: #080a10;
+}
+
+/* Brend belgisi — landing'dagi `.logo-mark` bilan to'qnashmasin */
+.a-mark {
+  width: 26px;
+  height: 26px;
+  flex: none;
+}
+
+.a-top {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #0c1017;
+  border-bottom: 1px solid #1b2331;
+}
+
+.a-top-in {
+  display: flex;
+  align-items: center;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: 12px 20px;
+}
+
+.a-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-right: auto;
+}
+
+.a-nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.a-nav a {
+  padding: 7px 13px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #93a1b8;
+}
+
+.a-nav a:hover {
+  background: #141a25;
+  color: #fff;
+}
+
+.a-nav a[aria-current='page'] {
+  background: #16293a;
+  color: #7fd0f7;
+}
+
+.a-main {
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: 22px 20px 60px;
+}
+
+.a-h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 4px;
+}
+
+.a-sub {
+  font-size: 13.5px;
+  color: #6f7b8f;
+  margin-bottom: 20px;
+}
+
+.a-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+/* ── Kartalar ── */
+
+.a-cards {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  margin-bottom: 22px;
+}
+
+.a-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #0f141d;
+  border: 1px solid #1b2331;
+}
+
+.a-card-k {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6f7b8f;
+}
+
+.a-card-v {
+  margin-top: 6px;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.a-card-v.up {
+  color: #34d399;
+}
+
+.a-card-v.tg {
+  color: #2aabee;
+}
+
+.a-card-v.gold {
+  color: #ffcc33;
+}
+
+.a-card-n {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #59637a;
+}
+
+/* ── Panel ── */
+
+.a-panel {
+  border-radius: 14px;
+  background: #0f141d;
+  border: 1px solid #1b2331;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.a-panel-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-bottom: 1px solid #1b2331;
+  font-size: 14.5px;
+  font-weight: 750;
+}
+
+.a-panel-b {
+  padding: 16px 18px;
+}
+
+.a-grid-2 {
+  display: grid;
+  gap: 18px;
+}
+
+@media (min-width: 1000px) {
+  .a-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Jadval ── */
+
+.a-tw {
+  overflow-x: auto;
+}
+
+table.a-t {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+.a-t th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6f7b8f;
+  background: #0c1017;
+  border-bottom: 1px solid #1b2331;
+}
+
+.a-t td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #151c27;
+  vertical-align: middle;
+}
+
+.a-t tbody tr:hover td {
+  background: #121822;
+}
+
+.a-t td.num,
+.a-t th.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.a-t .muted {
+  color: #6f7b8f;
+}
+
+/* ── Boshqaruv elementlari ── */
+
+.a-in {
+  width: 100%;
+  min-width: 90px;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: #0a0e15;
+  border: 1px solid #232d3d;
+  color: #eef2f8;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.a-in:focus {
+  outline: none;
+  border-color: #2aabee;
+}
+
+.a-in.w6 {
+  width: 112px;
+}
+
+.a-in.w4 {
+  width: 84px;
+}
+
+.a-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 9px;
+  background: #1a2432;
+  border: 1px solid #253040;
+  color: #dbe4f0;
+  font-size: 13.5px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.a-btn:hover:not(:disabled) {
+  background: #223044;
+}
+
+.a-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.a-btn.p {
+  background: linear-gradient(135deg, #2aabee, #229ed9);
+  border-color: transparent;
+  color: #fff;
+}
+
+.a-btn.d {
+  background: #2a1418;
+  border-color: #4a1f27;
+  color: #f19aa6;
+}
+
+.a-btn.sm {
+  padding: 5px 10px;
+  font-size: 12.5px;
+}
+
+.a-sel {
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: #0a0e15;
+  border: 1px solid #232d3d;
+  color: #eef2f8;
+  font-size: 13.5px;
+}
+
+/* Toggle */
+.a-sw {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 23px;
+  flex: none;
+}
+
+.a-sw input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+}
+
+.a-sw span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #263141;
+  transition: background-color 0.16s ease;
+  pointer-events: none;
+}
+
+.a-sw span::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #8794a8;
+  transition: transform 0.16s ease, background-color 0.16s ease;
+}
+
+.a-sw input:checked + span {
+  background: #14425c;
+}
+
+.a-sw input:checked + span::after {
+  transform: translateX(17px);
+  background: #2aabee;
+}
+
+/* Belgilar */
+.a-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #16202c;
+  color: #93a1b8;
+}
+
+.a-tag.ok {
+  background: rgb(52 211 153 / 13%);
+  color: #34d399;
+}
+
+.a-tag.no {
+  background: rgb(241 154 166 / 10%);
+  color: #f19aa6;
+}
+
+.a-tag.ig {
+  background: rgb(224 92 168 / 13%);
+  color: #f0a0cc;
+}
+
+.a-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0 3px rgb(52 211 153 / 18%);
+  margin-right: 7px;
+}
+
+/* Voronka */
+.a-bar {
+  display: grid;
+  grid-template-columns: 52px 1fr 74px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 9px;
+  font-size: 13px;
+}
+
+.a-bar-t {
+  height: 9px;
+  border-radius: 999px;
+  background: #141c27;
+  overflow: hidden;
+}
+
+.a-bar-f {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2aabee, #7fd0f7);
+}
+
+.a-bar-n {
+  text-align: right;
+  color: #93a1b8;
+  font-variant-numeric: tabular-nums;
+}
+
+.a-empty {
+  padding: 34px 18px;
+  text-align: center;
+  font-size: 13.5px;
+  color: #59637a;
+}
+
+/* ── Login ── */
+
+.a-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(60% 50% at 50% 0%, #10202e, #080a10 70%);
+}
+
+.a-login-box {
+  width: 100%;
+  max-width: 358px;
+  padding: 28px 26px 26px;
+  border-radius: 18px;
+  background: #0f141d;
+  border: 1px solid #1b2331;
+  box-shadow: 0 20px 60px -20px #000;
+}
+
+.a-login-mark {
+  display: block;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
+}
+
+.a-login-box h1 {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.a-login-box p {
+  margin: 6px 0 20px;
+  font-size: 13px;
+  color: #6f7b8f;
+}
+
+.a-f {
+  display: grid;
+  gap: 12px;
+}
+
+.a-lbl {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: #93a1b8;
+}
+
+.a-err {
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: rgb(241 154 166 / 10%);
+  border: 1px solid rgb(241 154 166 / 25%);
+  color: #f19aa6;
+  font-size: 13px;
+}
+
+.a-ok {
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: rgb(52 211 153 / 10%);
+  border: 1px solid rgb(52 211 153 / 25%);
+  color: #34d399;
+  font-size: 13px;
+}
+
+/* ── Timeline ── */
+
+.a-tl {
+  display: grid;
+  gap: 0;
+  font-size: 13px;
+}
+
+.a-tl-i {
+  display: grid;
+  grid-template-columns: 78px 92px 1fr;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #151c27;
+}
+
+.a-tl-i:last-child {
+  border-bottom: 0;
+}
+
+.a-tl-t {
+  color: #59637a;
+  font-variant-numeric: tabular-nums;
+}
