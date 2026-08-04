@@ -1,6 +1,5 @@
 import { prisma } from './prisma';
 import { env } from './env';
-import { FALLBACK_PRICES, type PriceItem } from './content';
 
 /**
  * Landing uchun ma'lumot o'qish.
@@ -10,42 +9,25 @@ import { FALLBACK_PRICES, type PriceItem } from './content';
  * DB yetib bo'lmasa zaxira qiymat qaytadi va build davom etadi.
  */
 
-const PRICE_SELECT = {
-  id: true,
-  sku: true,
-  title: true,
-  amount: true,
-  priceUzs: true,
-  oldPriceUzs: true,
-  badge: true,
-  order: true,
-} as const;
 
-export async function getPrices(): Promise<PriceItem[]> {
-  if (!env.DATABASE_URL) return FALLBACK_PRICES;
-  try {
-    const rows = await prisma.price.findMany({
-      where: { active: true },
-      orderBy: [{ order: 'asc' }, { priceUzs: 'asc' }],
-      select: PRICE_SELECT,
-    });
-    return rows.length ? rows : FALLBACK_PRICES;
-  } catch (err) {
-    console.warn('[build] narxlar DB dan olinmadi, zaxira ishlatiladi:', (err as Error).message);
-    return FALLBACK_PRICES;
-  }
-}
 
 export const DEFAULT_SETTINGS = {
   bot_username: env.BOT,
   hero_badge: 'Tashabbusli budjet mavsumi ochilgan',
+  /**
+   * `{narx}` — o'rin egallovchi. Landing render paytida `price_one_vote`
+   * qiymatiga almashadi, ya'ni narx BITTA joyda o'zgartiriladi
+   * (`/admin/prices`), matnlarni qayta yozish shart emas.
+   */
+  price_one_vote: '30 000',
+
   // Brend nomi bu yerda ATAYIN yo'q: «Open Budget» — davlat portalining nomi,
   // bizniki emas. Sarlavha xizmatni tasvirlaydi, brend esa logotipda turadi.
-  hero_title: "Tashabbusli budjet ovozi|1 ovoz 30 000 so'mdan",
+  hero_title: 'Tashabbusli budjet ovozi|1 ovoz {narx} so‘mdan',
   hero_sub:
-    "Humo, Uzcard yoki Payme bilan to'lang — 1 ovoz 30 000 so'mdan boshlanadi. Katta paketda arzonroq: 25 ovoz ≈ 24 800 so'm/dona.",
+    'Humo, Uzcard yoki Payme bilan to‘lang. 1 ovoz {narx} so‘mdan boshlanadi — aniq narx va yashirin komissiyasiz.',
   cta_primary: 'Botda ovoz olish',
-  cta_secondary: 'Narxlarni ko’rish',
+  cta_secondary: 'Qanday ishlaydi',
   tg_channel: 'openbudget_uz',
   support_username: 'openbudget_help',
   reviews_count: '8 000+',

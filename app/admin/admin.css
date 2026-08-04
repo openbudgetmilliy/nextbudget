@@ -530,3 +530,137 @@ table.a-t {
   color: #59637a;
   font-variant-numeric: tabular-nums;
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBIL MOSLASHUV
+
+   Admin — zich desktop vositasi va shunday qolishi kerak (uiskill.md: tugmalar
+   ataylab past). Lekin telefondan ham boshqarish mumkin bo'lsin: quyidagi
+   qoidalar FAQAT tor ekranda ishlaydi va desktop zichligiga tegmaydi.
+
+   O'lchangan muammolar (320px, headless audit):
+     · nav havolalari 36px, tugmalar 32px, switch 23px, input 33px
+       → barmoq bilan tegib bo'lmaydi (qulay eng kichik o'lcham — 44px)
+     · narxlar jadvali 1129px — gorizontal skroll bor, lekin belgisi yo'q
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 860px) {
+  .a-top-in {
+    padding: 10px 14px;
+    gap: 6px 10px;
+  }
+
+  /* Nav telefon ekranida gorizontal lentaga aylanadi — qatorlarga bo'linib
+     headerni cho'zib yubormasin */
+  .a-nav {
+    order: 3;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .a-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .a-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  .a-btn {
+    min-height: 44px;
+    padding: 8px 14px;
+  }
+
+  .a-btn.sm {
+    min-height: 40px;
+  }
+
+  .a-in {
+    min-height: 44px;
+    font-size: 16px; /* 16px dan kichik bo'lsa iOS sahifani zoom qiladi */
+  }
+
+  /* Sana oralig'i tanlagichi va shu kabi havola-tugmalar */
+  .a-row a,
+  .a-row label {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .a-main {
+    padding: 16px 14px 40px;
+  }
+
+  .a-h1 {
+    font-size: 22px;
+  }
+
+  /* Jadval skroll qilinishini KO'RSATAMIZ — aks holda o'ng ustunlar
+     (Saqlash / o'chirish) borligi bilinmaydi */
+  .a-tw {
+    position: relative;
+    overscroll-behavior-x: contain;
+  }
+
+  .a-tw::after {
+    content: '→ yon tomonga suring';
+    display: block;
+    padding: 8px 14px 2px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: #59637a;
+    position: sticky;
+    left: 0;
+  }
+
+  .a-t th,
+  .a-t td {
+    padding: 12px;
+  }
+
+  /* Switch: yorliqning O'ZI 44px ga kengayadi (pseudo-element bilan emas —
+     u haqiqiy teginish maydoni sifatida ishonchsiz). Ko'rinadigan tugmacha
+     ichida markazda turadi va biroz kattalashadi. */
+  .a-sw {
+    width: 52px;
+    height: 44px;
+  }
+
+  .a-sw span {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    width: 46px;
+    height: 26px;
+    transform: translateY(-50%);
+  }
+
+  .a-sw span::after {
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .a-sw input:checked + span::after {
+    transform: translateX(20px);
+  }
+}
+
+@media (max-width: 520px) {
+  .a-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .a-brand {
+    font-size: 15px;
+  }
+}

@@ -22,8 +22,8 @@ export default function FinalCta({ tg }: { tg: string }) {
               <Telegram />
               Botni ochish
             </a>
-            <a href="#prices" className="btn btn-ghost" data-t="click" data-t-id="final_prices">
-              Narxlar
+            <a href="#faq" className="btn btn-ghost" data-t="click" data-t-id="final_faq">
+              Savollar
             </a>
           </div>
         </div>

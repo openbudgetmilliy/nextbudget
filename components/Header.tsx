@@ -11,9 +11,8 @@ export default function Header({ tg }: { tg: string }) {
         </a>
 
         <nav className="hdr-nav" aria-label="Asosiy menyu">
-          <a href="#intro">Tizim</a>
-          <a href="#prices">Narxlar</a>
           <a href="#how">Qanday ishlaydi</a>
+          <a href="#why">Nega biz</a>
           <a href="#faq">Savollar</a>
         </nav>
 

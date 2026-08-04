@@ -1,4 +1,5 @@
 import { Check, Telegram } from './Icons';
+import { SITE, applyVars } from '@/lib/content';
 import type { Settings } from '@/lib/data';
 
 /**
@@ -29,52 +30,31 @@ function HeroTitle({ title }: { title: string }) {
 }
 
 /**
- * Namuna chek — mahsulotning haqiqiy artefakti: yakunlangan buyurtma.
- * Muhr CSS animatsiyasi bilan tushadi, JS yo'q.
+ * Brend belgisi — hero'ning o'ng ustuni.
+ *
+ * Avval bu yerda namuna chek turardi (tashabbus №12, summa, muhr). U o'ylab
+ * topilgan ma'lumot edi; brend belgisi esa haqiqiy va tanilishi kerak.
+ * Plita ikki rejimda ham oq — belgi rangli va oq fonda eng aniq ko'rinadi.
  */
-function Slip() {
+function BrandMark() {
   return (
-    <figure className="slip" aria-label="Namuna: yakunlangan e’lon">
-      <div className="slip-head">
-        <span className="slip-ref tnum">Tashabbus №12</span>
-        <span className="slip-org">
-          Chilonzor tumani
-          <br />
-          Yo’l ta’miri
-        </span>
-      </div>
-
-      <dl className="slip-rows">
-        <div>
-          <dt>Paket</dt>
-          <dd className="tnum">10 ovoz</dd>
-        </div>
-        <div>
-          <dt>Yetkazildi</dt>
-          <dd className="tnum ok">10 / 10</dd>
-        </div>
-        <div>
-          <dt>To’lov</dt>
-          <dd>Humo · Uzcard</dd>
-        </div>
-      </dl>
-
-      <div className="slip-total">
-        <span>Jami</span>
-        <b className="tnum">
-          260 000<i>so’m</i>
-        </b>
-      </div>
-
-      <figcaption className="slip-foot">
-        <span className="slip-note">45 soniyada</span>
-        <span className="stamp stamp-in">Tasdiqlandi</span>
-      </figcaption>
-    </figure>
+    <div className="hero-mark">
+      <img
+        src="/logo-hero.webp"
+        alt={`${SITE.brand} belgisi`}
+        width={300}
+        height={300}
+        fetchPriority="high"
+        decoding="async"
+      />
+    </div>
   );
 }
 
 export default function Hero({ s, tg }: { s: Settings; tg: string }) {
+  // `{narx}` → `price_one_vote`. Narx bitta joyda (/admin/prices) o'zgaradi.
+  const vars = { narx: s.price_one_vote };
+
   return (
     <section className="hero" id="top">
       <div className="wrap hero-in">
@@ -91,9 +71,9 @@ export default function Hero({ s, tg }: { s: Settings; tg: string }) {
             </li>
           </ul>
 
-          <HeroTitle title={s.hero_title} />
+          <HeroTitle title={applyVars(s.hero_title, vars)} />
 
-          <p className="hero-sub">{s.hero_sub}</p>
+          <p className="hero-sub">{applyVars(s.hero_sub, vars)}</p>
 
           <div className="btn-row hero-cta">
             <a
@@ -107,7 +87,7 @@ export default function Hero({ s, tg }: { s: Settings; tg: string }) {
               <Telegram />
               {s.cta_primary}
             </a>
-            <a href="#prices" className="btn btn-ghost" data-t="click" data-t-id="hero_prices">
+            <a href="#how" className="btn btn-ghost" data-t="click" data-t-id="hero_how">
               {s.cta_secondary}
             </a>
           </div>
@@ -125,7 +105,7 @@ export default function Hero({ s, tg }: { s: Settings; tg: string }) {
           </ul>
         </div>
 
-        <Slip />
+        <BrandMark />
       </div>
     </section>
   );

@@ -32,8 +32,8 @@ export default function Footer({ s }: { s: Settings }) {
           >
             Yordam
           </a>
+          <a href="#how">Qanday ishlaydi</a>
           <a href="#faq">Savollar</a>
-          <a href="#prices">Narxlar</a>
         </nav>
       </div>
     </footer>

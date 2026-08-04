@@ -114,6 +114,16 @@ export const FAQ = [
   },
 ] as const;
 
+/**
+ * Matndagi `{narx}` o'rin egallovchisini haqiqiy qiymatga almashtiradi.
+ *
+ * Nega kerak: narx bir nechta joyda takrorlanadi (hero sarlavhasi, tavsif).
+ * Admin uni BITTA maydonda o'zgartirsin — matnlarni qo'lda tahrirlamasin.
+ */
+export function applyVars(text: string, vars: Record<string, string>): string {
+  return text.replace(/\{(\w+)\}/g, (whole, key: string) => vars[key] ?? whole);
+}
+
 /** Narxni "27 900 so'm" ko'rinishida — Intl'siz, tez */
 export function uzs(n: number): string {
   const s = String(Math.round(n));

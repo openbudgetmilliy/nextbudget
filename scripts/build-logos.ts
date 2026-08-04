@@ -60,6 +60,12 @@ async function main() {
       .toBuffer(),
   );
 
+  await emit(
+    'public/logo-hero.webp',
+    'hero o‘ng ustuni (~300px, 2x)',
+    await mark.clone().resize(600, 600, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).webp({ quality: 90 }).toBuffer(),
+  );
+
   // ── Brend logotipi (nomi bilan) ──
   const brand = sharp(BRAND).trim();
 

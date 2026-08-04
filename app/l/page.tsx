@@ -1,10 +1,8 @@
 import type { Metadata } from 'next';
 
 import Header from '@/components/Header';
-import Intro from '@/components/Intro';
 import Hero from '@/components/Hero';
 import Marquee from '@/components/Marquee';
-import Prices from '@/components/Prices';
 import Steps from '@/components/Steps';
 import Advantages from '@/components/Advantages';
 import TrustStrip from '@/components/TrustStrip';
@@ -14,8 +12,8 @@ import Footer from '@/components/Footer';
 import StickyCta from '@/components/StickyCta';
 import Tracker from '@/components/Tracker';
 
-import { getPrices, getSettings } from '@/lib/data';
-import { FAQ, SITE, kindOf, uzs } from '@/lib/content';
+import { getSettings } from '@/lib/data';
+import { FAQ, SITE } from '@/lib/content';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -31,9 +29,26 @@ import { env } from '@/lib/env';
  * Shu sabab HTML CDN'da cache'lanmaydi (`next.config.js` → `private, no-store`),
  * lekin Node baribir tayyor HTML'ni diskdan beradi — render qaytadan bo'lmaydi.
  *
+ * Narx bo'limi olib tashlangan: sahifa endi narx ko'rsatmaydi, tanlov botda
+ * qilinadi. Shu sabab `getPrices()` ham chaqirilmaydi va Product/AggregateOffer
+ * strukturali ma'lumoti yo'q — bo'lmagan narx haqida da'vo qilmaymiz.
+ *
  * Tekshirish: `npm run build` chiqishida `/l` yonida `○ (Static)` bo'lishi shart.
  */
-export const revalidate = 3600; // zaxira: soatiga bir marta
+/**
+ * 60 sekund, 3600 emas.
+ *
+ * `revalidatePath()` FAQAT o'z Node protsessining keshini bekor qiladi.
+ * PM2 cluster'da 2 instance bor (`ecosystem.config.js`), ya'ni admin narxni
+ * saqlaganda faqat so'rovni bajargan instance yangilanadi — ikkinchisi eski
+ * sahifani `revalidate` muddati tugagunicha berib turadi.
+ *
+ * 60s bu oynani 1 daqiqagacha qisqartiradi. Narxi: instance'iga daqiqasiga
+ * bitta `getSettings()` — bitta yengil SELECT, sezilmaydi.
+ *
+ * To'liq yechim — Redis'ga asoslangan umumiy `cacheHandler` (next.config.js).
+ */
+export const revalidate = 60;
 export const dynamic = 'force-static';
 
 /** Darvoza ortidagi sahifa — qidiruvda ko'rinmaydi (`/` indekslanadi) */
@@ -43,35 +58,22 @@ export const metadata: Metadata = {
 };
 
 export default async function Landing() {
-  const [prices, s] = await Promise.all([getPrices(), getSettings()]);
+  const s = await getSettings();
   const bot = s.bot_username || env.BOT;
   const tg = tgLink(bot, 'web');
 
-  const cheapestOvoz = prices
-    .filter((p) => kindOf(p.sku) === 'ovoz')
-    .reduce<number | null>((min, p) => (min === null || p.priceUzs < min ? p.priceUzs : min), null);
-
-  const cheapestAny = prices.reduce<number | null>(
-    (min, p) => (min === null || p.priceUzs < min ? p.priceUzs : min),
-    null,
-  );
-  const lowPrice = cheapestOvoz ?? cheapestAny;
-
   return (
     <>
-      {/* Skip link faqat shu sahifada — `#prices` darvoza sahifasida yo'q */}
-      <a href="#prices" className="skip">
-        Narxlarga o’tish
+      <a href="#how" className="skip">
+        Asosiy mazmunga o’tish
       </a>
 
       <Header tg={tg} />
 
       <main>
-        <Intro tg={tg} />
         <Hero s={s} tg={tg} />
         <Marquee />
         <TrustStrip reviews={s.reviews_count} />
-        <Prices prices={prices} bot={bot} />
         <Steps />
         <Advantages />
         <Faq />
@@ -98,20 +100,6 @@ export default async function Landing() {
             },
             {
               '@context': 'https://schema.org',
-              '@type': 'Product',
-              name: 'Tashabbusli budjet ovoz paketlari',
-              description: SITE.description,
-              brand: { '@type': 'Brand', name: SITE.brand },
-              offers: {
-                '@type': 'AggregateOffer',
-                priceCurrency: 'UZS',
-                lowPrice: lowPrice ?? undefined,
-                offerCount: prices.length,
-                availability: 'https://schema.org/InStock',
-              },
-            },
-            {
-              '@context': 'https://schema.org',
               '@type': 'FAQPage',
               mainEntity: FAQ.map((f) => ({
                 '@type': 'Question',
@@ -122,9 +110,6 @@ export default async function Landing() {
           ]),
         }}
       />
-      <span className="sr">
-        Eng arzon ovoz paketi: {lowPrice ? `${uzs(lowPrice)} so’m` : '—'}
-      </span>
     </>
   );
 }

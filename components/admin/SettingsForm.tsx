@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 const LABELS: Record<string, string> = {
   bot_username: 'Bot username (@ siz)',
+  price_one_vote: '1 ovoz narxi ({narx} o‘rniga qo‘yiladi)',
   hero_badge: 'Hero yuqori yozuv',
   hero_title: 'Hero sarlavha (SEO uchun)',
   hero_sub: 'Hero tavsif',

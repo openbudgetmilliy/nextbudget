@@ -302,8 +302,10 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  /* 44px — teginish maydonining eng kichik qulay o'lchami */
+  min-height: 44px;
   font-family: var(--f-display);
-  font-size: 18px;
+  font-size: clamp(15px, 4.2vw, 18px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
@@ -403,117 +405,6 @@ button {
   background: var(--card);
 }
 
-/* ── Tanishtiruv banneri ── */
-
-.intro {
-  padding-block: 56px;
-  border-bottom: var(--bw) solid var(--fg);
-}
-
-/* Brend plitasi — logotipdagi nom to'q ko'k bo'lgani uchun fon IKKI rejimda
-   ham oq qoladi. Qattiq siljigan soya bilan — bosma yorliq effekti. */
-.intro-plate {
-  /* `inline-flex` emas: aks holda keyingi eyebrow yorlig'i shu qatorga tushadi */
-  display: flex;
-  width: fit-content;
-  margin-bottom: 30px;
-  padding: 18px 26px;
-  /* Plita — "qog'oz bo'lagi": ikki rejimda ham oq, chegarasi va soyasi qora.
-     `var(--fg)` ishlatilsa dark'da soya oqarib plita bilan qo'shilib ketardi. */
-  border: var(--bw) solid #14171b;
-  background: #ffffff;
-  box-shadow: 6px 6px 0 0 #14171b;
-}
-
-.intro-plate img {
-  width: clamp(180px, 42vw, 260px);
-  height: auto;
-}
-
-.intro-title {
-  max-width: 16ch;
-  font-family: var(--f-display);
-  font-size: clamp(2rem, 8vw, 4.6rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.94;
-}
-
-.intro-sub {
-  margin-top: 22px;
-  max-width: 56ch;
-  color: var(--muted-fg);
-  font-size: clamp(15px, 3.6vw, 17px);
-  line-height: 1.65;
-}
-
-.intro-grid {
-  margin-top: 34px;
-  grid-template-columns: 1fr;
-}
-
-.intro-item {
-  padding: 26px 22px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.intro-item:hover {
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.intro-n {
-  display: block;
-  font-family: var(--f-display);
-  font-size: 2.6rem;
-  font-weight: 900;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: var(--primary);
-}
-
-.intro-item:hover .intro-n {
-  color: inherit;
-}
-
-.intro-item h3 {
-  margin-top: 20px;
-  font-family: var(--f-display);
-  font-size: 1.1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-
-.intro-item p {
-  margin-top: 8px;
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.8;
-}
-
-.intro-cta {
-  margin-top: 34px;
-}
-
-.intro-note {
-  margin-top: 24px;
-  max-width: 66ch;
-  font-size: 12.5px;
-  line-height: 1.65;
-  color: var(--muted-fg);
-}
-
-@media (min-width: 800px) {
-  .intro {
-    padding-block: 76px;
-  }
-  .intro-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
 /* ── Hero ── */
 
 .hero {
@@ -611,121 +502,20 @@ button {
   }
 }
 
-/* ── Namuna chek (hero'dagi artefakt) ── */
+/* ── Hero brend belgisi ── */
 
-.slip {
+.hero-mark {
   justify-self: center;
-  width: min(380px, 100%);
-  border: var(--bw) solid var(--fg);
-  background: var(--card);
-  box-shadow: var(--shadow);
-}
-
-.slip-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 18px 20px;
-  border-bottom: var(--bw) solid var(--fg);
-  background: var(--bg-sub);
+  padding: 26px;
+  border: var(--bw) solid #14171b;
+  background: #ffffff;
+  box-shadow: 6px 6px 0 0 #14171b;
 }
 
-.slip-ref {
-  font-family: var(--f-display);
-  font-size: 13px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-variant-numeric: tabular-nums;
-}
-
-.slip-org {
-  font-size: 11.5px;
-  line-height: 1.4;
-  text-align: right;
-  color: var(--muted-fg);
-}
-
-.slip-rows {
-  display: grid;
-  gap: 12px;
-  padding: 20px;
-}
-
-.slip-rows > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.slip-rows dt {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-fg);
-}
-
-.slip-rows dd {
-  font-size: 14px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.slip-rows dd.ok {
-  color: var(--primary);
-}
-
-.slip-total {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-  margin: 0 20px;
-  padding-block: 16px;
-  border-top: var(--bw) solid var(--fg);
-}
-
-.slip-total span {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted-fg);
-}
-
-.slip-total b {
-  font-family: var(--f-display);
-  font-size: 1.7rem;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-}
-
-.slip-total b i {
-  margin-left: 5px;
-  font-size: 0.5em;
-  font-style: normal;
-  font-weight: 600;
-  color: var(--muted-fg);
-}
-
-.slip-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 16px 20px 20px;
-}
-
-.slip-note {
-  font-size: 10.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted-fg);
+.hero-mark img {
+  width: clamp(190px, 46vw, 300px);
+  height: auto;
 }
 
 /* ── Muhr — burilgan stiker, qattiq soya bilan ── */
@@ -799,195 +589,6 @@ button {
   .strip {
     grid-template-columns: repeat(4, 1fr);
   }
-}
-
-/* ── Narx tablari ── */
-
-.tabs input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.tab-bar {
-  display: inline-flex;
-  margin-bottom: 30px;
-  border: var(--bw) solid var(--fg);
-}
-
-.tab-bar label {
-  padding: 12px 22px;
-  font-size: 12.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.tab-bar label + label {
-  border-left: var(--bw) solid var(--fg);
-}
-
-.tab-bar label:hover {
-  background: var(--muted);
-}
-
-#t-ovoz:checked ~ .tab-bar label[for='t-ovoz'],
-#t-xizmat:checked ~ .tab-bar label[for='t-xizmat'] {
-  background: var(--fg);
-  color: var(--bg);
-}
-
-.tab-panel {
-  display: none;
-}
-
-#t-ovoz:checked ~ .panels > .panel-ovoz,
-#t-xizmat:checked ~ .panels > .panel-xizmat {
-  display: block;
-}
-
-.price-grid {
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 620px) {
-  .price-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 940px) {
-  .price-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* ── Narx kartasi ── */
-
-.pcard {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 26px 22px 22px;
-}
-
-.pcard-hot {
-  background: var(--primary-soft);
-}
-
-@media (prefers-color-scheme: dark) {
-  .pcard-hot {
-    background: var(--muted);
-  }
-}
-
-.pcard-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5px 10px;
-  border-left: var(--bw) solid var(--fg);
-  border-bottom: var(--bw) solid var(--fg);
-  background: var(--primary);
-  color: var(--primary-fg);
-  font-size: 10px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.pcard-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-/* Katta tartib/miqdor raqami — kartaning eng kuchli elementi */
-.pcard-count {
-  font-family: var(--f-display);
-  font-size: 3rem;
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-  font-variant-numeric: tabular-nums;
-}
-
-.pcard-icon {
-  opacity: 0.35;
-  flex: none;
-}
-
-.pcard-title {
-  font-family: var(--f-display);
-  font-size: 1.15rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-
-.pcard-unit {
-  margin-top: 4px;
-  font-size: 13px;
-  color: var(--muted-fg);
-}
-
-/* Qalin plomba — yumshoq chiziq o'rniga */
-.pcard-rule {
-  height: var(--bw);
-  background: var(--fg);
-}
-
-.pcard-price {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-}
-
-.pcard-price b {
-  font-family: var(--f-display);
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.pcard-price .cur {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted-fg);
-}
-
-.pcard-old {
-  font-size: 13px;
-  color: var(--muted-fg);
-  text-decoration: line-through;
-  font-variant-numeric: tabular-nums;
-}
-
-.pcard-save {
-  padding: 2px 7px;
-  border: var(--bw) solid var(--fg);
-  background: var(--primary);
-  color: var(--primary-fg);
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.pcard-per {
-  margin-top: 6px;
-  font-size: 12.5px;
-  color: var(--muted-fg);
-}
-
-.pcard .btn {
-  margin-top: auto;
 }
 
 /* ── Qadamlar ── */
@@ -1214,11 +815,18 @@ button {
 .ftr-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 24px;
+  gap: 0 24px;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+/* Havolalar 19px baland edi — barmoq bilan tegib bo'lmasdi */
+.ftr-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .ftr-links a:hover {
@@ -1265,10 +873,14 @@ button {
 
 /* ── Kirish darvozasi ── */
 
+/* Grid + `place-items: center` EMAS: unda ustun max-content bo'yicha o'lchanadi
+   va karta 320px ekranda viewportdan chiqib ketardi. Flex'da `width: 100%`
+   mavjud kenglikdan hisoblanadi. */
 .gate {
   min-height: 100dvh;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 28px var(--pad);
   background: var(--bg-sub);
 }
@@ -1411,6 +1023,75 @@ button {
 
 .nf-cta .btn {
   flex: 0 1 auto;
+}
+
+/* ── Mobil moslashuv ──────────────────────────────────────────────────────
+   O'lchangan muammolar (headless auditda): 320px da hujjat 409px kenglikda
+   edi — aybdor headerdagi ikkinchi CTA. Sticky CTA baribir doim ko'rinib
+   turadi, ya'ni u ortiqcha ham edi.
+   ------------------------------------------------------------------------ */
+
+@media (max-width: 759px) {
+  /* Pastda sticky CTA turibdi — headerda ikkinchi tugma kerak emas va u
+     320px da sarlavhani viewportdan chiqarib yuborardi */
+  .hdr .btn {
+    display: none;
+  }
+
+  .hdr-in {
+    height: 60px;
+  }
+
+  .sec {
+    padding-block: 44px;
+  }
+
+  .sec-head {
+    margin-bottom: 26px;
+  }
+
+  /* Hero tugmalari mobilda ustma-ust — yonma-yon siqilib matn kesilmasin */
+  .btn-row {
+    flex-direction: column;
+  }
+
+  .btn-row .btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .btn-row .btn + .btn {
+    margin-left: 0;
+    margin-top: calc(var(--bw) * -1);
+  }
+
+  .final {
+    padding: 34px 20px 36px;
+  }
+
+  .final .btn-row .btn {
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 400px) {
+  :root {
+    --pad: 16px;
+  }
+
+  .btn {
+    padding: 0 18px;
+    font-size: 14px;
+  }
+
+  /* Uzun so'zlar ("Tashabbusingizni") tor ekranda tashqariga chiqmasin */
+  .hero h1,
+  .sec-head h2,
+  .final h2,
+  .nf-title {
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
 }
 
 /* ── Yordamchilar ── */

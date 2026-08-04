@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { COOKIE, GATE_COOKIE, hasGate, readToken } from './lib/jwt';
+import { COOKIE, GATE_COOKIE, GATE_HINT, hasGate, readToken } from './lib/jwt';
 
 /**
  * Ikki himoya: admin panel va kirish darvozasi.
@@ -22,10 +22,23 @@ export async function middleware(req: NextRequest) {
     if (!gateOn || (await hasGate(req.cookies.get(GATE_COOKIE)?.value))) {
       return NextResponse.next();
     }
+
     const url = req.nextUrl.clone();
     url.pathname = '/';
     url.search = '';
-    return NextResponse.redirect(url);
+    const res = NextResponse.redirect(url);
+
+    /**
+     * Eskirgan UX belgisini ham o'chiramiz — busiz CHEKSIZ HALQA bo'lardi:
+     * `gt` yaroqsiz, lekin `gt_ok` qolgan → darvoza captchani ko'rsatmay
+     * tugmani yoqadi → bosilsa yana shu yerga qaytadi → yana...
+     *
+     * Bu holat haqiqatda uchraydi: JWT_SECRET almashtirilganda yoki brauzer
+     * soati oldinda bo'lib JWT `exp` cookie `Max-Age` dan erta o'tganda.
+     */
+    res.cookies.delete({ name: GATE_HINT, path: '/' });
+    res.cookies.delete({ name: GATE_COOKIE, path: '/' });
+    return res;
   }
 
   // ── Admin panel ──
