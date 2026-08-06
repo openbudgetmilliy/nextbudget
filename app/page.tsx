@@ -27,6 +27,35 @@ export default async function GatePage() {
 
   return (
     <main className="gate">
+      {/*
+        Turnstile skripti HTML bilan birga yuklana boshlaydi.
+
+        Nega: `Gate` — client component, uning effekti React bundle yuklanib,
+        hidratsiya tugagandan KEYIN ishlaydi. Skript o'sha paytda qo'shilsa
+        zanjir ketma-ket bo'ladi: HTML → React → skript → tekshiruv. Bu yerda
+        esa skript React bilan PARALLEL yuklanadi.
+
+        `id` komponentdagi bilan bir xil — u ikkinchi nusxani qo'shmaydi.
+        Zaxira `__gateOnload`: skript hidratsiyadan oldin tayyor bo'lsa
+        Turnstile mavjud bo'lmagan funksiyani chaqirib xato bermasin. Bu holda
+        komponent `window.turnstile` ni ko'radi va o'zi ulanadi.
+      */}
+      {siteKey && (
+        <>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: 'window.__gateOnload=window.__gateOnload||function(){}',
+            }}
+          />
+          <script
+            id="cf-turnstile"
+            async
+            defer
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__gateOnload"
+          />
+        </>
+      )}
+
       <div className="gate-in">
         <p className="gate-brand">
           <Logo size={52} className="" />
