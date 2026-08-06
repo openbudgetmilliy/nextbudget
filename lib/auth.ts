@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 import { redis } from './redis';
-import { env } from './env';
+import { env, SECURE_COOKIES } from './env';
 import {
   COOKIE,
   GATE_COOKIE,
@@ -27,7 +27,7 @@ export async function setAuthCookie(token: string): Promise<void> {
   jar.set(COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: env.IS_PROD,
+    secure: SECURE_COOKIES,
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
   });
@@ -53,14 +53,14 @@ export async function setGateCookies(): Promise<void> {
   jar.set(GATE_COOKIE, await createGateToken(), {
     httpOnly: true,
     sameSite: 'lax',
-    secure: env.IS_PROD,
+    secure: SECURE_COOKIES,
     path: '/',
     maxAge,
   });
   jar.set(GATE_HINT, '1', {
     httpOnly: false,
     sameSite: 'lax',
-    secure: env.IS_PROD,
+    secure: SECURE_COOKIES,
     path: '/',
     maxAge,
   });

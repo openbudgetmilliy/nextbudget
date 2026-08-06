@@ -25,6 +25,22 @@ export const env = {
 } as const;
 
 /**
+ * Cookie'ga `Secure` bayrog'i qo'yiladimi?
+ *
+ * `NODE_ENV=production` BO'LMAYDI bu yerda mezon: prod'da ham sayt vaqtincha
+ * oddiy HTTP orqali berilayotgan bo'lishi mumkin (domen hali ulanmagan, IP
+ * orqali kirilyapti). Brauzer HTTP ustida `Secure` cookie'ni butunlay rad
+ * etadi — u holda darvozadan muvaffaqiyatli o'tgan foydalanuvchining `gt`
+ * cookie'si saqlanmaydi, `/l` middleware uni topmaydi va odam yana darvozaga
+ * qaytariladi. Tashqaridan bu "tasdiqladim, lekin ichkariga kirmayapti" bo'lib
+ * ko'rinadi va curl bilan sezilmaydi — curl bu bayroqni brauzerdek qo'llamaydi.
+ *
+ * Shuning uchun mezon — saytning HAQIQIY sxemasi. HTTPS ulanib `SITE_URL`
+ * https bo'lgach, cookie'lar avtomatik yana Secure bo'ladi.
+ */
+export const SECURE_COOKIES = env.SITE_URL.startsWith('https://');
+
+/**
  * Darvoza yoqilganmi?
  *
  * `GATE_ENABLED=0` — o'chirish tugmasi (kalitlar yo'q bo'lsa ham o'chadi).
