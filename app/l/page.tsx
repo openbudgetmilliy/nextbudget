@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 
 import Header from '@/components/Header';
-import Hero from '@/components/Hero';
+import Poster from '@/components/Poster';
 import Tracker from '@/components/Tracker';
+import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { SITE } from '@/lib/content';
@@ -18,12 +19,9 @@ import { env } from '@/lib/env';
  * har so'rov render'ga tushardi.
  *
  * Kirish nazorati `middleware.ts` da: `gt` cookie'siz so'rov `/` ga qaytariladi.
- * Shu sabab HTML CDN'da cache'lanmaydi (`next.config.js` → `private, no-store`),
- * lekin Node baribir tayyor HTML'ni diskdan beradi — render qaytadan bo'lmaydi.
  *
- * Sahifa BITTA bo'limdan iborat: header va sahna. Bosqichlar, afzalliklar,
- * FAQ va takrorlovchi CTA bo'limlari olib tashlangan — ularning har biri
- * botga o'tish yo'lidagi qo'shimcha to'siq edi.
+ * Sahifa darvoza bilan BIR XIL plakatdan iborat — farqi faqat harakat uyasida:
+ * u yerda tekshiruv chizig'i, bu yerda botga o'tish tugmasi.
  *
  * Tekshirish: `npm run build` chiqishida `/l` yonida `○ (Static)` bo'lishi shart.
  */
@@ -34,9 +32,6 @@ import { env } from '@/lib/env';
  * PM2 bir nechta instance bilan ishlaganda admin narxni saqlaganda faqat
  * so'rovni bajargan instance yangilanadi — qolganlari eski sahifani
  * `revalidate` muddati tugagunicha berib turadi.
- *
- * 60s bu oynani 1 daqiqagacha qisqartiradi. Narxi: instance'iga daqiqasiga
- * bitta `getSettings()` — bitta yengil SELECT, sezilmaydi.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
@@ -57,7 +52,17 @@ export default async function Landing() {
       <Header tg={tg} label="Botga o’tish" />
 
       <main>
-        <Hero s={s} tg={tg} />
+        <Poster
+          s={s}
+          action={
+            <div className="act">
+              <a href={tg} className="btn" data-t="cta" data-t-id="hero_cta" data-tg rel="noopener">
+                <Telegram />
+                {s.cta_primary}
+              </a>
+            </div>
+          }
+        />
       </main>
 
       <Tracker />

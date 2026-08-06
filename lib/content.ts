@@ -90,3 +90,19 @@ export function pricePerLine(kind: PriceKind, per: number): string {
   if (kind === 'ovoz') return `1 ovoz ≈ ${uzs(per)} so'm`;
   return `≈ ${uzs(per)} so'm`;
 }
+
+/**
+ * Sarlavhani qatorlarga bo'ladi — har bir so'z alohida qatorda turadi va
+ * shu sabab harflar juda katta bo'la oladi (plakat sarlavhasi).
+ *
+ * Admin uzun sarlavha yozsa har bir so'z alohida qator bo'lganda ekranga
+ * sig'masdi — shuning uchun 3 tadan ko'p so'z uchta qatorga tekis taqsimlanadi.
+ *
+ * Darvoza va landing BIR XIL sarlavhani ko'rsatadi, shuning uchun bu yerda.
+ */
+export function titleLines(title: string): string[] {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= 3) return words;
+  const per = Math.ceil(words.length / 3);
+  return [0, 1, 2].map((i) => words.slice(i * per, (i + 1) * per).join(' ')).filter(Boolean);
+}

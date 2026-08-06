@@ -198,12 +198,18 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   };
 
   return (
-    <>
+    // `act` — plakatdagi harakat uyasi. Landingda shu joyda tugma turadi,
+    // shuning uchun o'tishda sahifa siljimaydi.
+    <div className="act gate-wait">
       <div className={`gate-bar${phase === 'ok' ? ' done' : ''}`} aria-hidden="true">
         <span />
       </div>
 
-      <p className={`gate-status${phase === 'error' ? ' bad' : ''}`} role="status" aria-live="polite">
+      <p
+        className={`gate-status${phase === 'error' ? ' bad' : ''}`}
+        role="status"
+        aria-live="polite"
+      >
         {message[phase]}
       </p>
 
@@ -215,6 +221,6 @@ export default function Gate({ siteKey }: { siteKey: string }) {
           Davom etish
         </a>
       )}
-    </>
+    </div>
   );
 }

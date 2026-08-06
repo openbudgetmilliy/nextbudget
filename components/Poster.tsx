@@ -1,31 +1,29 @@
-import { Check, Telegram } from './Icons';
-import { SITE, applyVars } from '@/lib/content';
+import type { ReactNode } from 'react';
+
+import { Check } from './Icons';
+import { SITE, applyVars, titleLines } from '@/lib/content';
 import type { Settings } from '@/lib/data';
 
 /**
- * Sahifadagi yagona bo'lim — plakat.
+ * Plakat — saytdagi YAGONA kompozitsiya.
  *
- * Tartib: yorliq → sarlavha → narx → izoh → tugma. Hammasi chapga
- * tekislangan, hech bir plita butun kenglikni egallamaydi.
- */
-
-/**
- * Sarlavhani qatorlarga bo'ladi — har bir so'z alohida qatorda turadi va
- * shu sabab harflar juda katta bo'la oladi.
+ * Darvoza (`/`) va landing (`/l`) shu bitta komponentdan quriladi va faqat
+ * bitta joyi bilan farq qiladi: `action` uyasi. Darvozada u jarayon chizig'i,
+ * landingda esa botga o'tish tugmasi.
  *
- * Admin uzun sarlavha yozsa (masalan 6 so'z) har biri alohida qator bo'lsa
- * ekranga sig'masdi — shuning uchun 3 tadan ko'p so'z uchta qatorga tekis
- * taqsimlanadi.
+ * Nega shunday: darvoza tekshiruvi bir necha soniya oladi va bu vaqtni bo'sh
+ * kutish ekranida o'tkazish — yo'qotilgan vaqt. Ikkala sahifa bir xil
+ * ko'ringanda foydalanuvchi tekshiruv paytida narxni allaqachon o'qiydi, o'tish
+ * esa sezilmaydi: joyida faqat chiziq tugmaga almashadi.
  */
-function toLines(title: string): string[] {
-  const words = title.trim().split(/\s+/).filter(Boolean);
-  if (words.length <= 3) return words;
-
-  const per = Math.ceil(words.length / 3);
-  return [0, 1, 2].map((i) => words.slice(i * per, (i + 1) * per).join(' ')).filter(Boolean);
-}
-
-export default function Hero({ s, tg }: { s: Settings; tg: string }) {
+export default function Poster({
+  s,
+  action,
+}: {
+  s: Settings;
+  /** Tugma yoki tekshiruv holati — sahifaning yagona farqi */
+  action: ReactNode;
+}) {
   const vars = { narx: s.price_one_vote };
 
   /**
@@ -33,7 +31,7 @@ export default function Hero({ s, tg }: { s: Settings; tg: string }) {
    * takrorlardi. Narx endi alohida va katta, shuning uchun faqat
    * ajratgichgacha bo'lgan qism olinadi — eski sozlama ham buzilmaydi.
    */
-  const lines = toLines(applyVars(s.hero_title, vars).split('|')[0]);
+  const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
 
   return (
     <section className="stage" id="top">
@@ -59,10 +57,7 @@ export default function Hero({ s, tg }: { s: Settings; tg: string }) {
 
         <p className="stage-sub">{applyVars(s.hero_sub, vars)}</p>
 
-        <a href={tg} className="btn" data-t="cta" data-t-id="hero_cta" data-tg rel="noopener">
-          <Telegram />
-          {s.cta_primary}
-        </a>
+        {action}
 
         <ul className="trust">
           <li>
