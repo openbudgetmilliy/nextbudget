@@ -188,15 +188,24 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
         </div>
       )}
 
-      {/* Kalitlar sozlanmagan bo'lsa tekshiruv umuman bo'lmaydi — «Tasdiqlandi»
-          deb yozish yolg'on bo'lardi, shuning uchun holat qatori bo'sh qoladi. */}
+      {/*
+        Holat qatori ikki holatda jim turadi:
+          · kalitlar sozlanmagan — tekshiruv umuman bo'lmadi, «Tasdiqlandi»
+            deb yozish yolg'on bo'lardi;
+          · tasdiqlangan — buni yuqoridagi muhr aytib turibdi, takrorlash shart emas.
+        Qolgan holatlarda (yuklanmoqda / kutilmoqda / xato) matn kerak.
+      */}
       <p
         className={`gate-status${phase === 'error' ? ' bad' : ''}`}
         id="gate-status"
         role="status"
         aria-live="polite"
       >
-        {!siteKey ? '' : phase === 'error' ? err || 'Xatolik' : STATUS[phase]}
+        {!siteKey || phase === 'ready'
+          ? ''
+          : phase === 'error'
+            ? err || 'Xatolik'
+            : STATUS[phase]}
       </p>
     </div>
   );
