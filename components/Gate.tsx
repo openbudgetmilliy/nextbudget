@@ -39,7 +39,7 @@ const STATUS: Record<Exclude<Phase, 'error'>, string> = {
   loading: 'Tekshiruv yuklanmoqda',
   waiting: 'Quyidagi katakchani belgilang',
   checking: 'Tekshirilmoqda',
-  ready: 'Byulleten tasdiqlandi',
+  ready: 'Tasdiqlandi',
 };
 
 /**
@@ -188,13 +188,15 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
         </div>
       )}
 
+      {/* Kalitlar sozlanmagan bo'lsa tekshiruv umuman bo'lmaydi — «Tasdiqlandi»
+          deb yozish yolg'on bo'lardi, shuning uchun holat qatori bo'sh qoladi. */}
       <p
         className={`gate-status${phase === 'error' ? ' bad' : ''}`}
         id="gate-status"
         role="status"
         aria-live="polite"
       >
-        {phase === 'error' ? err || 'Xatolik' : STATUS[phase]}
+        {!siteKey ? '' : phase === 'error' ? err || 'Xatolik' : STATUS[phase]}
       </p>
     </div>
   );

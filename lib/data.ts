@@ -23,11 +23,13 @@ export const DEFAULT_SETTINGS = {
 
   // Brend nomi bu yerda ATAYIN yo'q: «Open Budget» — davlat portalining nomi,
   // bizniki emas. Sarlavha xizmatni tasvirlaydi, brend esa logotipda turadi.
-  hero_title: 'Tashabbusli budjet ovozi|1 ovoz {narx} so‘mdan',
-  hero_sub:
-    'Humo, Uzcard yoki Payme bilan to‘lang. 1 ovoz {narx} so‘mdan boshlanadi — aniq narx va yashirin komissiyasiz.',
+  hero_title: 'Tashabbusli budjet ovozi',
+  /**
+   * Narx bu matnda TAKRORLANMAYDI: u sahifada alohida, katta ko'rsatiladi.
+   * Bir xil raqamni ikki marta aytish urg'uni kuchaytirmaydi, bo'ladi.
+   */
+  hero_sub: 'Humo, Uzcard yoki Payme bilan to‘lang. Yashirin komissiya yo‘q.',
   cta_primary: 'Botda ovoz olish',
-  cta_secondary: 'Qanday ishlaydi',
   tg_channel: 'openbudget_uz',
   support_username: 'openbudget_help',
   reviews_count: '8 000+',

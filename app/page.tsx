@@ -1,5 +1,5 @@
 import Gate from '@/components/Gate';
-import { Wordmark } from '@/components/Logo';
+import Logo from '@/components/Logo';
 import { getSettings } from '@/lib/data';
 import { SITE } from '@/lib/content';
 import { env, GATE_ON } from '@/lib/env';
@@ -24,30 +24,25 @@ export default async function GatePage() {
   return (
     <main className="gate">
       <div className="gate-card">
-        <div className="gate-head">
-          <span className="logo">
-            <Wordmark size={28} />
-          </span>
-          <span className="gate-doc">Kirish</span>
+        {/* Belgi oq plitada: rombllari oqqa o'tuvchi gradient, to'q fonda dog' bo'ladi */}
+        <div className="gate-plate">
+          <Logo size={72} className="" />
         </div>
 
         <div className="gate-body">
-          <h1 className="gate-title">Tasdiqlang</h1>
+          <h1 className="gate-title">Odam ekaningizni tasdiqlang</h1>
           <p className="gate-sub">
-            Saytga o‘tishdan oldin siz odam ekaningizni bir marta tasdiqlaymiz. Bir necha soniya
-            oladi.
+            Bir marta tekshiramiz — bir necha soniya oladi. Shaxsiy ma’lumot so‘ralmaydi.
           </p>
 
-          <Gate siteKey={siteKey} label="Kirish" />
+          <Gate siteKey={siteKey} label="Davom etish" />
 
           <noscript>
             <p className="gate-status">Davom etish uchun JavaScript yoqilgan bo‘lishi kerak.</p>
           </noscript>
         </div>
 
-        <p className="gate-note">
-          Himoya Cloudflare Turnstile orqali. Shaxsiy ma’lumot so‘ralmaydi.
-        </p>
+        <p className="gate-note">Himoya Cloudflare Turnstile orqali</p>
       </div>
 
       {/* Domen qidiruvda ko'rinib tursin — sahifada ko'rinadigan ma'lumot doirasida */}

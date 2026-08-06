@@ -60,60 +60,6 @@ export const SITE = {
   tgline: "Botga o'ting, ovoz sonini tanlang va to'lang",
 } as const;
 
-export const STEPS = [
-  {
-    n: '1',
-    title: 'Botni ochasiz',
-    text: "Pastdagi tugma orqali Telegram botga o'tasiz. Ro'yxatdan o'tish shart emas.",
-  },
-  {
-    n: '2',
-    title: 'Ovoz paketini tanlaysiz',
-    text: 'Kerakli ovoz sonini yoki qo\'shimcha xizmatni tanlaysiz. Bot qadam-baqadam yo\'l ko\'rsatadi.',
-  },
-  {
-    n: '3',
-    title: 'To’laysiz va tasdiqlaysiz',
-    text: "Humo/Uzcard yoki Payme orqali to'lov. Ovozlar botdagi jarayon orqali yetkaziladi.",
-  },
-] as const;
-
-export const ADVANTAGES = [
-  { icon: 'bolt',   title: 'Tez jarayon',        text: "To'lovdan keyin botda status yangilanadi. Uzoq navbat kutish shart emas." },
-  { icon: 'card',   title: 'Mahalliy kartalar',  text: "Humo, Uzcard, Payme, Click. So'mda, VPN va xalqaro karta talab qilinmaydi." },
-  { icon: 'shield', title: 'Aniq narxlar',       text: "Saytdagi va botdagi narxlar bir xil. Yashirin komissiya qo'shilmaydi." },
-  { icon: 'tag',    title: 'Ovoz paketlari',     text: "1 dan 50+ gacha ovoz — bir martalik yoki katta hajm uchun chegirmali paketlar." },
-  { icon: 'chat',   title: "24/7 qo’llab-quvvatlash", text: "Savol tug'ilsa botdagi «Yordam» orqali operator bilan bog'lanasiz." },
-  { icon: 'users',  title: '8 000+ foydalanuvchi',    text: "Mavsumlar davomida minglab mijozlar xizmatdan foydalangan." },
-] as const;
-
-export const FAQ = [
-  {
-    q: 'Ovoz narxi qanday hisoblanadi?',
-    a: "Har bir paketda nechta ovoz borligi va jami narx ko'rsatilgan. Katta paketlarda bitta ovoz narxi arzonroq — kartochkada «1 ovoz ≈ … so'm» qatorini qarang.",
-  },
-  {
-    q: 'Qanday to’lov usullari bor?',
-    a: "Humo, Uzcard, Payme, Click. Barchasi so'mda, xalqaro karta talab qilinmaydi.",
-  },
-  {
-    q: 'Qo‘shimcha xizmatlar nima?',
-    a: "«Qo'shimcha xizmatlar» tabida SMS tasdiqlash, tezkor ovoz kabi bir martalik xizmatlar bo'ladi. SKU prefiksi `xizmat_*`.",
-  },
-  {
-    q: 'Ovoz qancha vaqtda yetkaziladi?',
-    a: "Odatda to'lovdan keyin 10–30 daqiqa ichida. Tezkor xizmat tanlansa — 5 daqiqagacha.",
-  },
-  {
-    q: 'Rasmiy Open Budget portali bilan aloqangiz bormi?',
-    a: "Yo'q — biz mustaqil vositachi xizmat ko'rsatamiz. Ovoz berish qoidalari va loyiha ro'yxati uchun openbudget.uz rasmiy manbasiga murojaat qiling.",
-  },
-  {
-    q: 'Muammo bo‘lsa nima qilaman?',
-    a: "Botdagi «Yordam» tugmasi yoki saytdagi qo'llab-quvvatlash havolasidan yozing. To'lov cheki va vaqtini yuboring — tekshirib javob beramiz.",
-  },
-] as const;
-
 /**
  * Matndagi `{narx}` o'rin egallovchisini haqiqiy qiymatga almashtiradi.
  *

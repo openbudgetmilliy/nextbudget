@@ -1,19 +1,22 @@
-import { Archivo } from 'next/font/google';
+import { Unbounded } from 'next/font/google';
 
 /**
- * Neo-brutalist tipografika — bitta display shrift yetadi.
+ * Bitta display shrift — Unbounded.
  *
- * Qo'llanmada Clash Display (Fontshare CDN) ko'rsatilgan, lekin u ish vaqtida
- * uchinchi domenga so'rov qiladi va bu loyihaning "tashqi shrift yo'q"
- * printsipini buzadi. Qo'llanmaning O'Z muqobillari ro'yxatidan (Space Grotesk,
- * Archivo, Anton, Bricolage Grotesque) Archivo tanlandi: 900 og'irligi bor
- * (`font-black` uchun shart), `next/font` orqali o'z domenimizdan beriladi.
+ * Nega aynan u: sahifaning butun og'irligi BITTA raqamda — ovoz narxida.
+ * Unbounded'ning raqamlari keng va geometrik, ya'ni katta o'lchamda raqam
+ * matn emas, grafik shaklga aylanadi. Logotipdagi romb va lupa doirasi ham
+ * shu geometriyada — belgi bilan shrift bir tilda gapiradi.
  *
- * Asosiy matn — tizim sans stack'i, aynan qo'llanmadagidek. Yuklab olinadigan
- * fayl yo'q, raqamlar `tabular-nums` bilan hizalanadi.
+ * Asosiy matn — tizim sans stack'i: yuklab olinadigan ikkinchi fayl yo'q.
+ * Sahifada matn kam, shuning uchun display shrift butun xarakterni ko'taradi.
+ *
+ * `weight` ATAYIN cheklangan: 400 (yorliqlar) va 800 (sarlavha, narx).
+ * Variable versiya butun 200–900 oralig'ini tortadi — bizga ikkitasi yetadi.
  */
-export const display = Archivo({
+export const display = Unbounded({
   subsets: ['latin'],
+  weight: ['400', '800'],
   variable: '--font-display',
   display: 'swap',
 });

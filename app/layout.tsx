@@ -38,13 +38,16 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  // Ikki rejim: brutalist uslub asosan yorug'likda yashaydi, dark — qo'llanmadagi
-  // yumshatilgan variant. Almashtirgich yo'q, tizim sozlamasi hal qiladi.
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0d1014' },
-  ],
-  colorScheme: 'light dark',
+  /**
+   * Bitta ko'rinish — tizim rejimiga qarab o'zgarmaydi.
+   *
+   * Sababi rang tanlovida: brendning yorqin turkuazi (#22C6E8) oq fonda
+   * 2.1:1 kontrast beradi, ya'ni matn sifatida yaroqsiz. To'q fonda esa
+   * 8.1:1. Yorug' variant qilinsa, brend rangini urg'u sifatida ishlatib
+   * bo'lmasdi — shuning uchun sahna doim to'q.
+   */
+  themeColor: '#04222a',
+  colorScheme: 'dark',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
