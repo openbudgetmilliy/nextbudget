@@ -13,7 +13,7 @@ export default function Header({ tg, label }: { tg: string; label: string }) {
     <header className="hdr">
       <div className="wrap hdr-in">
         <a href="#top" className="brand" aria-label={SITE.brand}>
-          <Wordmark />
+          <Wordmark size={36} />
         </a>
 
         <a

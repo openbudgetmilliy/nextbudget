@@ -7,12 +7,16 @@ import { env, GATE_ON } from '@/lib/env';
 /**
  * Kirish darvozasi — saytning birinchi sahifasi.
  *
- * To'liq statik: foydalanuvchiga bog'liq hech narsa yo'q, shuning uchun
- * Cloudflare edge'da cache'lanaveradi. Tekshiruv brauzerda (Turnstile) va
- * `/api/gate` da bo'ladi, bu sahifada emas.
+ * Foydalanuvchi bu yerda HECH NARSA bosmaydi: Turnstile fonda ishlaydi va
+ * tekshiruv tugashi bilan sahifa `/l` ga o'zi o'tadi. Odatda bu bir necha
+ * soniya va widget umuman ko'rinmaydi (`appearance: interaction-only`).
  *
- * Turnstile kalitlari sozlanmagan bo'lsa darvoza o'zi ochiq turadi —
- * `Gate` tugmani darrov yoqadi va middleware ham `/l` ni to'smaydi.
+ * To'liq statik: foydalanuvchiga bog'liq hech narsa yo'q, shuning uchun
+ * Cloudflare edge'da cache'lanaveradi. Tekshiruv brauzerda va `/api/gate` da
+ * bo'ladi, bu sahifada emas.
+ *
+ * Turnstile kalitlari sozlanmagan bo'lsa darvoza o'zi ochiq: sahifa darrov
+ * `/l` ga o'tadi va middleware ham to'smaydi.
  */
 export const revalidate = 3600;
 export const dynamic = 'force-static';
@@ -23,26 +27,19 @@ export default async function GatePage() {
 
   return (
     <main className="gate">
-      <div className="gate-card">
-        {/* Belgi oq plitada: rombllari oqqa o'tuvchi gradient, to'q fonda dog' bo'ladi */}
-        <div className="gate-plate">
-          <Logo size={72} className="" />
-        </div>
+      <div className="gate-in">
+        <p className="gate-brand">
+          <Logo size={52} className="" />
+          {SITE.brand}
+        </p>
 
-        <div className="gate-body">
-          <h1 className="gate-title">Odam ekaningizni tasdiqlang</h1>
-          <p className="gate-sub">
-            Bir marta tekshiramiz — bir necha soniya oladi. Shaxsiy ma’lumot so‘ralmaydi.
-          </p>
+        <h1 className="gate-title">Tashabbusli budjet ovozi</h1>
 
-          <Gate siteKey={siteKey} label="Davom etish" />
+        <Gate siteKey={siteKey} />
 
-          <noscript>
-            <p className="gate-status">Davom etish uchun JavaScript yoqilgan bo‘lishi kerak.</p>
-          </noscript>
-        </div>
-
-        <p className="gate-note">Himoya Cloudflare Turnstile orqali</p>
+        <p className="gate-note">
+          Himoya Cloudflare Turnstile orqali. Shaxsiy ma’lumot so‘ralmaydi.
+        </p>
       </div>
 
       {/* Domen qidiruvda ko'rinib tursin — sahifada ko'rinadigan ma'lumot doirasida */}

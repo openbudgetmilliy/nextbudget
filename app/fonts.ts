@@ -1,22 +1,21 @@
-import { Unbounded } from 'next/font/google';
+import { Archivo } from 'next/font/google';
 
 /**
- * Bitta display shrift — Unbounded.
+ * Plakat tipografikasi — Archivo, `wdth` o'qi bilan.
  *
- * Nega aynan u: sahifaning butun og'irligi BITTA raqamda — ovoz narxida.
- * Unbounded'ning raqamlari keng va geometrik, ya'ni katta o'lchamda raqam
- * matn emas, grafik shaklga aylanadi. Logotipdagi romb va lupa doirasi ham
- * shu geometriyada — belgi bilan shrift bir tilda gapiradi.
+ * Archivo o'zgaruvchan shrift: kenglik 62% dan 125% gacha, og'irlik 100–900.
+ * Sarlavha 62% kenglik + 900 og'irlikda teriladi — bu ko'chadagi plakat
+ * harflari: tor, qalin, baland. Shu bitta oiladan asosiy matn ham olinadi
+ * (100% kenglik, 400), ya'ni ikkinchi shrift fayli yuklanmaydi.
  *
- * Asosiy matn — tizim sans stack'i: yuklab olinadigan ikkinchi fayl yo'q.
- * Sahifada matn kam, shuning uchun display shrift butun xarakterni ko'taradi.
- *
- * `weight` ATAYIN cheklangan: 400 (yorliqlar) va 800 (sarlavha, narx).
- * Variable versiya butun 200–900 oralig'ini tortadi — bizga ikkitasi yetadi.
+ * Nega Anton emas: Anton aynan shu ko'rinish uchun eng ko'p ishlatiladigan
+ * shrift va bitta og'irligi bor. `wdth` o'qi esa kenglikni qo'lda boshqarish
+ * imkonini beradi — sarlavha tor, yorliqlar keng bo'lib, bitta oila ichida
+ * qarama-qarshilik hosil qiladi.
  */
-export const display = Unbounded({
+export const display = Archivo({
   subsets: ['latin'],
-  weight: ['400', '800'],
+  axes: ['wdth'],
   variable: '--font-display',
   display: 'swap',
 });

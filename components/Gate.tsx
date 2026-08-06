@@ -33,29 +33,33 @@ function hasHint(): boolean {
   return document.cookie.split('; ').some((c) => c === 'gt_ok=1');
 }
 
-type Phase = 'loading' | 'waiting' | 'checking' | 'ready' | 'error';
-
-const STATUS: Record<Exclude<Phase, 'error'>, string> = {
-  loading: 'Tekshiruv yuklanmoqda',
-  waiting: 'Quyidagi katakchani belgilang',
-  checking: 'Tekshirilmoqda',
-  ready: 'Tasdiqlandi',
-};
-
 /**
- * Kirish darvozasi.
+ * Avto-yo'naltirishlar hisoblagichi.
  *
- * Oqim: Turnstile yechiladi → token `/api/gate` ga yuboriladi → server
- * Cloudflare'da tekshirib `gt` cookie'sini beradi → byulletenga muhr tushadi
- * va "Kirish" tugmasi yashil rangga o'tadi.
+ * NEGA KERAK: sahifa tekshiruvdan keyin `/l` ga O'ZI o'tadi. Agar `gt`
+ * cookie'si biror sababdan saqlanmasa (masalan brauzer uni rad etsa),
+ * middleware `/l` dan `/` ga qaytaradi, bu sahifa yana yo'naltiradi — va
+ * hokazo. Tugma bosiladigan eski oqimda bu ko'zga tashlanardi, avtomatik
+ * oqimda esa brauzer cheksiz aylanib qolardi.
  *
- * Tugma bosilganda `/l` ochiladi; u yerda middleware cookie'ni qayta
- * tekshiradi, ya'ni tugmani DevTools'da yoqib qo'yish yordam bermaydi.
- *
- * `siteKey` bo'sh bo'lsa (kalitlar sozlanmagan) darvoza o'tkazib yuboriladi.
+ * Shuning uchun bir sessiyada ikkitadan ortiq avto-o'tishga yo'l qo'yilmaydi:
+ * uchinchisida qo'lda tugma ko'rsatiladi.
  */
-export default function Gate({ siteKey, label }: { siteKey: string; label: string }) {
-  const [phase, setPhase] = useState<Phase>(siteKey ? 'loading' : 'ready');
+const TRY_KEY = 'mj_gate_try';
+const MAX_TRIES = 2;
+
+function tries(): number {
+  try {
+    return Number(sessionStorage.getItem(TRY_KEY) ?? '0') || 0;
+  } catch {
+    return 0;
+  }
+}
+
+type Phase = 'checking' | 'ok' | 'error' | 'manual';
+
+export default function Gate({ siteKey }: { siteKey: string }) {
+  const [phase, setPhase] = useState<Phase>('checking');
   const [err, setErr] = useState('');
 
   const boxRef = useRef<HTMLDivElement>(null);
@@ -63,47 +67,68 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
   /** Bitta token bir marta yuborilsin — Cloudflare takroriy tekshiruvni rad etadi */
   const sentRef = useRef(false);
 
-  const enter = useCallback(() => {
+  /** `/l` ga o'tish. Halqa himoyasi shu yerda. */
+  const go = useCallback(() => {
+    try {
+      sessionStorage.setItem(TRY_KEY, String(tries() + 1));
+    } catch {
+      /* private rejimda sessionStorage yo'q — o'tishning o'zi baribir ishlaydi */
+    }
     // Router emas, to'liq navigatsiya: `/l` cache'lanmaydi va middleware'dan o'tadi
     window.location.href = '/l';
   }, []);
 
-  const onToken = useCallback(async (token: string) => {
-    if (sentRef.current) return;
-    sentRef.current = true;
+  const onToken = useCallback(
+    async (token: string) => {
+      if (sentRef.current) return;
+      sentRef.current = true;
 
-    setErr('');
-    setPhase('checking');
-    try {
-      const res = await fetch('/api/gate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token }),
-      });
-      const data = await res.json().catch(() => ({}));
+      setErr('');
+      try {
+        const res = await fetch('/api/gate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+        const data = await res.json().catch(() => ({}));
 
-      if (!res.ok || !data.ok) {
+        if (!res.ok || !data.ok) {
+          sentRef.current = false;
+          setErr(data.error || 'Tasdiqlash o’tmadi');
+          setPhase('error');
+          window.turnstile?.reset(widgetRef.current ?? undefined);
+          return;
+        }
+
+        setPhase('ok');
+        go();
+      } catch {
         sentRef.current = false;
-        setErr(data.error || 'Tasdiqlash o’tmadi');
+        setErr('Tarmoq xatosi. Internetni tekshiring.');
         setPhase('error');
         window.turnstile?.reset(widgetRef.current ?? undefined);
-        return;
       }
-      setPhase('ready');
-    } catch {
-      sentRef.current = false;
-      setErr('Tarmoq xatosi. Internetni tekshiring.');
-      setPhase('error');
-      window.turnstile?.reset(widgetRef.current ?? undefined);
-    }
-  }, []);
+    },
+    [go],
+  );
 
   useEffect(() => {
-    if (!siteKey) return;
+    // Halqaga tushib qolgan bo'lsak — avtomatik o'tishni to'xtatamiz
+    if (tries() >= MAX_TRIES) {
+      setPhase('manual');
+      return;
+    }
 
-    // Avval o'tgan bo'lsa — captchani umuman ko'rsatmaymiz
+    // Kalitlar sozlanmagan — darvoza umuman yo'q, to'g'ridan-to'g'ri o'tamiz
+    if (!siteKey) {
+      go();
+      return;
+    }
+
+    // Avval o'tgan bo'lsa — captchani qayta yugurtirmaymiz
     if (hasHint()) {
-      setPhase('ready');
+      setPhase('ok');
+      go();
       return;
     }
 
@@ -113,10 +138,13 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
       if (!alive || !boxRef.current || !window.turnstile || widgetRef.current) return;
       widgetRef.current = window.turnstile.render(boxRef.current, {
         sitekey: siteKey,
-        theme: 'dark',
+        theme: 'light',
         // 'auto' — brauzer tiliga qarab. Qo'lda 'uz' berilsa va Turnstile uni
         // qo'llamasa widget xato beradi, shuning uchun avtomatik qoldiramiz.
         language: 'auto',
+        // Widget faqat HAQIQATAN odam aralashuvi kerak bo'lganda ko'rinadi.
+        // Aksariyat foydalanuvchi hech narsa ko'rmaydi — tekshiruv fonda o'tadi.
+        appearance: 'interaction-only',
         callback: onToken,
         'error-callback': () => {
           sentRef.current = false;
@@ -125,14 +153,13 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
         },
         'expired-callback': () => {
           sentRef.current = false;
-          setPhase('waiting');
+          setPhase('checking');
         },
         'timeout-callback': () => {
           sentRef.current = false;
-          setPhase('waiting');
+          setPhase('checking');
         },
       });
-      setPhase('waiting');
     };
 
     if (window.turnstile) {
@@ -161,52 +188,33 @@ export default function Gate({ siteKey, label }: { siteKey: string; label: strin
         widgetRef.current = null;
       }
     };
-  }, [siteKey, onToken]);
+  }, [siteKey, onToken, go]);
 
-  const ready = phase === 'ready';
+  const message: Record<Phase, string> = {
+    checking: 'Tekshirilmoqda — bir necha soniya',
+    ok: 'Tasdiqlandi, ochilmoqda…',
+    error: err || 'Xatolik',
+    manual: 'Avtomatik o’tib bo’lmadi. Quyidagi tugmani bosing.',
+  };
 
   return (
-    <div className="gate-cta">
-      <button
-        type="button"
-        className={`btn gate-btn${ready ? ' on' : ''}`}
-        onClick={enter}
-        disabled={!ready}
-        aria-describedby="gate-status"
-      >
-        {label}
-      </button>
+    <>
+      <div className={`gate-bar${phase === 'ok' ? ' done' : ''}`} aria-hidden="true">
+        <span />
+      </div>
 
-      {/* Bitta uya: captcha o'z o'rnini muhrga bo'shatadi — sahifa sakramaydi */}
-      {siteKey && (
-        <div className="gate-slot">
-          {ready ? (
-            <span className="stamp stamp-in">Tasdiqlandi</span>
-          ) : (
-            <div className="gate-cap" ref={boxRef} />
-          )}
-        </div>
-      )}
-
-      {/*
-        Holat qatori ikki holatda jim turadi:
-          · kalitlar sozlanmagan — tekshiruv umuman bo'lmadi, «Tasdiqlandi»
-            deb yozish yolg'on bo'lardi;
-          · tasdiqlangan — buni yuqoridagi muhr aytib turibdi, takrorlash shart emas.
-        Qolgan holatlarda (yuklanmoqda / kutilmoqda / xato) matn kerak.
-      */}
-      <p
-        className={`gate-status${phase === 'error' ? ' bad' : ''}`}
-        id="gate-status"
-        role="status"
-        aria-live="polite"
-      >
-        {!siteKey || phase === 'ready'
-          ? ''
-          : phase === 'error'
-            ? err || 'Xatolik'
-            : STATUS[phase]}
+      <p className={`gate-status${phase === 'error' ? ' bad' : ''}`} role="status" aria-live="polite">
+        {message[phase]}
       </p>
-    </div>
+
+      {/* Turnstile uyasi — odatda bo'sh, faqat aralashuv kerak bo'lganda to'ladi */}
+      <div className="gate-cap" ref={boxRef} />
+
+      {(phase === 'manual' || phase === 'error') && (
+        <a href="/l" className="btn" data-t="click" data-t-id="gate_manual">
+          Davom etish
+        </a>
+      )}
+    </>
   );
 }

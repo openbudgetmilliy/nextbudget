@@ -39,15 +39,11 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   /**
-   * Bitta ko'rinish — tizim rejimiga qarab o'zgarmaydi.
-   *
-   * Sababi rang tanlovida: brendning yorqin turkuazi (#22C6E8) oq fonda
-   * 2.1:1 kontrast beradi, ya'ni matn sifatida yaroqsiz. To'q fonda esa
-   * 8.1:1. Yorug' variant qilinsa, brend rangini urg'u sifatida ishlatib
-   * bo'lmasdi — shuning uchun sahna doim to'q.
+   * Bitta ko'rinish — yorug'. Plakat oq qog'ozda yashaydi: yorqin ko'k va
+   * yashil bloklar aynan oq fonda eng kuchli chiqadi.
    */
-  themeColor: '#04222a',
-  colorScheme: 'dark',
+  themeColor: '#ffffff',
+  colorScheme: 'light',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

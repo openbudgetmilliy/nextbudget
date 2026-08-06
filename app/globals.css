@@ -1,32 +1,36 @@
 /* ==========================================================================
-   Open Budget — bitta ekranli landing
+   MilliyJamoasimiz — plakat
 
-   Dizayn qarori: sahifada BITTA ish bor — botga o'tkazish. Shuning uchun
-   bitta sahna, bitta sarlavha, bitta narx, bitta tugma. Qolgan hamma narsa
-   olib tashlangan.
+   Uch qoida (buzilsa uslub yo'qoladi):
 
-   Ranglar logotipdan olingan:
-     · yorqin turkuaz #22C6E8 — OB monogrammasi. Sahifadagi YAGONA urg'u rangi.
-     · to'q teal      #0A5D6E — logo rombllari
-     · ink            #04222A — rombning eng to'q joyi, sahna foni
+   1. HECH NARSA MARKAZDA EMAS. Hamma narsa chapga tekislanadi, o'ng chekka
+      tishli qoladi. Markazlashtirilgan matn "veb-sahifa"ga o'xshaydi; plakat
+      esa chetdan boshlanadi.
+   2. BLOKLAR MAZMUNI BO'YICHA O'LCHANADI. Hech qaysi rangli plita butun
+      kenglikni egallamaydi — u faqat ichidagi matn qadar bo'ladi.
+   3. HAR BIR PLITANING BIR CHEKKASI QIYA. Burchak logotipdagi tasdiq
+      belgisining qiyaligidan olingan. To'g'ri to'rtburchak yo'q.
 
-   Nega sahna to'q: yorqin turkuaz oq fonda 2.1:1 kontrast beradi — matn uchun
-   yaroqsiz. O'sha turkuaz #04222A ustida 8.1:1 beradi. Ya'ni fonni to'q qilish
-   brendning yorqin rangini matnda ishlatish imkonini beradi; aks holda uni
-   faqat bezakka qoldirishga to'g'ri kelardi.
+   Ranglar belgidan piksel bo'yicha olingan:
+     ko'k   #0090D8 — odamlar halqasi va xarita
+     yashil #60C048 — tasdiq belgisi
+     ink    #08243A — matn
 
-   Geometriya: radius 0 va 45° romb — logotipning o'z shakli.
+   Kontrast: oq matn ko'k ustida 3.7:1 — faqat KATTA qalin matn uchun
+   yaroqli, shuning uchun ko'k plitada faqat narx va yorliq bor. Yashil
+   ustida ink 6.5:1, oq fonda ink 15:1.
    ========================================================================== */
 
 :root {
-  --ink: #04222a;
-  --ink-2: #07303b;
-  --deep: #0a5d6e;
-  --cyan: #22c6e8;
-  --cyan-hi: #7de8fa;
+  --ink: #08243a;
+  --ink-2: #41637a;
+  --blue: #0090d8;
+  --blue-d: #0072b0;
+  --green: #60c048;
+  --green-d: #4ca436;
   --paper: #ffffff;
-  --mist: #9fd3de;
-  --hair: rgba(159, 211, 222, 0.18);
+  --wash: #f1f6f9;
+  --hair: #d8e3ea;
 
   --f-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   --f-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
@@ -34,10 +38,11 @@
 
   --pad: 20px;
   --max: 1080px;
-  --hdr: 68px;
+  --hdr: 66px;
+  /* Qiya kesim chuqurligi — barcha plitalarda bir xil */
+  --cut: 14px;
 
-  /* Sahifa asosan to'q sirtdan iborat — brauzer form elementlari ham shunga mos */
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -53,8 +58,8 @@ html {
 
 body {
   margin: 0;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--wash);
+  color: var(--ink);
   font-family: var(--f-body);
   font-size: 16px;
   line-height: 1.6;
@@ -99,11 +104,10 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--cyan);
+  outline: 3px solid var(--ink);
   outline-offset: 3px;
 }
 
-/* Narx, sanoq — bir xil kenglikdagi raqamlar */
 .tnum {
   font-variant-numeric: tabular-nums;
 }
@@ -115,71 +119,54 @@ button {
   padding: 0 var(--pad);
 }
 
-.skip {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 100;
-  background: var(--cyan);
-  color: var(--ink);
-  padding: 12px 18px;
-  font-weight: 700;
-}
-
-.skip:focus {
-  left: 8px;
-  top: 8px;
-}
-
-/* ── Tugmalar ─────────────────────────────────────────────────────────────
-   Bitta shakl: to'ldirilgan turkuaz plita, to'q matn. Ikkinchi darajali
-   variant yo'q — sahifada raqobatchi harakat ham yo'q.
+/* ── Tugma ───────────────────────────────────────────────────────────────
+   O'ng chekkasi qiya kesilgan. `clip-path` fokus konturini ham kesadi —
+   shuning uchun fokus belgisi ICHKARIGA chiziladi (inset soya kesilmaydi).
    ---------------------------------------------------------------------- */
 
 .btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 10px;
-  background: var(--cyan);
+  background: var(--green);
   color: var(--ink);
   font-family: var(--f-display);
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 900;
+  font-stretch: 80%;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
   line-height: 1;
-  padding: 20px 30px;
+  padding: 21px 34px;
   font-size: 1.0625rem;
-  /* Tugma matni hech qachon ikki qatorga bo'linmasin */
   white-space: nowrap;
-  transition: background-color 0.16s ease, transform 0.16s ease;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut)) 100%, 0 100%);
+  transition: background-color 0.15s ease;
 }
 
 .btn:hover {
-  background: var(--cyan-hi);
+  background: var(--green-d);
 }
 
-.btn:active {
-  transform: translateY(1px);
+.btn:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px var(--ink);
 }
 
 .btn-sm {
-  padding: 12px 18px;
-  font-size: 0.875rem;
+  padding: 12px 20px;
+  font-size: 0.8125rem;
   gap: 8px;
+  --cut: 10px;
 }
 
-/* ── Header ───────────────────────────────────────────────────────────────
-   Oq — logotip uchun. Belgining rombllari oqdan tealga o'tuvchi gradient,
-   ya'ni u FAQAT yorug' fonda to'g'ri ko'rinadi; to'q fonda oq uchlari dog'
-   bo'lib qoladi. Shuning uchun belgi oq tasmada yashaydi, sahna esa to'q.
-   ---------------------------------------------------------------------- */
+/* ── Header ── */
 
 .hdr {
   position: sticky;
   top: 0;
   z-index: 20;
   background: var(--paper);
-  border-bottom: 1px solid rgba(4, 34, 42, 0.1);
+  border-bottom: 2px solid var(--ink);
 }
 
 .hdr-in {
@@ -187,29 +174,30 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: var(--ink);
   font-family: var(--f-display);
-  font-weight: 800;
-  font-size: 0.9375rem;
-  letter-spacing: -0.02em;
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: 1.0625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex: none;
 }
 
-/* ── Sahna ────────────────────────────────────────────────────────────────
-   Fon: 45° panjara — logotip rombining takrorlanishi. Ustida turkuaz nur,
-   narx atrofida yorug'lik markazi hosil qiladi.
+/* ── Sahna ───────────────────────────────────────────────────────────────
+   Chapga tekislangan ustun. `align-items: flex-start` — plitalar mazmuni
+   qadar bo'ladi, cho'zilmaydi (2-qoida).
    ---------------------------------------------------------------------- */
 
 .stage {
@@ -217,34 +205,17 @@ button {
   min-height: calc(100svh - var(--hdr));
   display: flex;
   align-items: center;
-  /* Butun bo'lim bitta ekranga sig'ishi kerak — shuning uchun bo'shliqlar o'lchangan */
-  padding: clamp(28px, 5vh, 56px) 0 clamp(24px, 4vh, 44px);
+  padding: clamp(26px, 4.5vh, 52px) 0 clamp(22px, 4vh, 44px);
   overflow: hidden;
-  background-color: var(--ink);
-  background-image: linear-gradient(
-      135deg,
-      transparent 47.5%,
-      rgba(34, 198, 232, 0.05) 47.5%,
-      rgba(34, 198, 232, 0.05) 52.5%,
-      transparent 52.5%
-    ),
-    linear-gradient(
-      45deg,
-      transparent 47.5%,
-      rgba(34, 198, 232, 0.05) 47.5%,
-      rgba(34, 198, 232, 0.05) 52.5%,
-      transparent 52.5%
-    );
-  background-size: 96px 96px;
 }
 
-/* Turkuaz nur — narx ortidagi yorug'lik. `fixed` emas, aks holda mobil
-   brauzerda scroll paytida qayta bo'yaladi. */
+/* Fonda qiya ko'k xanjar — sahifa tekis qog'oz bo'lib qolmasin.
+   Juda och: matn kontrastiga ta'sir qilmaydi. */
 .stage::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(58% 48% at 50% 42%, rgba(34, 198, 232, 0.16), transparent 70%);
+  background: linear-gradient(103deg, transparent 46%, rgba(0, 144, 216, 0.09) 46%);
   pointer-events: none;
 }
 
@@ -253,406 +224,345 @@ button {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: clamp(18px, 3vh, 26px);
+  align-items: flex-start;
+  gap: clamp(16px, 2.4vh, 24px);
 }
+
+/* ── Yuqori yorliq: yashil plita, ink matn ── */
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--cyan);
+  display: inline-block;
+  background: var(--green);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 85%;
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
+  padding: 8px 16px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
 }
 
-/* Kichik romb — logotip belgisining eng kichik bo'lagi */
-.eyebrow::before {
-  content: '';
-  width: 9px;
-  height: 9px;
-  background: var(--cyan);
-  transform: rotate(45deg);
-  flex: none;
-}
+/* ── Sarlavha: tor, qalin, ustma-ust ── */
 
 .stage h1 {
   font-family: var(--f-display);
-  font-weight: 800;
-  font-size: clamp(1.6rem, 5.4vw, 2.9rem);
-  line-height: 1.12;
-  letter-spacing: -0.035em;
-  max-width: 16ch;
-  text-wrap: balance;
-}
-
-.stage-sub {
-  color: var(--mist);
-  font-size: clamp(0.9375rem, 2.4vw, 1.0625rem);
-  line-height: 1.6;
-  max-width: 44ch;
-}
-
-/* ── Narx — sahifaning butun og'irligi shu yerda ──────────────────────────
-   To'rtta romb logotipning to'rt burchakli tuzilishini takrorlaydi: belgida
-   ular OB'ni o'rab turadi, bu yerda — narxni.
-   ---------------------------------------------------------------------- */
-
-.price {
-  position: relative;
-  padding: clamp(16px, 2.6vw, 24px) clamp(22px, 5vw, 44px);
-  /* Ingichka ramka — rombllar shu ramkaning tugunlari bo'ladi. Ramkasiz
-     ular sahifada tasodifiy suzib yurgan nuqtalarga o'xshaydi. */
-  border: 1px solid rgba(34, 198, 232, 0.22);
-}
-
-.price-dia {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: linear-gradient(135deg, var(--cyan), var(--deep));
-}
-
-/* Romb markazi aynan burchakka tushsin — shuning uchun avval siljish, keyin burilish */
-.price-dia-tl {
-  top: 0;
-  left: 0;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.price-dia-tr {
-  top: 0;
-  right: 0;
-  transform: translate(50%, -50%) rotate(45deg);
-}
-.price-dia-bl {
-  bottom: 0;
-  left: 0;
-  transform: translate(-50%, 50%) rotate(45deg);
-}
-.price-dia-br {
-  bottom: 0;
-  right: 0;
-  transform: translate(50%, 50%) rotate(45deg);
-}
-
-.price-lab {
-  color: var(--mist);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-weight: 900;
+  font-stretch: 62%;
+  font-size: clamp(2.9rem, 14.5vw, 7rem);
+  line-height: 0.85;
+  letter-spacing: -0.015em;
   text-transform: uppercase;
-  margin-bottom: clamp(6px, 1.4vw, 12px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.price-fig {
+/* Oxirgi so'z yashil plitada — belgidagi tasdiq rangi kalit so'zga tushadi */
+.stage h1 .hl {
+  background: var(--green);
+  padding: 0.04em 0.16em 0.06em 0.1em;
+  margin-top: 0.06em;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+}
+
+/* ── Narx plitasi: ko'k, pastki chekkasi qiya ── */
+
+.slab {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--paper);
+  padding: clamp(14px, 2.4vw, 20px) clamp(20px, 3.4vw, 34px) clamp(22px, 3vw, 30px);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%);
+}
+
+.slab-lab {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 90%;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.92;
+  margin-bottom: 2px;
+}
+
+.slab-fig {
   display: flex;
   align-items: baseline;
-  justify-content: center;
+  gap: 0 10px;
   flex-wrap: wrap;
-  gap: 0 clamp(8px, 2vw, 16px);
 }
 
-.price-num {
+/* Sahifadagi eng katta element — sahifa aynan shu raqam uchun ochiladi */
+.slab-num {
   font-family: var(--f-display);
-  font-weight: 800;
-  /* Mobilda 15vw: 7 belgili narx ham (masalan «150 000») sig'adi */
-  font-size: clamp(3rem, 15vw, 7.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  color: var(--cyan);
-}
-
-.price-cur {
-  font-family: var(--f-display);
-  font-weight: 400;
-  font-size: clamp(1.0625rem, 3.4vw, 1.75rem);
+  font-weight: 900;
+  font-stretch: 66%;
+  font-size: clamp(3.4rem, 17vw, 8rem);
+  line-height: 0.88;
   letter-spacing: -0.02em;
-  color: var(--paper);
 }
 
-/* ── Ishonch qatori ── */
+.slab-cur {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 85%;
+  font-size: clamp(1.0625rem, 3.2vw, 1.625rem);
+  text-transform: lowercase;
+}
+
+/* ── Tavsif, ishonch qatori, izoh ── */
+
+.stage-sub {
+  color: var(--ink-2);
+  font-size: clamp(0.9375rem, 2.3vw, 1.0625rem);
+  line-height: 1.55;
+  max-width: 40ch;
+}
 
 .trust {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px clamp(14px, 3vw, 26px);
-  color: var(--mist);
+  gap: 8px 20px;
+  color: var(--ink-2);
   font-size: 0.875rem;
 }
 
 .trust li {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .trust svg {
-  color: var(--cyan);
+  color: var(--green-d);
   flex: none;
 }
 
-/* ── Izoh ── */
-
 .note {
-  border-top: 1px solid var(--hair);
-  padding-top: 18px;
-  margin-top: clamp(6px, 2vh, 18px);
-  color: var(--mist);
+  border-top: 2px solid var(--hair);
+  padding-top: 14px;
+  color: var(--ink-2);
   font-size: 0.8125rem;
-  line-height: 1.6;
+  line-height: 1.55;
   max-width: 52ch;
-  opacity: 0.85;
 }
 
 .note a {
-  color: var(--cyan);
+  color: var(--blue-d);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-/* ── Kirish darvozasi (`/`) ───────────────────────────────────────────────
-   Landing bilan bir xil sahna — foydalanuvchi uchun bu bitta sayt, ikkita
-   turli sahifa emas.
+/* ── Kirish darvozasi (`/`) ──────────────────────────────────────────────
+   Tekshiruv avtomatik: foydalanuvchi hech narsa bosmaydi. Sahifa shu sabab
+   kutish ekrani — brend, bitta qator va jarayon chizig'i.
    ---------------------------------------------------------------------- */
 
 .gate {
   min-height: 100svh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 28px var(--pad);
-  background-color: var(--ink);
-  background-image: linear-gradient(
-      135deg,
-      transparent 47.5%,
-      rgba(34, 198, 232, 0.05) 47.5%,
-      rgba(34, 198, 232, 0.05) 52.5%,
-      transparent 52.5%
-    ),
-    linear-gradient(
-      45deg,
-      transparent 47.5%,
-      rgba(34, 198, 232, 0.05) 47.5%,
-      rgba(34, 198, 232, 0.05) 52.5%,
-      transparent 52.5%
-    );
-  background-size: 96px 96px;
+  padding: 32px var(--pad);
+  background: var(--wash);
+  position: relative;
+  overflow: hidden;
 }
 
-.gate-card {
+.gate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(103deg, transparent 46%, rgba(0, 144, 216, 0.09) 46%);
+  pointer-events: none;
+}
+
+.gate-in {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 440px;
-  background: var(--ink-2);
-  border: 1px solid var(--hair);
-  text-align: center;
-}
-
-/* Belgi oq plitada — sababi `.hdr` dagi bilan bir xil */
-.gate-plate {
-  background: var(--paper);
-  padding: 22px;
-  display: flex;
-  justify-content: center;
-}
-
-.gate-plate img {
-  width: 72px;
-  height: 72px;
-}
-
-.gate-body {
-  padding: 26px 24px 28px;
+  max-width: var(--max);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.gate-brand {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 75%;
+  font-size: clamp(1.125rem, 4vw, 1.5rem);
+  text-transform: uppercase;
+}
+
+.gate-brand img {
+  width: 52px;
+  height: 52px;
+  flex: none;
 }
 
 .gate-title {
   font-family: var(--f-display);
-  font-weight: 800;
-  font-size: 1.375rem;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-}
-
-.gate-sub {
-  color: var(--mist);
-  font-size: 0.9375rem;
-  line-height: 1.55;
-}
-
-.gate-cta {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.gate-btn {
-  width: 100%;
-}
-
-/* Tekshiruv tugamaguncha tugma o'chiq — bosilsa ham `/l` qaytarib yuborardi */
-.gate-btn:disabled {
-  background: rgba(159, 211, 222, 0.14);
-  color: var(--mist);
-  cursor: not-allowed;
-}
-
-/* Bitta uya: captcha o'z o'rnini muhrga bo'shatadi — sahifa sakramaydi */
-.gate-slot {
-  min-height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gate-cap {
-  display: flex;
-  justify-content: center;
-}
-
-/* Tasdiqlash muhri — captcha turgan joyni egallaydi */
-.stamp {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  border: 2px solid var(--cyan);
-  color: var(--cyan);
-  font-family: var(--f-display);
-  font-weight: 800;
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  padding: 11px 18px;
-}
-
-.stamp::before {
-  content: '';
-  width: 9px;
-  height: 9px;
-  background: var(--cyan);
-  transform: rotate(45deg);
-  flex: none;
-}
-
-.stamp-in {
-  animation: rise 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  font-weight: 900;
+  font-stretch: 62%;
+  font-size: clamp(2rem, 9vw, 3.6rem);
+  line-height: 0.9;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  max-width: 14ch;
 }
 
 .gate-status {
-  color: var(--mist);
-  font-size: 0.8125rem;
-  letter-spacing: 0.01em;
-  min-height: 1.2em;
-  text-align: center;
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  min-height: 1.4em;
 }
 
 .gate-status.bad {
-  color: #ff9d9d;
+  color: #b3261e;
+}
+
+/* Jarayon chizig'i — tekshiruv davom etayotganini ko'rsatadi.
+   Aniq foiz yo'q, shuning uchun cheksiz siljiydi. */
+.gate-bar {
+  width: min(320px, 100%);
+  height: 8px;
+  background: var(--hair);
+  overflow: hidden;
+}
+
+.gate-bar span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--blue);
+  animation: slide 1.1s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* Tekshiruv tugagach chiziq to'ladi va yashilga o'tadi */
+.gate-bar.done span {
+  width: 100%;
+  background: var(--green);
+  animation: none;
+}
+
+/* Turnstile odatda ko'rinmaydi (`interaction-only`). Faqat haqiqatan
+   odam aralashuvi kerak bo'lganda paydo bo'ladi — shunda joy ochiladi. */
+.gate-cap:not(:empty) {
+  margin-top: 4px;
 }
 
 .gate-note {
-  border-top: 1px solid var(--hair);
-  padding: 14px 20px;
-  color: var(--mist);
+  color: var(--ink-2);
   font-size: 0.75rem;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
-/* ── Kirish animatsiyasi ──────────────────────────────────────────────────
-   Bitta uyushtirilgan harakat: elementlar yuqoriga qalqib chiqadi. Boshqa
-   joyda animatsiya YO'Q — shuning uchun bu birinchi ta'sir sifatida ishlaydi.
+/* ── Keng ekran: ikki ustun ───────────────────────────────────────────────
+   Tor ekranda hamma narsa bitta ustunda va narx sarlavhadan keyin turadi —
+   o'qish tartibi shunday. Keng ekranda esa bitta ustun o'ng yarmini bo'sh
+   qoldirardi va sahifa ekrandan oshib ketardi, shuning uchun narx yon
+   ustunga chiqadi. DOM tartibi o'zgarmaydi — faqat joylashuv.
    ---------------------------------------------------------------------- */
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
+@media (min-width: 900px) {
+  .stage-in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+    column-gap: clamp(32px, 4vw, 56px);
+    row-gap: clamp(16px, 2.2vh, 24px);
+    align-content: center;
   }
-  to {
-    opacity: 1;
-    transform: none;
+
+  .stage .eyebrow {
+    grid-area: 1 / 1;
   }
-}
+  .stage h1 {
+    grid-area: 2 / 1;
+  }
+  .stage .stage-sub {
+    grid-area: 3 / 1;
+  }
+  .stage .btn {
+    grid-area: 4 / 1;
+    justify-self: start;
+  }
+  .stage .trust {
+    grid-area: 5 / 1;
+  }
 
-.stage-in > * {
-  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
-}
+  /* Narx sarlavha bilan bir balandlikda, o'ng ustunda */
+  .stage .slab {
+    grid-area: 2 / 2 / 5 / 3;
+    align-self: center;
+    justify-self: start;
+  }
 
-.stage-in > *:nth-child(1) {
-  animation-delay: 0.02s;
-}
-.stage-in > *:nth-child(2) {
-  animation-delay: 0.08s;
-}
-.stage-in > *:nth-child(3) {
-  animation-delay: 0.14s;
-}
-.stage-in > *:nth-child(4) {
-  animation-delay: 0.2s;
-}
-.stage-in > *:nth-child(5) {
-  animation-delay: 0.26s;
-}
-.stage-in > *:nth-child(6) {
-  animation-delay: 0.32s;
-}
-.stage-in > *:nth-child(7) {
-  animation-delay: 0.38s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation: none !important;
-    transition-duration: 0.001ms !important;
+  .stage .note {
+    grid-area: 6 / 1 / 7 / 3;
   }
 }
 
 /* ── Mobil ── */
 
-/* Header'da brend va tugma bitta qatorga sig'ishi kerak: 390px ekranda
-   brend ~172px + tugma ~128px + oraliq 16px + chekka 36px = 352px. */
 @media (max-width: 560px) {
   :root {
     --pad: 18px;
   }
 
   .brand {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     gap: 8px;
   }
 
   .brand-mark {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
   }
 
   .hdr .btn-sm {
-    padding: 10px 12px;
-    font-size: 0.8125rem;
+    padding: 11px 14px;
+    font-size: 0.75rem;
   }
 
   .stage {
     align-items: flex-start;
   }
+}
 
-  .price {
-    padding-left: 18px;
-    padding-right: 18px;
+@media (max-width: 370px) {
+  .brand span {
+    display: none;
   }
 }
 
-/* Juda tor ekranlarda brend nomi tugmani siqib qo'ymasin — belgi o'zi qoladi */
-@media (max-width: 360px) {
-  .brand span {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  /* Cheksiz siljish o'chsa chiziq bo'sh ko'rinmasin */
+  .gate-bar span {
+    width: 100%;
   }
 }
