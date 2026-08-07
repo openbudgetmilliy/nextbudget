@@ -73,7 +73,10 @@ const FADE_MS = 400;
  */
 const PROMPT_AFTER_MS = 6000;
 
-type Phase = 'checking' | 'prompt' | 'ok' | 'error' | 'manual';
+/** Shundan keyin tekshiruv qotib qolgan deb hisoblanadi va qayta urinish taklif etiladi */
+const STUCK_AFTER_MS = 15000;
+
+type Phase = 'checking' | 'prompt' | 'slow' | 'ok' | 'error' | 'manual';
 
 export default function Gate({ siteKey }: { siteKey: string }) {
   const [phase, setPhase] = useState<Phase>('checking');
@@ -216,14 +219,30 @@ export default function Gate({ siteKey }: { siteKey: string }) {
       }
     }
 
-    // Uzoq kutildi — demak katakcha chiqqan bo'lishi mumkin
+    /**
+     * Matnni WIDGET HOLATIGA qarab tanlaymiz, vaqtga qarab emas.
+     *
+     * Turnstile katakcha ko'rsatsa uyaga `iframe` qo'yadi. Iframe bo'lsa —
+     * odamdan bosish kutilyapti, shuni aytamiz. Iframe bo'lmasa tekshiruv
+     * jimgina davom etyapti va "katakchani belgilang" deyish yolg'on bo'lardi:
+     * belgilaydigan narsa yo'q.
+     */
     const prompt = setTimeout(() => {
-      if (alive) setPhase((p) => (p === 'checking' ? 'prompt' : p));
+      if (!alive) return;
+      if (boxRef.current?.querySelector('iframe')) {
+        setPhase((p) => (p === 'checking' ? 'prompt' : p));
+      }
     }, PROMPT_AFTER_MS);
+
+    // Hech narsa bo'lmadi — odamni cheksiz kuttirmaymiz
+    const stuck = setTimeout(() => {
+      if (alive) setPhase((p) => (p === 'checking' ? 'slow' : p));
+    }, STUCK_AFTER_MS);
 
     return () => {
       alive = false;
       clearTimeout(prompt);
+      clearTimeout(stuck);
       if (widgetRef.current) {
         window.turnstile?.remove(widgetRef.current);
         widgetRef.current = null;
@@ -234,6 +253,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   const message: Record<Phase, string> = {
     checking: 'Tekshirilmoqda',
     prompt: 'Davom etish uchun katakchani belgilang',
+    slow: 'Tekshiruv cho’zilib ketdi',
     ok: 'Tasdiqlandi',
     error: err || 'Xatolik',
     manual: 'Avtomatik o’tib bo’lmadi',
@@ -241,7 +261,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
   return (
     <div className="splash-check">
-      {(phase === 'checking' || phase === 'prompt') && (
+      {(phase === 'checking' || phase === 'prompt' || phase === 'slow') && (
         <svg className="ring" viewBox="0 0 52 52" aria-hidden="true">
           <circle className="ring-bg" cx="26" cy="26" r="23" />
           <circle className="ring-fg" cx="26" cy="26" r="23" />
@@ -268,7 +288,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         qaytaradi va odam aylanib qoladi. Yagona foydali harakat —
         tekshiruvni boshidan yugurtirish.
       */}
-      {(phase === 'manual' || phase === 'error') && (
+      {(phase === 'manual' || phase === 'error' || phase === 'slow') && (
         <button type="button" className="btn" onClick={() => window.location.reload()}>
           Qayta urinish
         </button>
