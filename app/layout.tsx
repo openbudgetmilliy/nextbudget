@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   applicationName: SITE.brand,
   keywords: [
     'milliyjamosimiz',
-    'milliy jamoamiz',
+    'milliy jamosimiz',
     'ovoz narxi',
     'tashabbusli budjet',
     'openbudget ovoz bot',
