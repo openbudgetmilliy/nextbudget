@@ -33,17 +33,19 @@ function hasHint(): boolean {
   return document.cookie.split('; ').some((c) => c === 'gt_ok=1');
 }
 
+function reducedMotion(): boolean {
+  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+}
+
 /**
  * Avto-yo'naltirishlar hisoblagichi.
  *
  * NEGA KERAK: sahifa tekshiruvdan keyin `/l` ga O'ZI o'tadi. Agar `gt`
- * cookie'si biror sababdan saqlanmasa (masalan brauzer uni rad etsa),
- * middleware `/l` dan `/` ga qaytaradi, bu sahifa yana yo'naltiradi — va
- * hokazo. Tugma bosiladigan eski oqimda bu ko'zga tashlanardi, avtomatik
- * oqimda esa brauzer cheksiz aylanib qolardi.
+ * cookie'si biror sababdan saqlanmasa, middleware `/l` dan `/` ga qaytaradi,
+ * bu sahifa yana yo'naltiradi — va hokazo. Tugma bosiladigan oqimda bu ko'zga
+ * tashlanardi, avtomatik oqimda esa brauzer cheksiz aylanardi.
  *
- * Shuning uchun bir sessiyada ikkitadan ortiq avto-o'tishga yo'l qo'yilmaydi:
- * uchinchisida qo'lda tugma ko'rsatiladi.
+ * Bir sessiyada ikkitadan ortiq avto-o'tishga yo'l qo'yilmaydi.
  */
 const TRY_KEY = 'mj_gate_try';
 const MAX_TRIES = 2;
@@ -55,6 +57,10 @@ function tries(): number {
     return 0;
   }
 }
+
+/** Tasdiq belgisi chizilishi + ekranning erishi uchun ketadigan vaqt */
+const TICK_MS = 700;
+const FADE_MS = 400;
 
 type Phase = 'checking' | 'ok' | 'error' | 'manual';
 
@@ -68,15 +74,34 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   const sentRef = useRef(false);
 
   /** `/l` ga o'tish. Halqa himoyasi shu yerda. */
-  const go = useCallback(() => {
+  const navigate = useCallback(() => {
     try {
       sessionStorage.setItem(TRY_KEY, String(tries() + 1));
     } catch {
-      /* private rejimda sessionStorage yo'q — o'tishning o'zi baribir ishlaydi */
+      /* private rejimda sessionStorage yo'q — o'tish baribir ishlaydi */
     }
     // Router emas, to'liq navigatsiya: `/l` cache'lanmaydi va middleware'dan o'tadi
     window.location.href = '/l';
   }, []);
+
+  /**
+   * Tasdiqlangandan keyingi chiqish.
+   *
+   * Belgi chiziladi → ekran landing foniga eriydi → o'tish. Ikkinchi sahifa
+   * shu fonda ochilgani uchun kelish uzluksiz tuyuladi.
+   *
+   * Harakat kamaytirilgan bo'lsa — darrov o'tamiz, kutish ma'nosiz.
+   */
+  const leave = useCallback(() => {
+    if (reducedMotion()) {
+      navigate();
+      return;
+    }
+    setTimeout(() => {
+      document.body.classList.add('leaving');
+      setTimeout(navigate, FADE_MS);
+    }, TICK_MS);
+  }, [navigate]);
 
   const onToken = useCallback(
     async (token: string) => {
@@ -101,7 +126,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         }
 
         setPhase('ok');
-        go();
+        leave();
       } catch {
         sentRef.current = false;
         setErr('Tarmoq xatosi. Internetni tekshiring.');
@@ -109,7 +134,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         window.turnstile?.reset(widgetRef.current ?? undefined);
       }
     },
-    [go],
+    [leave],
   );
 
   useEffect(() => {
@@ -121,14 +146,14 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
     // Kalitlar sozlanmagan — darvoza umuman yo'q, to'g'ridan-to'g'ri o'tamiz
     if (!siteKey) {
-      go();
+      navigate();
       return;
     }
 
     // Avval o'tgan bo'lsa — captchani qayta yugurtirmaymiz
     if (hasHint()) {
       setPhase('ok');
-      go();
+      leave();
       return;
     }
 
@@ -142,8 +167,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         // 'auto' — brauzer tiliga qarab. Qo'lda 'uz' berilsa va Turnstile uni
         // qo'llamasa widget xato beradi, shuning uchun avtomatik qoldiramiz.
         language: 'auto',
-        // Widget faqat HAQIQATAN odam aralashuvi kerak bo'lganda ko'rinadi.
-        // Aksariyat foydalanuvchi hech narsa ko'rmaydi — tekshiruv fonda o'tadi.
+        // Widget faqat HAQIQATAN odam aralashuvi kerak bo'lganda ko'rinadi
         appearance: 'interaction-only',
         callback: onToken,
         'error-callback': () => {
@@ -188,28 +212,33 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         widgetRef.current = null;
       }
     };
-  }, [siteKey, onToken, go]);
+  }, [siteKey, onToken, navigate, leave]);
 
   const message: Record<Phase, string> = {
-    checking: 'Tekshirilmoqda — bir necha soniya',
-    ok: 'Tasdiqlandi, ochilmoqda…',
+    checking: 'Tekshirilmoqda',
+    ok: 'Tasdiqlandi',
     error: err || 'Xatolik',
-    manual: 'Avtomatik o’tib bo’lmadi. Quyidagi tugmani bosing.',
+    manual: 'Avtomatik o’tib bo’lmadi',
   };
 
   return (
-    // `act` — plakatdagi harakat uyasi. Landingda shu joyda tugma turadi,
-    // shuning uchun o'tishda sahifa siljimaydi.
-    <div className="act gate-wait">
-      <div className={`gate-bar${phase === 'ok' ? ' done' : ''}`} aria-hidden="true">
-        <span />
-      </div>
+    <div className="splash-check">
+      {phase === 'checking' && (
+        <svg className="ring" viewBox="0 0 52 52" aria-hidden="true">
+          <circle className="ring-bg" cx="26" cy="26" r="23" />
+          <circle className="ring-fg" cx="26" cy="26" r="23" />
+        </svg>
+      )}
 
-      <p
-        className={`gate-status${phase === 'error' ? ' bad' : ''}`}
-        role="status"
-        aria-live="polite"
-      >
+      {phase === 'ok' && (
+        // Logotipdagi yashil tasdiq belgisi — shu yerda chizilib ko'rsatiladi
+        <svg className="tick" viewBox="0 0 52 52" aria-hidden="true">
+          <circle cx="26" cy="26" r="23" />
+          <path d="M15 27l7.5 7.5L37 20" />
+        </svg>
+      )}
+
+      <p className={`splash-status${phase === 'error' ? ' bad' : ''}`} role="status" aria-live="polite">
         {message[phase]}
       </p>
 
