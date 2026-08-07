@@ -367,9 +367,12 @@ button {
 }
 
 /* == Kutish ekrani (`/`) ==================================================
-   Oq, sodda, markazlashtirilgan -- landing plakatining teskarisi. Ataylab:
-   bu sahifa o'qish uchun emas, u bir necha soniya turadi va ketadi.
-   Tasdiqlangach yashil belgi chiziladi va ekran landing foniga erib o'tadi.
+   Oq karta, yumshoq soya, tepasida ko'k-yashil qirra. Landing plakati
+   qat'iy va baqiroq; bu ekran esa jim va ishonchli bo'lishi kerak -- odam
+   bu yerda kutadi, o'qimaydi.
+
+   Bu BIZNING sahifamiz: tepada bizning belgimiz va nomimiz turadi,
+   Cloudflare pastda xizmat sifatida ko'rsatiladi.
    ======================================================================== */
 
 .splash {
@@ -378,111 +381,157 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px var(--pad);
-  background: var(--paper);
-  /* Chiqish paytida landing foniga o'tadi -- kelish uzluksiz tuyuladi */
+  padding: 28px var(--pad);
+  background: var(--wash);
+  overflow: hidden;
+  /* Chiqishda landing foniga o'tadi -- kelish uzluksiz tuyuladi */
   transition: background-color 0.45s ease;
 }
 
+.splash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(103deg, transparent 46%, rgba(0, 144, 216, 0.07) 46%);
+  pointer-events: none;
+}
+
 .splash-in {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 18px;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.splash-logo {
-  width: 96px;
-  height: 96px;
-  animation: splash-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
-}
-
-.splash-brand {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 70%;
-  font-size: clamp(1.5rem, 6vw, 2.125rem);
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 1;
-  animation: splash-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.08s backwards;
-}
-
-.splash-check {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
-  margin-top: 6px;
-  animation: splash-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.16s backwards;
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
-@keyframes splash-in {
+.card {
+  position: relative;
+  width: 100%;
+  background: var(--paper);
+  padding: 34px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(8, 36, 58, 0.06), 0 12px 32px rgba(8, 36, 58, 0.08);
+  animation: card-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+
+/* Tepadagi qirra -- belgidagi ikki rang */
+.card-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--blue), var(--green));
+}
+
+@keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px);
   }
 }
 
-/* -- Aylanma: tekshiruv davom etyapti -- */
-
-.ring {
-  width: 46px;
-  height: 46px;
+.card-logo {
+  width: 72px;
+  height: 72px;
 }
 
-.ring circle {
+.card-brand {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 72%;
+  font-size: 1.375rem;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: 12px;
+}
+
+.card-sub {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-top: 8px;
+  max-width: 26ch;
+}
+
+/* -- Tekshiruv bloki -- */
+
+.check {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  width: 100%;
+}
+
+/* Halqa: bosqich tugagani sari to'ladi */
+
+.dial {
+  width: 62px;
+  height: 62px;
+  position: relative;
+}
+
+.dial svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.dial circle {
   fill: none;
-  stroke-width: 4;
+  stroke-width: 5;
   stroke-linecap: round;
 }
 
-.ring .ring-bg {
+.dial-bg {
   stroke: var(--hair);
 }
 
-.ring .ring-fg {
+.dial-fg {
   stroke: var(--blue);
-  stroke-dasharray: 90 160;
+  /* Yuqoridan boshlansin */
+  transform: rotate(-90deg);
   transform-origin: center;
-  animation: spin 1s linear infinite;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.3, 0.8, 0.3, 1), stroke 0.3s ease;
 }
 
-@keyframes spin {
+/* Tugamaguncha halqa sekin aylanadi -- jarayon to'xtab qolmaganini bildiradi */
+.dial:not(.is-done):not(.is-bad) svg {
+  animation: dial-spin 2.4s linear infinite;
+}
+
+@keyframes dial-spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* -- Tasdiq belgisi: logotipdagi yashil belgining o'zi, chizib ko'rsatiladi -- */
-
-.tick {
-  width: 46px;
-  height: 46px;
+.dial.is-done .dial-fg {
+  stroke: var(--green);
 }
 
-.tick circle,
-.tick path {
+.dial.is-bad .dial-fg {
+  stroke: #b3261e;
+}
+
+.dial-tick {
   fill: none;
-  stroke-width: 4;
+  stroke: var(--green);
+  stroke-width: 5;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.tick circle {
-  stroke: var(--green);
-  stroke-dasharray: 145;
-  stroke-dashoffset: 145;
-  animation: draw 0.4s ease forwards;
-}
-
-.tick path {
-  stroke: var(--green);
   stroke-dasharray: 40;
   stroke-dashoffset: 40;
-  animation: draw 0.3s ease 0.28s forwards;
+  animation: draw 0.32s ease 0.12s forwards;
 }
 
 @keyframes draw {
@@ -491,34 +540,123 @@ button {
   }
 }
 
-.splash-status {
+/* -- Bosqichlar ro'yxati -- */
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  max-width: 250px;
+  text-align: left;
+}
+
+.steps li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--ink-2);
-  font-size: 0.9375rem;
-  min-height: 1.3em;
+  font-size: 0.8125rem;
+  opacity: 0.55;
+  transition: opacity 0.3s ease, color 0.3s ease;
 }
 
-.splash-status.bad {
-  color: #b3261e;
+.steps-dot {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  border: 2px solid var(--hair);
+  border-radius: 50%;
+  position: relative;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.splash-note {
+.steps li.is-now {
+  opacity: 1;
+  color: var(--ink);
+}
+
+.steps li.is-now .steps-dot {
+  border-color: var(--blue);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 4px rgba(0, 144, 216, 0.16);
+  }
+}
+
+.steps li.is-done {
+  opacity: 1;
+  color: var(--ink);
+}
+
+.steps li.is-done .steps-dot {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+/* Belgi -- bajarilgan bosqich ichida */
+.steps li.is-done .steps-dot::after {
+  content: '';
   position: absolute;
-  bottom: 26px;
-  left: 0;
-  right: 0;
-  text-align: center;
+  left: 3px;
+  top: 0.5px;
+  width: 4px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.check-note {
   color: var(--ink-2);
-  font-size: 0.75rem;
-  opacity: 0.7;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  max-width: 30ch;
+}
+
+.check-note.bad {
+  color: #b3261e;
 }
 
 /* Turnstile odatda ko'rinmaydi (`interaction-only`) -- faqat haqiqatan odam
    aralashuvi kerak bo'lganda paydo bo'ladi */
 .gate-cap:not(:empty) {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
-/* -- Chiqish: ekran landing foniga eriydi, mazmun yuqoriga ko'tariladi -- */
+/* -- Cloudflare atributsiyasi -- */
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hair);
+  width: 100%;
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.cf-mark {
+  width: 26px;
+  height: 12px;
+  flex: none;
+}
+
+.splash-host {
+  color: var(--ink-2);
+  font-size: 0.75rem;
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+
+/* -- Chiqish: ekran landing foniga eriydi, karta yuqoriga ko'tariladi -- */
 
 body.leaving .splash {
   background: var(--wash);

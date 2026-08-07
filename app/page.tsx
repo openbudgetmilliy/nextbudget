@@ -8,22 +8,34 @@ import { env, GATE_ON } from '@/lib/env';
 /**
  * Kirish darvozasi — saytning birinchi sahifasi.
  *
- * Oq va sodda: belgi, nom va tekshiruv holati. Foydalanuvchi bu yerda hech
- * narsa bosmaydi va hech narsa o'qimaydi — Turnstile fonda ishlaydi
- * (`appearance: interaction-only`, ya'ni widget odatda ko'rinmaydi), tekshiruv
- * tugashi bilan yashil belgi chiziladi va sahifa `/l` ga o'zi o'tadi.
+ * Foydalanuvchi bu yerda hech narsa bosmaydi: Turnstile fonda ishlaydi
+ * (`appearance: interaction-only`, ya'ni widget odatda ko'rinmaydi),
+ * tekshiruv tugashi bilan halqa yashil belgiga aylanadi va sahifa `/l` ga
+ * o'zi o'tadi. Chiqishda fon landing foniga eriydi.
  *
- * Chiqishda fon landing foniga eriydi — ikkinchi sahifa xuddi shu fonda
- * ochilgani uchun o'tish uzluksiz tuyuladi.
+ * MUHIM: bu bizning sahifamiz, Cloudflare'ning tizim sahifasi EMAS. Shuning
+ * uchun tepada bizning brendimiz turadi, Cloudflare esa pastda xizmat
+ * sifatida ko'rsatiladi — tekshiruvni haqiqatan o'sha bajaradi. Sahifani
+ * Cloudflare'niki qilib ko'rsatish foydalanuvchini chalg'itardi.
  *
- * To'liq statik: foydalanuvchiga bog'liq hech narsa yo'q, shuning uchun
- * Cloudflare edge'da cache'lanaveradi.
- *
- * Turnstile kalitlari sozlanmagan bo'lsa darvoza o'zi ochiq: sahifa darrov
- * `/l` ga o'tadi va middleware ham to'smaydi.
+ * To'liq statik: Cloudflare edge'da cache'lanaveradi.
  */
 export const revalidate = 3600;
 export const dynamic = 'force-static';
+
+/** Cloudflare bulut belgisi — xizmat atributsiyasi uchun */
+function CloudflareMark() {
+  return (
+    <svg viewBox="0 0 48 22" className="cf-mark" aria-hidden="true">
+      <g fill="#f6821f">
+        <circle cx="18" cy="10" r="7.5" />
+        <circle cx="29" cy="12" r="5.5" />
+        <rect x="11" y="12" width="26" height="7.5" rx="3.75" />
+      </g>
+      <circle cx="35.5" cy="13.5" r="4" fill="#fbad41" />
+    </svg>
+  );
+}
 
 export default async function GatePage() {
   const s = await getSettings();
@@ -39,8 +51,7 @@ export default async function GatePage() {
         zanjir ketma-ket bo'lardi. `id` komponentdagi bilan bir xil — u
         ikkinchi nusxani qo'shmaydi. Zaxira `__gateOnload`: skript
         hidratsiyadan oldin tayyor bo'lsa Turnstile mavjud bo'lmagan
-        funksiyani chaqirib xato bermasin; bu holda komponent
-        `window.turnstile` ni ko'radi va o'zi ulanadi.
+        funksiyani chaqirib xato bermasin.
       */}
       {siteKey && (
         <>
@@ -59,12 +70,23 @@ export default async function GatePage() {
       )}
 
       <div className="splash-in">
-        <Logo size={96} className="splash-logo" />
-        <p className="splash-brand">{SITE.brand}</p>
-        <Gate siteKey={siteKey} />
-      </div>
+        <div className="card">
+          <span className="card-edge" aria-hidden="true" />
 
-      <p className="splash-note">Himoya Cloudflare Turnstile orqali</p>
+          <Logo size={72} className="card-logo" />
+          <p className="card-brand">{SITE.brand}</p>
+          <p className="card-sub">Saytga kirishdan oldin bir marta tekshiramiz</p>
+
+          <Gate siteKey={siteKey} />
+
+          <p className="card-foot">
+            <CloudflareMark />
+            Cloudflare Turnstile himoyasi
+          </p>
+        </div>
+
+        <p className="splash-host">{SITE.domain}</p>
+      </div>
 
       {/* Domen qidiruvda ko'rinib tursin — sahifada ko'rinadigan ma'lumot doirasida */}
       <script

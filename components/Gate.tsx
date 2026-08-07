@@ -44,8 +44,6 @@ function reducedMotion(): boolean {
  * cookie'si biror sababdan saqlanmasa, middleware `/l` dan `/` ga qaytaradi,
  * bu sahifa yana yo'naltiradi — va hokazo. Tugma bosiladigan oqimda bu ko'zga
  * tashlanardi, avtomatik oqimda esa brauzer cheksiz aylanardi.
- *
- * Bir sessiyada ikkitadan ortiq avto-o'tishga yo'l qo'yilmaydi.
  */
 const TRY_KEY = 'mj_gate_try';
 const MAX_TRIES = 2;
@@ -58,28 +56,30 @@ function tries(): number {
   }
 }
 
-/** Tasdiq belgisi chizilishi + ekranning erishi uchun ketadigan vaqt */
-const TICK_MS = 700;
+/** Katakcha chiqqan-chiqmaganini shu vaqtdan keyin tekshiramiz */
+const PROMPT_AFTER_MS = 6000;
+/** Shundan keyin tekshiruv qotib qolgan deb hisoblanadi */
+const STUCK_AFTER_MS = 15000;
+/** Tasdiq belgisi chizilishi + ekranning erishi */
+const TICK_MS = 750;
 const FADE_MS = 400;
 
 /**
- * Shu vaqtdan keyin ham token kelmasa, foydalanuvchidan aralashuv so'ralgan
- * deb hisoblaymiz.
+ * Bosqichlar HAQIQIY voqealarga bog'langan — o'ylab topilgan emas:
+ *   0 → himoya xizmatiga ulanish (Turnstile skripti yuklanmoqda)
+ *   1 → brauzer tekshiruvi (widget ishlayapti)
+ *   2 → tasdiqlandi (`/api/gate` serverda tokenni qabul qildi)
  *
- * Turnstile `interaction-only` rejimida odatda jim o'tadi, lekin shubhali
- * ko'ringan tashrifda katakcha CHIQARADI. O'shanda ekranda «Tekshirilmoqda»
- * qolib ketsa odam nima qilishni bilmaydi va sahifani tashlab ketadi —
- * shuning uchun matn katakchani belgilashga chaqiradigan bo'lib o'zgaradi.
+ * Soxta progress ko'rsatish oson bo'lardi, lekin u yolg'on bo'lardi: sahifa
+ * "tekshirilmoqda" deb turib, aslida hech narsa qilmasligi mumkin edi.
  */
-const PROMPT_AFTER_MS = 6000;
-
-/** Shundan keyin tekshiruv qotib qolgan deb hisoblanadi va qayta urinish taklif etiladi */
-const STUCK_AFTER_MS = 15000;
+const STEPS = ['Himoya xizmatiga ulanish', 'Brauzer tekshiruvi', 'Tasdiqlash'] as const;
 
 type Phase = 'checking' | 'prompt' | 'slow' | 'ok' | 'error' | 'manual';
 
 export default function Gate({ siteKey }: { siteKey: string }) {
   const [phase, setPhase] = useState<Phase>('checking');
+  const [stage, setStage] = useState(0);
   const [err, setErr] = useState('');
 
   const boxRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,6 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   /** Bitta token bir marta yuborilsin — Cloudflare takroriy tekshiruvni rad etadi */
   const sentRef = useRef(false);
 
-  /** `/l` ga o'tish. Halqa himoyasi shu yerda. */
   const navigate = useCallback(() => {
     try {
       sessionStorage.setItem(TRY_KEY, String(tries() + 1));
@@ -99,12 +98,8 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   }, []);
 
   /**
-   * Tasdiqlangandan keyingi chiqish.
-   *
-   * Belgi chiziladi → ekran landing foniga eriydi → o'tish. Ikkinchi sahifa
-   * shu fonda ochilgani uchun kelish uzluksiz tuyuladi.
-   *
-   * Harakat kamaytirilgan bo'lsa — darrov o'tamiz, kutish ma'nosiz.
+   * Tasdiqlangandan keyingi chiqish: belgi chiziladi → ekran landing foniga
+   * eriydi → o'tish. Harakat kamaytirilgan bo'lsa darrov o'tamiz.
    */
   const leave = useCallback(() => {
     if (reducedMotion()) {
@@ -139,6 +134,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
           return;
         }
 
+        setStage(2);
         setPhase('ok');
         leave();
       } catch {
@@ -152,13 +148,11 @@ export default function Gate({ siteKey }: { siteKey: string }) {
   );
 
   useEffect(() => {
-    // Halqaga tushib qolgan bo'lsak — avtomatik o'tishni to'xtatamiz
     if (tries() >= MAX_TRIES) {
       setPhase('manual');
       return;
     }
 
-    // Kalitlar sozlanmagan — darvoza umuman yo'q, to'g'ridan-to'g'ri o'tamiz
     if (!siteKey) {
       navigate();
       return;
@@ -166,6 +160,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
     // Avval o'tgan bo'lsa — captchani qayta yugurtirmaymiz
     if (hasHint()) {
+      setStage(2);
       setPhase('ok');
       leave();
       return;
@@ -175,11 +170,11 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
     const mount = () => {
       if (!alive || !boxRef.current || !window.turnstile || widgetRef.current) return;
+      // Skript keldi va widget qo'yildi — ikkinchi bosqich boshlandi
+      setStage(1);
       widgetRef.current = window.turnstile.render(boxRef.current, {
         sitekey: siteKey,
         theme: 'light',
-        // 'auto' — brauzer tiliga qarab. Qo'lda 'uz' berilsa va Turnstile uni
-        // qo'llamasa widget xato beradi, shuning uchun avtomatik qoldiramiz.
         language: 'auto',
         // Widget faqat HAQIQATAN odam aralashuvi kerak bo'lganda ko'rinadi
         appearance: 'interaction-only',
@@ -223,9 +218,8 @@ export default function Gate({ siteKey }: { siteKey: string }) {
      * Matnni WIDGET HOLATIGA qarab tanlaymiz, vaqtga qarab emas.
      *
      * Turnstile katakcha ko'rsatsa uyaga `iframe` qo'yadi. Iframe bo'lsa —
-     * odamdan bosish kutilyapti, shuni aytamiz. Iframe bo'lmasa tekshiruv
-     * jimgina davom etyapti va "katakchani belgilang" deyish yolg'on bo'lardi:
-     * belgilaydigan narsa yo'q.
+     * odamdan bosish kutilyapti. Iframe bo'lmasa tekshiruv jimgina davom
+     * etyapti va "katakchani belgilang" deyish yolg'on bo'lardi.
      */
     const prompt = setTimeout(() => {
       if (!alive) return;
@@ -250,35 +244,55 @@ export default function Gate({ siteKey }: { siteKey: string }) {
     };
   }, [siteKey, onToken, navigate, leave]);
 
-  const message: Record<Phase, string> = {
-    checking: 'Tekshirilmoqda',
+  const note: Record<Phase, string> = {
+    checking: '',
     prompt: 'Davom etish uchun katakchani belgilang',
     slow: 'Tekshiruv cho’zilib ketdi',
-    ok: 'Tasdiqlandi',
+    ok: '',
     error: err || 'Xatolik',
     manual: 'Avtomatik o’tib bo’lmadi',
   };
 
+  const done = phase === 'ok';
+  const bad = phase === 'error' || phase === 'slow' || phase === 'manual';
+
+  /** Halqa: bosqichga qarab to'ladi. r=26 → aylana uzunligi ≈ 163.4 */
+  const RING = 163.4;
+  const filled = done ? 1 : stage === 0 ? 0.18 : 0.62;
+
   return (
-    <div className="splash-check">
-      {(phase === 'checking' || phase === 'prompt' || phase === 'slow') && (
-        <svg className="ring" viewBox="0 0 52 52" aria-hidden="true">
-          <circle className="ring-bg" cx="26" cy="26" r="23" />
-          <circle className="ring-fg" cx="26" cy="26" r="23" />
+    <div className="check">
+      <div className={`dial${done ? ' is-done' : ''}${bad ? ' is-bad' : ''}`}>
+        <svg viewBox="0 0 60 60" aria-hidden="true">
+          <circle className="dial-bg" cx="30" cy="30" r="26" />
+          <circle
+            className="dial-fg"
+            cx="30"
+            cy="30"
+            r="26"
+            style={{ strokeDasharray: RING, strokeDashoffset: RING * (1 - filled) }}
+          />
+          {done && <path className="dial-tick" d="M19 31l7.5 7.5L42 23" />}
         </svg>
-      )}
+      </div>
 
-      {phase === 'ok' && (
-        // Logotipdagi yashil tasdiq belgisi — shu yerda chizilib ko'rsatiladi
-        <svg className="tick" viewBox="0 0 52 52" aria-hidden="true">
-          <circle cx="26" cy="26" r="23" />
-          <path d="M15 27l7.5 7.5L37 20" />
-        </svg>
-      )}
+      <ol className="steps">
+        {STEPS.map((label, i) => (
+          <li
+            key={label}
+            className={stage > i || done ? 'is-done' : stage === i ? 'is-now' : undefined}
+          >
+            <span className="steps-dot" aria-hidden="true" />
+            {label}
+          </li>
+        ))}
+      </ol>
 
-      <p className={`splash-status${phase === 'error' ? ' bad' : ''}`} role="status" aria-live="polite">
-        {message[phase]}
-      </p>
+      {note[phase] && (
+        <p className={`check-note${bad ? ' bad' : ''}`} role="status" aria-live="polite">
+          {note[phase]}
+        </p>
+      )}
 
       {/* Turnstile uyasi — odatda bo'sh, faqat aralashuv kerak bo'lganda to'ladi */}
       <div className="gate-cap" ref={boxRef} />
@@ -288,7 +302,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
         qaytaradi va odam aylanib qoladi. Yagona foydali harakat —
         tekshiruvni boshidan yugurtirish.
       */}
-      {(phase === 'manual' || phase === 'error' || phase === 'slow') && (
+      {bad && (
         <button type="button" className="btn" onClick={() => window.location.reload()}>
           Qayta urinish
         </button>
