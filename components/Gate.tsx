@@ -62,7 +62,18 @@ function tries(): number {
 const TICK_MS = 700;
 const FADE_MS = 400;
 
-type Phase = 'checking' | 'ok' | 'error' | 'manual';
+/**
+ * Shu vaqtdan keyin ham token kelmasa, foydalanuvchidan aralashuv so'ralgan
+ * deb hisoblaymiz.
+ *
+ * Turnstile `interaction-only` rejimida odatda jim o'tadi, lekin shubhali
+ * ko'ringan tashrifda katakcha CHIQARADI. O'shanda ekranda «Tekshirilmoqda»
+ * qolib ketsa odam nima qilishni bilmaydi va sahifani tashlab ketadi —
+ * shuning uchun matn katakchani belgilashga chaqiradigan bo'lib o'zgaradi.
+ */
+const PROMPT_AFTER_MS = 6000;
+
+type Phase = 'checking' | 'prompt' | 'ok' | 'error' | 'manual';
 
 export default function Gate({ siteKey }: { siteKey: string }) {
   const [phase, setPhase] = useState<Phase>('checking');
@@ -205,8 +216,14 @@ export default function Gate({ siteKey }: { siteKey: string }) {
       }
     }
 
+    // Uzoq kutildi — demak katakcha chiqqan bo'lishi mumkin
+    const prompt = setTimeout(() => {
+      if (alive) setPhase((p) => (p === 'checking' ? 'prompt' : p));
+    }, PROMPT_AFTER_MS);
+
     return () => {
       alive = false;
+      clearTimeout(prompt);
       if (widgetRef.current) {
         window.turnstile?.remove(widgetRef.current);
         widgetRef.current = null;
@@ -216,6 +233,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
   const message: Record<Phase, string> = {
     checking: 'Tekshirilmoqda',
+    prompt: 'Davom etish uchun katakchani belgilang',
     ok: 'Tasdiqlandi',
     error: err || 'Xatolik',
     manual: 'Avtomatik o’tib bo’lmadi',
@@ -223,7 +241,7 @@ export default function Gate({ siteKey }: { siteKey: string }) {
 
   return (
     <div className="splash-check">
-      {phase === 'checking' && (
+      {(phase === 'checking' || phase === 'prompt') && (
         <svg className="ring" viewBox="0 0 52 52" aria-hidden="true">
           <circle className="ring-bg" cx="26" cy="26" r="23" />
           <circle className="ring-fg" cx="26" cy="26" r="23" />
@@ -245,10 +263,15 @@ export default function Gate({ siteKey }: { siteKey: string }) {
       {/* Turnstile uyasi — odatda bo'sh, faqat aralashuv kerak bo'lganda to'ladi */}
       <div className="gate-cap" ref={boxRef} />
 
+      {/*
+        Xatoda `/l` ga havola bermaymiz: cookie yo'q, middleware baribir
+        qaytaradi va odam aylanib qoladi. Yagona foydali harakat —
+        tekshiruvni boshidan yugurtirish.
+      */}
       {(phase === 'manual' || phase === 'error') && (
-        <a href="/l" className="btn" data-t="click" data-t-id="gate_manual">
-          Davom etish
-        </a>
+        <button type="button" className="btn" onClick={() => window.location.reload()}>
+          Qayta urinish
+        </button>
       )}
     </div>
   );
