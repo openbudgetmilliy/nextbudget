@@ -15,7 +15,7 @@ export const env = {
   TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
   TURNSTILE_SECRET: process.env.TURNSTILE_SECRET_KEY ?? '',
 
-  SITE_URL: process.env.SITE_URL ?? 'https://milliyjamoasimiz.uz',
+  SITE_URL: process.env.SITE_URL ?? 'https://milliyjamosimiz.uz',
   BOT: process.env.NEXT_PUBLIC_BOT ?? 'OpenBudgetBot',
 
   /** Redis key prefiksi — bitta Redis'ni ikki brend baham ko'radi */

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: SITE.description,
   applicationName: SITE.brand,
   keywords: [
-    'milliyjamoasimiz',
+    'milliyjamosimiz',
     'milliy jamoamiz',
     'ovoz narxi',
     'tashabbusli budjet',

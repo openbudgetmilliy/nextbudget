@@ -53,7 +53,7 @@ export const FALLBACK_PRICES: PriceItem[] = [
 
 export const SITE = {
   brand: 'MilliyJamoasimiz',
-  domain: 'milliyjamoasimiz.uz',
+  domain: 'milliyjamosimiz.uz',
   title: 'MilliyJamoasimiz — Tashabbusli budjet tashabbuslarini targ‘ib qilish',
   description:
     "Tashabbusli budjet loyihalari uchun ovoz paketlari. Aniq narxlar, mahalliy kartalar (Humo, Uzcard, Payme) va Telegram bot orqali qulay tanlov.",
