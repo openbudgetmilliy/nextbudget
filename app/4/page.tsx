@@ -157,6 +157,31 @@ export default async function VariantBento() {
           </a>
         </section>
 
+        {/* ── Statistika qatori: to'rt halol fakt, mozaika ritmini davom ettiradi.
+            Manba: reviews_count sozlamadan, qolgani sahifa strukturasining o'zi
+            (6 paket, 3 to'lov usuli) — hech narsa o'ylab topilmagan ── */}
+        <section className={c.statRow} aria-label="Raqamlarda">
+          <div className={`${c.stat} ${c.statGreen}`}>
+            <p className={`${c.statNum} tnum`}>{s.reviews_count}</p>
+            <p className={c.statLab}>foydalanuvchi tanlagan</p>
+          </div>
+          <div className={`${c.stat} ${c.statSky}`}>
+            <p className={`${c.statNum} tnum`}>6</p>
+            <p className={c.statLab}>tayyor paket</p>
+          </div>
+          <div className={`${c.stat} ${c.statLemon}`}>
+            <p className={`${c.statNum} tnum`}>3</p>
+            <p className={c.statLab}>to‘lov usuli</p>
+            <p className={c.statNote}>Humo · Uzcard · Payme</p>
+          </div>
+          <div className={`${c.stat} ${c.statOrange}`}>
+            <p className={c.statNum}>
+              <span className="tnum">≈1</span> <span className={c.statUnit}>daqiqa</span>
+            </p>
+            <p className={c.statLab}>to‘lov tasdig‘i</p>
+          </div>
+        </section>
+
         {/* ── Narx paketlari: bento davom etadi ── */}
         <section className={c.sec} id="paketlar">
           <p className={c.kicker}>Paketlar</p>
@@ -235,6 +260,56 @@ export default async function VariantBento() {
           </ol>
         </section>
 
+        {/* ── FAQ: eng ko'p so'raladigan 5 savol. Native <details> — client JS
+            talab qilmaydi, sahifa server component bo'lib qolaveradi ── */}
+        <section className={c.sec}>
+          <p className={c.kicker}>Savol-javob</p>
+          <h2 className={c.h2}>Savollarga javob</h2>
+
+          <div className={c.faqList}>
+            <details className={c.faq}>
+              <summary className={c.faqQ}>Bot qanday ishlaydi?</summary>
+              <p className={c.faqA}>
+                Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz. Hammasi
+                bot ichida — saytga qaytish shart emas.
+              </p>
+            </details>
+            <details className={c.faq}>
+              <summary className={c.faqQ}>Ro‘yxatdan o‘tish kerakmi?</summary>
+              <p className={c.faqA}>
+                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
+              </p>
+            </details>
+            <details className={c.faq}>
+              <summary className={c.faqQ}>Qaysi kartalar bilan to‘lash mumkin?</summary>
+              <p className={c.faqA}>
+                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
+              </p>
+            </details>
+            <details className={c.faq}>
+              <summary className={c.faqQ}>Narx qancha?</summary>
+              <p className={c.faqA}>
+                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
+                yuqoridagi paketlar bo‘limiga qarang.
+              </p>
+            </details>
+            <details className={c.faq}>
+              <summary className={c.faqQ}>Savolim bor yoki muammo chiqdi — kimga yozaman?</summary>
+              <p className={c.faqA}>
+                <a
+                  href={`https://t.me/${s.support_username}`}
+                  rel="noopener"
+                  data-t="click"
+                  data-t-id="support"
+                >
+                  @{s.support_username}
+                </a>{' '}
+                ga yozing — tez javob beramiz.
+              </p>
+            </details>
+          </div>
+        </section>
+
         {/* ── Yakuniy CTA: ink panel, aylanuvchi gradient halqali tugma ── */}
         <section className={`${c.cell} ${c.finalPanel}`}>
           <h2 className={c.finalH}>
@@ -252,6 +327,20 @@ export default async function VariantBento() {
               </span>
             </a>
           </div>
+          {/* Bot manzili matn ko'rinishida — tugmani emas, manzilni qidirgan odam ham topsin */}
+          <p className={c.finalHandleRow}>
+            Bot manzili —{' '}
+            <a
+              href={tg}
+              className={c.finalHandle}
+              data-t="cta"
+              data-t-id="v4_bot_handle"
+              data-tg
+              rel="noopener"
+            >
+              @{bot}
+            </a>
+          </p>
         </section>
       </main>
 

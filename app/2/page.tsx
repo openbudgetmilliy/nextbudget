@@ -205,6 +205,40 @@ export default async function Variant2() {
           </div>
         </div>
 
+        {/* ── Statistika: rangli stiker-plitalar. Faqat strukturaviy faktlar —
+            hech qanday va'da yo'q, odam bir qarashda xizmat hajmini ko'radi ── */}
+        <section className={st.stats} aria-label="Xizmat raqamlarda">
+          <ul className={st.statGrid}>
+            <li className={`${st.stat} ${st.statSun}`}>
+              <p className={st.statNum}>
+                <span className="tnum">{s.reviews_count}</span>
+              </p>
+              <p className={st.statLab}>foydalanuvchi tanlagan</p>
+            </li>
+            <li className={`${st.stat} ${st.statPaper}`}>
+              <p className={st.statNum}>
+                {/* Raqam ma'lumotdan olinadi — paket qo'shilsa plitka o'zi yangilanadi */}
+                <span className="tnum">{packs.length}</span>
+              </p>
+              <p className={st.statLab}>tayyor paket</p>
+            </li>
+            <li className={`${st.stat} ${st.statGreen}`}>
+              <p className={st.statNum}>
+                <span className="tnum">3</span>
+              </p>
+              <p className={st.statLab}>to‘lov usuli</p>
+              <p className={st.statNote}>Humo · Uzcard · Payme</p>
+            </li>
+            <li className={`${st.stat} ${st.statCoral}`}>
+              <p className={st.statNum}>
+                <span className="tnum">≈1</span>
+                <span className={st.statUnit}>daqiqa</span>
+              </p>
+              <p className={st.statLab}>to‘lov tasdig‘i</p>
+            </li>
+          </ul>
+        </section>
+
         {/* ── Narx paketlari: burilgan stiker-kartalar ── */}
         <section className={st.prices}>
           <div className={st.secHead}>
@@ -300,6 +334,77 @@ export default async function Variant2() {
           </ol>
         </section>
 
+        {/* ── FAQ: oq stiker-kartalar. Native <details> — client JS shart emas,
+            sahifa to'liq server component bo'lib qoladi ── */}
+        <section className={st.faq}>
+          <div className={st.secHead}>
+            <p className={`${st.kicker} ${st.kickerSun}`}>Savol-javob</p>
+            <h2 className={st.secTitle}>Savollarga javob</h2>
+          </div>
+
+          <div className={st.faqList}>
+            <details className={st.faqItem}>
+              <summary className={st.faqSum}>
+                <span>Bot qanday ishlaydi?</span>
+                <span className={st.faqIcon} aria-hidden />
+              </summary>
+              <p className={st.faqBody}>
+                Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz. Hammasi
+                bot ichida — saytga qaytish shart emas.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqSum}>
+                <span>Ro‘yxatdan o‘tish kerakmi?</span>
+                <span className={st.faqIcon} aria-hidden />
+              </summary>
+              <p className={st.faqBody}>
+                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqSum}>
+                <span>Qaysi kartalar bilan to‘lash mumkin?</span>
+                <span className={st.faqIcon} aria-hidden />
+              </summary>
+              <p className={st.faqBody}>
+                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqSum}>
+                <span>Narx qancha?</span>
+                <span className={st.faqIcon} aria-hidden />
+              </summary>
+              <p className={st.faqBody}>
+                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
+                yuqoridagi paketlar bo‘limiga qarang.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqSum}>
+                <span>Savolim bor yoki muammo chiqdi — kimga yozaman?</span>
+                <span className={st.faqIcon} aria-hidden />
+              </summary>
+              <p className={st.faqBody}>
+                <a
+                  href={`https://t.me/${s.support_username}`}
+                  rel="noopener"
+                  data-t="click"
+                  data-t-id="support"
+                >
+                  @{s.support_username}
+                </a>{' '}
+                ga yozing — tez javob beramiz.
+              </p>
+            </details>
+          </div>
+        </section>
+
         {/* ── Yakuniy CTA: ko'k mega-stiker ── */}
         <section className={st.finalWrap}>
           <div className={st.final}>
@@ -318,6 +423,17 @@ export default async function Variant2() {
             >
               <Telegram />
               {s.cta_primary}
+            </a>
+            {/* Bot manzili ochiq matnda — tugmani emas, @manzilni qidirgan odam ham topsin */}
+            <a
+              href={tg}
+              className={st.botHandle}
+              data-t="cta"
+              data-t-id="v2_bot_handle"
+              data-tg
+              rel="noopener"
+            >
+              @{bot}
             </a>
           </div>
         </section>

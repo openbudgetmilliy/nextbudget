@@ -488,6 +488,78 @@
   font-size: 0.7rem;
 }
 
+/* ── Statistika qatori: gradient raqamlar, to'q shisha plitkalar ─────────── */
+
+.statsSec {
+  position: relative;
+  z-index: 1;
+  padding-top: clamp(36px, 6vh, 56px);
+}
+
+.stats {
+  display: grid;
+  /* 360px da 2×2 — raqamlar siqilib qolmasin; kengroqda bitta qator */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(10px, 2vw, 18px);
+}
+
+@media (min-width: 720px) {
+  .stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: clamp(18px, 3vw, 26px) 10px;
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.statNum {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 66%;
+  font-size: clamp(1.9rem, 5.5vw, 2.9rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* priceNum bilan bir xil aura — sahifadagi gradient raqamlar bir tilda gapirsin */
+  filter: drop-shadow(0 0 18px rgba(0, 179, 255, 0.25));
+}
+
+/* «daqiqa» birligi raqamdan kichik, lekin ayni gradient ichida qoladi */
+.statUnit {
+  font-size: 0.4em;
+  font-stretch: 85%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.statLab {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-stretch: 88%;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mut);
+}
+
+.statNote {
+  color: var(--mut);
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
 /* ── Bo'limlar ───────────────────────────────────────────────────────────── */
 
 .sec {
@@ -717,6 +789,120 @@
   max-width: 34ch;
 }
 
+/* ── FAQ: native details — to'q shisha kartalar, ochilganda neon halqa ───── */
+
+.faq {
+  display: grid;
+  gap: clamp(10px, 1.6vw, 14px);
+  margin-top: clamp(24px, 4vh, 36px);
+  /* Juda keng satr o'qishni qiynaydi — javoblar 760px ichida qoladi */
+  max-width: 760px;
+}
+
+.faqItem {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  /* Ochilganda pastki burchaklar radius ichida qolsin */
+  overflow: hidden;
+  transition: border-color 0.22s ease, background-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.faqItem:hover {
+  border-color: rgba(77, 216, 255, 0.35);
+}
+
+/* Ochiq holat — cardHot bilan bir xil neon halqa: e'tibor shu kartada */
+.faqItem[open] {
+  border-color: rgba(77, 216, 255, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1px rgba(0, 179, 255, 0.25), 0 0 30px rgba(0, 179, 255, 0.14);
+}
+
+.faqQ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  cursor: pointer;
+  padding: clamp(15px, 2.6vw, 19px) clamp(16px, 3vw, 22px);
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 78%;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  /* Brauzer markeri o'chadi — belgi rolini .faqIco bajaradi */
+  list-style: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.faqQ::-webkit-details-marker {
+  display: none;
+}
+
+.faqQ::marker {
+  content: '';
+}
+
+/* Ochish belgisi: + → –, aylanish bilan — holat o'zgargani darhol seziladi */
+.faqIco {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(77, 216, 255, 0.4);
+  color: var(--cyan2);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1), background-color 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.faqIco::before {
+  content: '+';
+}
+
+.faqItem[open] .faqIco {
+  transform: rotate(180deg);
+  background: rgba(0, 179, 255, 0.14);
+  border-color: var(--cyan2);
+}
+
+.faqItem[open] .faqIco::before {
+  content: '–';
+}
+
+.faqA {
+  color: var(--mut);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  max-width: 62ch;
+  padding: 0 clamp(16px, 3vw, 22px) clamp(16px, 3vw, 20px);
+}
+
+/* `[open]` qo'shilgan zahoti selektor mos keladi — javob shunda suzib chiqadi.
+   `rise` hero'da allaqachon bor, yangi keyframe kerak emas */
+.faqItem[open] .faqA {
+  animation: rise 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+
+.faqA a {
+  color: var(--cyan2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faqA a:hover {
+  color: #fff;
+}
+
 /* ── Yakuniy CTA ─────────────────────────────────────────────────────────── */
 
 .finalSec {
@@ -764,6 +950,27 @@
   color: var(--mut);
   font-size: clamp(0.95rem, 2.3vw, 1.05rem);
   max-width: 46ch;
+}
+
+/* Bot manzili — tugmani emas, manzilni qidirgan odam uchun matnli yo'l */
+.finalBot {
+  color: var(--mut);
+  font-size: 0.875rem;
+}
+
+.finalBot a {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-stretch: 85%;
+  letter-spacing: 0.04em;
+  color: var(--cyan2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.finalBot a:hover {
+  color: #fff;
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */

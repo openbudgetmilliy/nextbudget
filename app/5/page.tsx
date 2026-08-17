@@ -154,6 +154,34 @@ export default async function VariantCandy() {
           </div>
         </div>
 
+        {/* ── Statistika: pastel pill kartalar ──
+            Faqat strukturaviy faktlar — tekshirib bo'ladigan raqamlar,
+            hech qanday natija yoki daromad va'dasi yo'q */}
+        <section className={c.statsSec} aria-label="Xizmat ko‘rsatkichlari">
+          <ul className={c.stats}>
+            <li className={`${c.stat} ${c.stBlue}`}>
+              <span className={`${c.statNum} tnum`}>{s.reviews_count}</span>
+              <span className={c.statLab}>foydalanuvchi tanlagan</span>
+            </li>
+            <li className={`${c.stat} ${c.stPink}`}>
+              {/* packs.length — raqam paketlar to'ri bilan doim sinxron */}
+              <span className={`${c.statNum} tnum`}>{packs.length}</span>
+              <span className={c.statLab}>tayyor paket</span>
+            </li>
+            <li className={`${c.stat} ${c.stMint}`}>
+              <span className={`${c.statNum} tnum`}>3</span>
+              <span className={c.statLab}>to‘lov usuli</span>
+              <span className={c.statNote}>Humo · Uzcard · Payme</span>
+            </li>
+            <li className={`${c.stat} ${c.stPeach}`}>
+              <span className={`${c.statNum} tnum`}>
+                ≈1<span className={c.statUnit}>daqiqa</span>
+              </span>
+              <span className={c.statLab}>to‘lov tasdig‘i</span>
+            </li>
+          </ul>
+        </section>
+
         {/* ── Narx paketlari ── */}
         <section className={c.sec} id="paketlar">
           <div className={c.secIn}>
@@ -230,6 +258,81 @@ export default async function VariantCandy() {
           </div>
         </section>
 
+        {/* ── FAQ: native details/summary ──
+            Client JS yo'q — sahifa server component bo'lib qoladi.
+            Ochish belgisi (+/–) faqat CSS: details[open] holatida
+            vertikal chiziq yotib, plus minusga aylanadi */}
+        <section className={c.sec}>
+          <div className={c.secIn}>
+            <p className={c.kicker}>Savol-javob</p>
+            <h2 className={c.h2}>
+              Savollarga <span className={c.h2Hl}>javob</span>
+            </h2>
+
+            <div className={c.faq}>
+              <details className={c.faqItem}>
+                <summary className={c.faqQ}>
+                  Bot qanday ishlaydi?
+                  <span className={c.faqMark} aria-hidden />
+                </summary>
+                <p className={c.faqA}>
+                  Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz. Hammasi
+                  bot ichida — saytga qaytish shart emas.
+                </p>
+              </details>
+
+              <details className={c.faqItem}>
+                <summary className={c.faqQ}>
+                  Ro‘yxatdan o‘tish kerakmi?
+                  <span className={c.faqMark} aria-hidden />
+                </summary>
+                <p className={c.faqA}>
+                  Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
+                </p>
+              </details>
+
+              <details className={c.faqItem}>
+                <summary className={c.faqQ}>
+                  Qaysi kartalar bilan to‘lash mumkin?
+                  <span className={c.faqMark} aria-hidden />
+                </summary>
+                <p className={c.faqA}>
+                  Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
+                </p>
+              </details>
+
+              <details className={c.faqItem}>
+                <summary className={c.faqQ}>
+                  Narx qancha?
+                  <span className={c.faqMark} aria-hidden />
+                </summary>
+                <p className={c.faqA}>
+                  1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
+                  yuqoridagi paketlar bo‘limiga qarang.
+                </p>
+              </details>
+
+              <details className={c.faqItem}>
+                <summary className={c.faqQ}>
+                  Savolim bor yoki muammo chiqdi — kimga yozaman?
+                  <span className={c.faqMark} aria-hidden />
+                </summary>
+                <p className={c.faqA}>
+                  <a
+                    href={`https://t.me/${s.support_username}`}
+                    rel="noopener"
+                    data-t="click"
+                    data-t-id="support"
+                  >
+                    @{s.support_username}
+                  </a>{' '}
+                  ga yozing — tez javob beramiz.
+                </p>
+              </details>
+            </div>
+          </div>
+        </section>
+
         {/* ── Yakuniy CTA: gradient panel, oq squish tugma ── */}
         <section className={c.finalSec}>
           <div className={c.final}>
@@ -248,6 +351,18 @@ export default async function VariantCandy() {
             >
               <Telegram size={20} className={c.ctaIco} />
               {s.cta_primary}
+            </a>
+            {/* Bot manzili tugma ostida ochiq turadi — odam tugmani emas,
+                @manzilni qidirsa ham shu yerdan topadi */}
+            <a
+              href={tg}
+              className={c.finalHandle}
+              data-t="cta"
+              data-t-id="v5_bot_handle"
+              data-tg
+              rel="noopener"
+            >
+              @{bot}
             </a>
           </div>
         </section>

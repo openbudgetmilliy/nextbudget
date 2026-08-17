@@ -463,6 +463,71 @@
   outline-offset: -6px;
 }
 
+/* ── Statistika qatori: to'rt kichik rangli katak ── */
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--gap);
+  /* mainCol bo'limlar orasiga katta gap beradi; stats esa hero mozaikasining
+     davomi — manfiy margin uni katak oralig'igacha yaqinlashtiradi */
+  margin-top: calc(var(--gap) - clamp(36px, 6vw, 64px));
+}
+
+.stat {
+  border-radius: var(--r);
+  padding: clamp(16px, 2.2vw, 24px);
+}
+
+.statNum {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 66%;
+  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+  line-height: 0.95;
+}
+
+.statUnit {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 85%;
+  font-size: 0.9375rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.statLab {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: rgba(8, 36, 58, 0.78);
+}
+
+.statNote {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(8, 36, 58, 0.6);
+}
+
+/* Ranglar hero mozaikasidan takrorlanadi — hammasi och fon + ink matn,
+   kontrast 7:1 dan yuqori */
+.statSky {
+  background: var(--sky);
+}
+
+.statLemon {
+  background: var(--lemon);
+}
+
+.statGreen {
+  background: var(--green);
+}
+
+.statOrange {
+  background: var(--orange);
+}
+
 /* ── Bo'lim sarlavhalari ── */
 
 .kicker {
@@ -719,6 +784,97 @@
   color: rgba(8, 36, 58, 0.8);
 }
 
+/* ── FAQ: oq kataklar, paket kataklaridagi kabi 2px chegara ── */
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  margin-top: clamp(18px, 3vh, 28px);
+  /* Bir qatorda 90ch dan uzun javob o'qish qiyin — kenglik cheklanadi */
+  max-width: 760px;
+}
+
+.faq {
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--r);
+  transition: border-color 0.2s ease;
+}
+
+.faq[open] {
+  border-color: var(--blue);
+}
+
+.faqQ {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: clamp(16px, 2.2vw, 22px) clamp(18px, 2.6vw, 26px);
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 78%;
+  font-size: clamp(1rem, 1.8vw, 1.1875rem);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  user-select: none;
+}
+
+/* Brauzerning standart uchburchak markeri o'chiriladi — belgini o'zimiz chizamiz */
+.faqQ::-webkit-details-marker {
+  display: none;
+}
+
+/* Ochish belgisi: doiradagi «+», ochilganda 45° burilib «×» ga aylanadi —
+   qo'shimcha belgi almashtirish shart emas, faqat transform */
+.faqQ::after {
+  content: '+';
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--sky);
+  color: var(--blue-d);
+  font-family: var(--f-body);
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.faq[open] .faqQ::after {
+  transform: rotate(45deg);
+  background: var(--ink);
+  color: #fff;
+}
+
+.faqQ:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -3px;
+  border-radius: var(--r);
+}
+
+.faqA {
+  padding: 0 clamp(18px, 2.6vw, 26px) clamp(16px, 2.2vw, 22px);
+  color: var(--ink-2);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.faqA a {
+  color: var(--blue-d);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── Yakuniy panel ── */
 
 .finalPanel {
@@ -762,6 +918,36 @@
   opacity: 0.85;
   max-width: 44ch;
   position: relative;
+}
+
+/* Bot manzili tugma ostida matn bilan — dekorativ halqadan yuqorida turishi
+   uchun position: relative shart */
+.finalHandleRow {
+  position: relative;
+  font-size: 0.9375rem;
+  opacity: 0.85;
+}
+
+.finalHandle {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: 1.0625rem;
+  color: var(--lemon);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  word-break: break-all;
+  transition: color 0.18s ease;
+}
+
+.finalHandle:hover {
+  color: #fff;
+}
+
+.finalHandle:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* ── Footer ── */
@@ -831,7 +1017,8 @@
 
 @media (max-width: 900px) {
   .bento,
-  .pkGrid {
+  .pkGrid,
+  .statRow {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 

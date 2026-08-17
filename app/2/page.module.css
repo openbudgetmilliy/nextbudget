@@ -515,6 +515,106 @@
   flex: none;
 }
 
+/* ── Statistika plitalari ────────────────────────────────────────────── */
+
+/* Lenta bilan paketlar orasidagi nafas — pastki bo'shliqni paketlar bo'limi
+   o'zi beradi, shuning uchun bu yerda faqat tepa */
+.stats {
+  padding: clamp(36px, 5vw, 56px) 0 0;
+}
+
+.statGrid {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  display: grid;
+  /* 360px da ham ikki ustun sig'adi — plitalar mayda, matn qisqa */
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(14px, 2.4vw, 22px);
+}
+
+@media (min-width: 820px) {
+  .statGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.stat {
+  border: var(--line);
+  border-radius: 18px;
+  box-shadow: var(--pop-sm);
+  padding: clamp(16px, 2.6vw, 24px) clamp(14px, 2.2vw, 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: transform 0.18s var(--spring);
+}
+
+/* Stiker qiyaligi navbatlashadi, qo'l tegsa to'g'irlanadi — kartalar kabi */
+.statGrid .stat:nth-child(odd) {
+  transform: rotate(-1.2deg);
+}
+
+.statGrid .stat:nth-child(even) {
+  transform: rotate(1.2deg);
+}
+
+.statGrid .stat:hover {
+  transform: rotate(0deg) translateY(-2px);
+}
+
+.statSun {
+  background: var(--sun);
+}
+
+.statPaper {
+  background: var(--paper);
+}
+
+.statGreen {
+  background: var(--green);
+}
+
+/* Marjonda ink 5.3:1 — plitadagi qisqa matnlarga bemalol yetadi */
+.statCoral {
+  background: var(--coral);
+}
+
+.statNum {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 68%;
+  font-size: clamp(1.9rem, 4.6vw, 2.6rem);
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+}
+
+/* «daqiqa» kabi birlik — raqamdan kichik, lekin bir qatorda */
+.statUnit {
+  font-size: 0.55em;
+  font-stretch: 85%;
+}
+
+.statLab {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.25;
+}
+
+.statNote {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ink);
+  opacity: 0.75;
+}
+
 /* ── Bo'lim sarlavhalari ─────────────────────────────────────────────── */
 
 .secHead {
@@ -549,6 +649,11 @@
 
 .kickerCoral {
   background: #ffd9d8;
+}
+
+/* FAQ kicker'i — sun'ning och toni, boshqa kicker'lar bilan bir oila */
+.kickerSun {
+  background: #ffedb8;
 }
 
 .secTitle {
@@ -888,6 +993,138 @@
   }
 }
 
+/* ── FAQ: oq stiker-kartalar, native details ─────────────────────────── */
+
+.faq {
+  padding: clamp(40px, 6vw, 72px) 0 clamp(24px, 4vw, 40px);
+}
+
+.faqList {
+  max-width: var(--max);
+  margin: clamp(30px, 4vw, 46px) auto 0;
+  padding: 0 var(--pad);
+  display: grid;
+  gap: clamp(16px, 2.6vw, 22px);
+}
+
+.faqItem {
+  /* To'liq 1120px karta ichida qator juda cho'zilardi — o'qish qiynalardi */
+  max-width: 860px;
+  width: 100%;
+  background: var(--paper);
+  border: var(--line);
+  border-radius: 18px;
+  box-shadow: var(--pop-sm);
+  transition:
+    transform 0.18s var(--spring),
+    box-shadow 0.18s ease;
+}
+
+/* Stiker qiyaligi navbatlashadi */
+.faqList .faqItem:nth-child(odd) {
+  transform: rotate(-0.7deg);
+}
+
+.faqList .faqItem:nth-child(even) {
+  transform: rotate(0.7deg);
+}
+
+.faqList .faqItem:hover {
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+/* Qo'l tekkan yoki ochilgan stiker to'g'irlanadi — kartalar bilan bir xarakter.
+   Qoida nth-child'lardan KEYIN turadi — teng spetsifiklikda oxirgisi yutadi */
+.faqList .faqItem:hover,
+.faqList .faqItem[open] {
+  transform: rotate(0deg);
+}
+
+.faqSum {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 17px 20px;
+  cursor: pointer;
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 76%;
+  font-size: clamp(1rem, 2.4vw, 1.1875rem);
+  text-transform: uppercase;
+  line-height: 1.15;
+  list-style: none;
+  user-select: none;
+}
+
+/* Brauzerning standart uchburchak markeri stiker uslubiga yot — o'chiramiz */
+.faqSum::-webkit-details-marker {
+  display: none;
+}
+
+.faqSum::marker {
+  content: '';
+}
+
+.faqSum:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+/* Ochish belgisi: sariq doira ichida «+»; ochilganda 45° burilib «×» bo'ladi —
+   holat JS'siz, faqat details[open] selektori bilan boshqariladi */
+.faqIcon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 2.5px solid var(--ink);
+  border-radius: 50%;
+  background: var(--sun);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.faqIcon::before {
+  content: '+';
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.2s var(--spring);
+}
+
+.faqItem[open] .faqIcon::before {
+  transform: rotate(45deg);
+}
+
+/* Javob: shtrix chiziq savoldan ajratadi — karta ichida ikkinchi "qavat" */
+.faqBody {
+  margin: 0 20px;
+  padding: 14px 0 20px;
+  border-top: 2px dashed rgba(8, 36, 58, 0.35);
+  color: var(--ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+/* Support havolasi: ko'k oq fonda 3.5:1 bo'lardi — shuning uchun ink matn,
+   rang urg'usi tagchiziqda */
+.faqBody a {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--coral);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.faqBody a:hover {
+  text-decoration-color: var(--ink);
+}
+
 /* ── Yakuniy CTA ─────────────────────────────────────────────────────── */
 
 .finalWrap {
@@ -953,6 +1190,44 @@
 
 .final .btnPop:focus-visible {
   outline-color: var(--paper);
+}
+
+/* Bot manzili — oq mini-stiker: ko'k fonda oq matn kontrasti yetmasdi,
+   shuning uchun manzil ink rangda oq chip ustida turadi */
+.botHandle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  background: var(--paper);
+  border: 2.5px solid var(--ink);
+  border-radius: 999px;
+  box-shadow: 3px 3px 0 var(--ink);
+  padding: 9px 16px;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 88%;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  transform: rotate(-1deg);
+  transition:
+    transform 0.16s var(--spring),
+    box-shadow 0.16s ease;
+}
+
+.botHandle:hover {
+  transform: rotate(0deg) translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+.botHandle:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.botHandle:focus-visible {
+  outline: 3px solid var(--paper);
+  outline-offset: 4px;
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────── */

@@ -583,10 +583,20 @@
   line-height: 1.4;
 }
 
+/* «≈1 daqiqa» dagi birlik — raqamdan kichikroq, lekin o'sha gradient ichida
+   (background-clip: text ota elementda — bola glifi ham maskaga kiradi) */
+.statUnit {
+  font-size: 0.5em;
+  font-weight: 800;
+  font-stretch: 82%;
+  letter-spacing: 0;
+}
+
 /* ── Narx paketlari ─────────────────────────────────────────────────── */
 
 .prices,
-.how {
+.how,
+.faq {
   max-width: var(--max);
   margin: 0 auto;
   padding: clamp(48px, 8vh, 88px) var(--pad) 0;
@@ -823,6 +833,115 @@
   max-width: 30ch;
 }
 
+/* ── Savol-javob: shisha akkordeon ────────────────────────────────────
+   Native <details> — holat brauzerda, JS'siz. Ochish belgisi «+» ::after
+   pseudo'da: [open] holatda 45° burilib «×» ga aylanadi — faqat transform,
+   layout'ga tegmaydi (sahifaning animatsiya qoidasiga mos).
+   -------------------------------------------------------------------- */
+
+/* Bo'lim ustidagi mayda yorliq — ringLab bilan bir tipografik oila */
+.faqKick {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-stretch: 90%;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mut);
+  margin-bottom: 10px;
+}
+
+.faqList {
+  display: grid;
+  gap: 12px;
+  margin-top: clamp(22px, 4vh, 36px);
+  /* Savol qatori 70ch dan oshmasin — o'qish qulay, karta cho'zilib ketmaydi */
+  max-width: 760px;
+}
+
+.faqItem {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-line);
+  border-radius: 22px;
+  box-shadow: 0 12px 36px rgba(0, 144, 216, 0.09);
+  transition: box-shadow 0.25s ease;
+}
+
+.faqItem[open] {
+  box-shadow: 0 18px 48px rgba(0, 144, 216, 0.14);
+}
+
+.faqQ {
+  /* Brauzerning uchburchak markerini o'chiramiz — belgi o'zimizniki */
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 78%;
+  font-size: 1.0625rem;
+  line-height: 1.25;
+  color: var(--ink);
+  border-radius: 22px;
+}
+
+.faqQ::-webkit-details-marker {
+  display: none;
+}
+
+.faqQ:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* «+» doirasi — ochilganda ×'ga buriladi va shisha fon oladi */
+.faqQ::after {
+  content: '+';
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(8, 36, 58, 0.18);
+  color: #075e8c;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1;
+  transition: transform 0.25s cubic-bezier(0.3, 0.8, 0.3, 1), background-color 0.2s ease;
+}
+
+.faqItem[open] .faqQ::after {
+  transform: rotate(45deg);
+  background: rgba(0, 144, 216, 0.12);
+}
+
+.faqA {
+  padding: 0 22px 20px;
+  color: var(--mut);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+/* Javob ichidagi havola — footer'dagi legal havolalar bilan bir uslub */
+.faqA a {
+  color: #075e8c;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faqA a:hover {
+  color: var(--ink);
+}
+
 /* ── Yakuniy CTA: to'liq kenglikdagi aurora panel ─────────────────────
    Panel to'q ko'k asosda — oq matn 12:1+, gradient qatlam ustida oqadi.
    -------------------------------------------------------------------- */
@@ -885,6 +1004,33 @@
 .finaleIn .btnLight {
   position: relative;
   margin-top: 6px;
+}
+
+/* Bot manzili tugma ostida — manzilni ko'chirib olmoqchi bo'lgan ham topsin.
+   position: relative — panelning ::before aurora qatlami ustida tursin. */
+.finaleHandle {
+  position: relative;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-stretch: 85%;
+  font-size: 0.9375rem;
+  letter-spacing: 0.02em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.finaleHandle:hover {
+  color: #fff;
+  text-decoration-color: #fff;
+}
+
+.finaleHandle:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* ── Footer ── */

@@ -6,9 +6,11 @@ import Tracker from '@/components/Tracker';
 import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
-import { SITE } from '@/lib/content';
+import { SITE, FALLBACK_PRICES, kindOf } from '@/lib/content';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
+
+import x from './extra.module.css';
 
 /**
  * SSG landing — kirish darvozasidan (`/`) keyingi sahifa.
@@ -45,7 +47,9 @@ export const metadata: Metadata = {
 export default async function Landing() {
   const s = await getSettings();
   const bot = s.bot_username || env.BOT;
+  const botClean = bot.replace(/^@/, '');
   const tg = tgLink(bot, 'web');
+  const packCount = FALLBACK_PRICES.filter((p) => kindOf(p.sku) === 'ovoz').length;
 
   return (
     <>
@@ -63,6 +67,131 @@ export default async function Landing() {
             </div>
           }
         />
+
+        {/* ── Halol raqamlar — faqat tekshirsa bo'ladigan faktlar ── */}
+        <section className={`wrap ${x.band}`}>
+          <p className="eyebrow">Raqamlar</p>
+          <div className={x.facts}>
+            <div className={x.fact}>
+              <p className={`${x.factNum} tnum`}>{s.reviews_count}</p>
+              <p className={x.factLab}>foydalanuvchi tanlagan</p>
+            </div>
+            <div className={x.fact}>
+              <p className={`${x.factNum} tnum`}>{packCount}</p>
+              <p className={x.factLab}>tayyor paket</p>
+            </div>
+            <div className={x.fact}>
+              <p className={`${x.factNum} tnum`}>3</p>
+              <p className={x.factLab}>to‘lov usuli — Humo · Uzcard · Payme</p>
+            </div>
+            <div className={x.fact}>
+              <p className={`${x.factNum} tnum`}>≈1 daq</p>
+              <p className={x.factLab}>to‘lov tasdig‘i</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 3 qadam ── */}
+        <section className={`wrap ${x.band}`}>
+          <p className="eyebrow">Jarayon</p>
+          <h2 className={x.xh2}>Qanday ishlaydi</h2>
+          <ol className={x.how}>
+            <li>
+              <span className={`${x.hnum} tnum`}>1</span>
+              <h3 className={x.howH}>Botga o‘ting</h3>
+              <p className={x.howP}>
+                Telegram’da @{botClean} botini oching — ro‘yxatdan o‘tish, parol, email
+                so‘ralmaydi.
+              </p>
+            </li>
+            <li>
+              <span className={`${x.hnum} tnum`}>2</span>
+              <h3 className={x.howH}>/start bosing</h3>
+              <p className={x.howP}>Bot o‘zi yo‘l-yo‘riq beradi: paketni tanlaysiz, narx darhol ko‘rinadi.</p>
+            </li>
+            <li>
+              <span className={`${x.hnum} tnum`}>3</span>
+              <h3 className={x.howH}>To‘lang</h3>
+              <p className={x.howP}>Humo, Uzcard yoki Payme — to‘lov bir daqiqada tasdiqlanadi.</p>
+            </li>
+          </ol>
+        </section>
+
+        {/* ── Savol-javob ── */}
+        <section className={`wrap ${x.band}`}>
+          <p className="eyebrow">Savol-javob</p>
+          <h2 className={x.xh2}>Savollarga javob</h2>
+          <div className={x.faq}>
+            <details className={x.qa}>
+              <summary>Bot qanday ishlaydi?</summary>
+              <p className={x.qaA}>
+                Telegram’da @{botClean} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz.
+                Hammasi bot ichida — saytga qaytish shart emas.
+              </p>
+            </details>
+            <details className={x.qa}>
+              <summary>Ro‘yxatdan o‘tish kerakmi?</summary>
+              <p className={x.qaA}>
+                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
+              </p>
+            </details>
+            <details className={x.qa}>
+              <summary>Qaysi kartalar bilan to‘lash mumkin?</summary>
+              <p className={x.qaA}>
+                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
+              </p>
+            </details>
+            <details className={x.qa}>
+              <summary>Narx qancha?</summary>
+              <p className={x.qaA}>
+                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
+                paketlar botda ko‘rsatiladi.
+              </p>
+            </details>
+            <details className={x.qa}>
+              <summary>Savolim bor yoki muammo chiqdi — kimga yozaman?</summary>
+              <p className={x.qaA}>
+                <a
+                  href={`https://t.me/${s.support_username}`}
+                  rel="noopener"
+                  data-t="click"
+                  data-t-id="support"
+                >
+                  @{s.support_username}
+                </a>{' '}
+                ga yozing — tez javob beramiz.
+              </p>
+            </details>
+          </div>
+        </section>
+
+        {/* ── Yakuniy da'vat: ink plita + botning ochiq manzili ── */}
+        <section className={`wrap ${x.band} ${x.bandLast}`}>
+          <div className={x.finale}>
+            <h2 className={x.finH}>
+              Tayyor bo‘lsangiz — <span>boshlang</span>
+            </h2>
+            <p className={x.finP}>
+              {s.reviews_count} foydalanuvchi allaqachon tanlagan. Uch qadam — bir necha daqiqa.
+            </p>
+            <div className={x.finRow}>
+              <a href={tg} className="btn" data-t="cta" data-t-id="final_cta" data-tg rel="noopener">
+                <Telegram />
+                {s.cta_primary}
+              </a>
+              <a
+                href={tg}
+                className={x.finBot}
+                data-t="cta"
+                data-t-id="bot_handle"
+                data-tg
+                rel="noopener"
+              >
+                @{botClean}
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Tracker />

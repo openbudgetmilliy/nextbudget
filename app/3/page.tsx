@@ -41,6 +41,8 @@ const STEPS = [
 export default async function Aurora() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  /** Bot manzili matn sifatida — «@» belgisisiz saqlaymiz, UI o‘zi qo‘shadi */
+  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
   const vars = { narx: s.price_one_vote };
 
   /** `|` dan keyingi tarixiy qism narxni takrorlaydi — bu yerda kerak emas */
@@ -124,19 +126,27 @@ export default async function Aurora() {
             </div>
           </div>
 
-          {/* Statistika — shisha kartalar qatori */}
+          {/* Statistika — shisha kartalar qatori. Faqat halol, tekshiriladigan
+              faktlar: va'da emas, xizmatning o'zi haqidagi raqamlar */}
           <div className={st.stats}>
             <div className={st.stat}>
               <span className={`${st.statNum} tnum`}>{s.reviews_count}</span>
-              <span className={st.statLab}>mamnun foydalanuvchi</span>
+              <span className={st.statLab}>foydalanuvchi tanlagan</span>
             </div>
             <div className={st.stat}>
-              <span className={`${st.statNum} tnum`}>24/7</span>
-              <span className={st.statLab}>qo‘llab-quvvatlash</span>
+              {/* Soni ro'yxatdan olinadi — paket qo'shilsa raqam o'zi yangilanadi */}
+              <span className={`${st.statNum} tnum`}>{prices.length}</span>
+              <span className={st.statLab}>tayyor paket</span>
             </div>
             <div className={st.stat}>
               <span className={`${st.statNum} tnum`}>3</span>
               <span className={st.statLab}>to‘lov usuli — Humo · Uzcard · Payme</span>
+            </div>
+            <div className={st.stat}>
+              <span className={`${st.statNum} tnum`}>
+                ≈1<span className={st.statUnit}> daqiqa</span>
+              </span>
+              <span className={st.statLab}>to‘lov tasdig‘i</span>
             </div>
           </div>
         </section>
@@ -205,6 +215,67 @@ export default async function Aurora() {
           </ol>
         </section>
 
+        {/* ── Savol-javob: shisha akkordeon ──
+            Native <details> — client JS'siz ochilib-yopiladi, sahifa server
+            component bo'lib qoladi. Belgi (+/×) faqat CSS'da buriladi. */}
+        <section className={st.faq}>
+          <p className={st.faqKick}>Savol-javob</p>
+          <h2 className={st.h2}>
+            Savollarga <span className={st.gradWord}>javob</span>
+          </h2>
+
+          <div className={st.faqList}>
+            <details className={st.faqItem}>
+              <summary className={st.faqQ}>Bot qanday ishlaydi?</summary>
+              <p className={st.faqA}>
+                Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab
+                to‘laysiz. Hammasi bot ichida — saytga qaytish shart emas.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqQ}>Ro‘yxatdan o‘tish kerakmi?</summary>
+              <p className={st.faqA}>
+                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham,
+                hujjat ham so‘ralmaydi.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqQ}>Qaysi kartalar bilan to‘lash mumkin?</summary>
+              <p className={st.faqA}>
+                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi
+                orqali o‘tadi.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqQ}>Narx qancha?</summary>
+              <p className={st.faqA}>
+                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz
+                narxi arzonroq — yuqoridagi paketlar bo‘limiga qarang.
+              </p>
+            </details>
+
+            <details className={st.faqItem}>
+              <summary className={st.faqQ}>
+                Savolim bor yoki muammo chiqdi — kimga yozaman?
+              </summary>
+              <p className={st.faqA}>
+                <a
+                  href={`https://t.me/${s.support_username}`}
+                  rel="noopener"
+                  data-t="click"
+                  data-t-id="support"
+                >
+                  @{s.support_username}
+                </a>{' '}
+                ga yozing — tez javob beramiz.
+              </p>
+            </details>
+          </div>
+        </section>
+
         {/* ── Yakuniy CTA: aurora panel ichida oq tugma ── */}
         <section className={st.finale}>
           <div className={st.finaleIn}>
@@ -215,6 +286,17 @@ export default async function Aurora() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
+            </a>
+            {/* Bot manzili ochiq matnda — tugmani emas, manzilni izlagan ham topsin */}
+            <a
+              href={tg}
+              className={st.finaleHandle}
+              data-t="cta"
+              data-t-id="v3_bot_handle"
+              data-tg
+              rel="noopener"
+            >
+              @{bot}
             </a>
           </div>
         </section>

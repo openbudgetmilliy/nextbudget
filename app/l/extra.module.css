@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Landing pastki bo'limlari — plakat tilining davomi.
+
+   globals.css dagi uch qoida shu yerda ham amal qiladi:
+   markazda hech narsa yo'q, plitalar mazmuni qadar, har plitaning bir
+   chekkasi qiya. Ranglar o'sha uch belgi rangi: ink / ko'k / yashil.
+
+   Alohida modul — darvoza (`/`) shu CSS'ni yuklamaydi: u Poster bilan
+   bitta ekran bo'lib qolaveradi, bu bo'limlar faqat /l ga tegishli.
+   ========================================================================== */
+
+.band {
+  padding-top: clamp(38px, 7vh, 72px);
+}
+
+.bandLast {
+  padding-bottom: clamp(44px, 8vh, 84px);
+}
+
+.xh2 {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 62%;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+.xsub {
+  color: var(--ink-2);
+  margin-top: 10px;
+  max-width: 48ch;
+}
+
+/* ── Halol raqamlar: yashil ustki chiziqli fakt ustunlari ── */
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 48px;
+  margin-top: clamp(20px, 3vh, 30px);
+}
+
+.fact {
+  border-top: 3px solid var(--green);
+  padding-top: 12px;
+  min-width: 140px;
+}
+
+.factNum {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 66%;
+  font-size: clamp(2.1rem, 5.5vw, 3.2rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+
+.factLab {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  margin-top: 5px;
+}
+
+/* ── 3 qadam ── */
+
+.how {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(22px, 3.5vw, 40px);
+  margin-top: clamp(20px, 3vh, 30px);
+}
+
+.hnum {
+  display: inline-block;
+  background: var(--green);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 1.05rem;
+  padding: 7px 15px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  font-variant-numeric: tabular-nums;
+}
+
+.howH {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 72%;
+  font-size: 1.1875rem;
+  text-transform: uppercase;
+  margin: 12px 0 6px;
+}
+
+.howP {
+  color: var(--ink-2);
+  font-size: 0.9063rem;
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+/* ── FAQ: qil chiziqli details ── */
+
+.faq {
+  max-width: 720px;
+  margin-top: clamp(16px, 2.4vh, 24px);
+  border-bottom: 2px solid var(--hair);
+}
+
+.qa {
+  border-top: 2px solid var(--hair);
+}
+
+.qa summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  cursor: pointer;
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 78%;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  list-style: none;
+}
+
+.qa summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Ochish belgisi: + → × (aylantirilgan +). Ikonka emas — matn belgisi,
+   plakatning grafik tiliga mos */
+.qa summary::after {
+  content: '+';
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--blue-d);
+  flex: none;
+  transition: transform 0.2s ease;
+}
+
+.qa[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.qaA {
+  padding: 0 34px 18px 0;
+  color: var(--ink-2);
+  line-height: 1.6;
+  max-width: 56ch;
+}
+
+.qaA a {
+  color: var(--blue-d);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Yakuniy da'vat: ink plita, pastki chekkasi qiya ── */
+
+.finale {
+  background: var(--ink);
+  color: var(--paper);
+  padding: clamp(28px, 5vw, 52px);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.finH {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-stretch: 62%;
+  font-size: clamp(2rem, 6.5vw, 3.6rem);
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.finH span {
+  color: var(--green);
+}
+
+.finP {
+  opacity: 0.88;
+  max-width: 44ch;
+}
+
+.finRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 6px;
+}
+
+/* Bot manzili — tugma yonida, qidirgan odam darhol topsin */
+.finBot {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-stretch: 80%;
+  font-size: 1.0625rem;
+  color: var(--paper);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--green);
+}
+
+.finBot:hover {
+  color: var(--green);
+}
+
+/* ── Mobil ── */
+
+@media (max-width: 700px) {
+  .how {
+    grid-template-columns: 1fr;
+  }
+
+  .facts {
+    gap: 18px 32px;
+  }
+}
