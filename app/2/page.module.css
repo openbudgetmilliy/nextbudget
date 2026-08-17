@@ -335,8 +335,8 @@
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 90%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ink-soft);
   margin-bottom: 4px;
@@ -563,20 +563,24 @@
   transform: rotate(0deg) translateY(-2px);
 }
 
-.statSun {
+/* Rang plita TARTIBIDAN olinadi.
+   Ilgari u alohida class'lar orqali kutilardi (`statSun` va h.k.), lekin
+   umumiy `VariantSections` ularni uzatmaydi — natijada to'rt plita ham
+   rangsiz oq bo'lib chiqardi. Ink marjonda 5.3:1, sariqda 11:1,
+   yashilda 6.9:1 — qisqa matnlarga bemalol yetadi. */
+.statGrid .stat:nth-child(1) {
   background: var(--sun);
 }
 
-.statPaper {
+.statGrid .stat:nth-child(2) {
   background: var(--paper);
 }
 
-.statGreen {
+.statGrid .stat:nth-child(3) {
   background: var(--green);
 }
 
-/* Marjonda ink 5.3:1 — plitadagi qisqa matnlarga bemalol yetadi */
-.statCoral {
+.statGrid .stat:nth-child(4) {
   background: var(--coral);
 }
 
@@ -636,8 +640,8 @@
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 88%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
+  font-size: 0.75rem;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   transform: rotate(-1.5deg);
 }
@@ -764,8 +768,8 @@
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 85%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   transform: rotate(2deg);
   animation: wiggle 2s ease-in-out infinite;
@@ -1304,6 +1308,40 @@
   background: var(--sun);
 }
 
+/* ── Keng ekran ──────────────────────────────────────────────────────────
+   1120px o'ram 1600px+ monitorda kichik oroldek qolib ketardi. Kenglik va
+   asosiy matn o'lchami bir pog'ona ko'tariladi — stiker uslubi o'zgarmaydi,
+   faqat masshtab ekranga moslashadi. */
+
+@media (min-width: 1400px) {
+  .page {
+    --max: 1280px;
+  }
+
+  .heroSub,
+  .secSub,
+  .stepText,
+  .faqBody {
+    font-size: 1.0625rem;
+  }
+}
+
+/* ── Bir ustunli tartib: portlash matnga tegmasin ────────────────────────
+   900px dan pastda narx stikeri matn ustuni ICHIDA turadi. Portlash
+   `.priceWrap` dan 26% tashqariga chiqadi va qo'shni qatorlar ustiga
+   tushardi — tor ekranda uni jilovlaymiz va atrofga nafas beramiz. */
+
+@media (max-width: 899px) {
+  .priceWrap {
+    align-self: center;
+    padding: clamp(30px, 7vw, 44px) clamp(26px, 4vw, 40px);
+  }
+
+  .burst {
+    width: min(108%, 340px);
+  }
+}
+
 /* ── Mayda ekran tuzatishlari ────────────────────────────────────────── */
 
 @media (max-width: 420px) {
@@ -1318,43 +1356,60 @@
   .heroAct {
     width: 100%;
   }
+
+  /* Uzun CTA yorlig'i 320px ekranda o'ramdan chiqib ketmasin — tugma
+     ko'rinishi o'zgarmaydi, faqat yorliq ikki qatorga bo'linadi */
+  .secAct .btnPop {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
-/* ── Mukofot kontenti ── */
+/* ── Mukofot kontenti ──
+   MUHIM: bu bloklar `VariantSections` ichida bo'lim tegining BEVOSITA bolasi
+   bo'lib chiqadi (variant `secIn` o'ramini uzatmaydi). Shuning uchun o'lchamni
+   har biri O'ZI olishi shart — aks holda ular ekranning chap chekkasiga
+   yopishib, qolgan kontentdan ajralib qoladi. */
 
 .trustRow {
+  max-width: var(--max);
+  margin: 20px auto 0;
+  padding: 0 var(--pad);
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 20px;
   list-style: none;
-  padding: 0;
 }
 
 .trustChip {
   display: inline-block;
-  padding: 8px 14px;
+  padding: 9px 15px;
   border: 3px solid var(--ink);
   background: var(--paper);
   font-family: var(--f-display);
   font-weight: 800;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   box-shadow: 4px 4px 0 var(--ink);
 }
 
 .secAct {
-  margin-top: 24px;
+  max-width: var(--max);
+  margin: 28px auto 0;
+  padding: 0 var(--pad);
 }
 
 .finEyebrow {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 13px;
   background: var(--sun);
+  color: var(--ink);
   border: 3px solid var(--ink);
   font-family: var(--f-display);
   font-weight: 900;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   box-shadow: 3px 3px 0 var(--ink);
 }
@@ -1368,10 +1423,15 @@
   gap: 6px;
 }
 
+/* Yakuniy blok foni ko'k — ink matn u yerda 2.6:1 bo'lardi.
+   Oq matn 3.5:1: shuning uchun qatorlar qalin va 16px dan kichik emas. */
 .finalList li {
-  padding-left: 16px;
+  padding-left: 20px;
   position: relative;
-  font-size: 0.9375rem;
+  color: var(--paper);
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .finalList li::before {
@@ -1393,23 +1453,36 @@
   height: 40px;
 }
 
+/* Footer foni ink — matn ranglari SHU fonga qarab tanlanadi.
+   Ilgari `--ink-2` (ta'riflanmagan, global ko'k-kulrangga tushardi) va
+   ranglanmagan `.footName` ink fonda ink bo'lib ko'rinmay ketardi. */
 .footName {
   font-family: var(--f-display);
   font-weight: 900;
-  font-size: 1rem;
+  font-size: 1.0625rem;
   text-transform: uppercase;
+  color: var(--cream);
 }
 
 .footNote {
-  color: var(--ink-2);
+  color: var(--cream);
+  opacity: 0.82;
   font-size: 0.875rem;
+  line-height: 1.55;
   max-width: 52ch;
   margin-bottom: 8px;
 }
 
+/* Sariq krem ink ustida 12:1 — ko'k (3:1) bu fonda o'qilmasdi */
 .footBot {
   font-family: var(--f-display);
   font-weight: 800;
-  color: var(--blue);
+  font-size: 1rem;
+  color: var(--sun);
   text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footBot:hover {
+  color: var(--paper);
 }

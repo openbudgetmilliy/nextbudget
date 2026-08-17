@@ -312,8 +312,8 @@
   font-family: var(--f-display);
   font-weight: 700;
   font-stretch: 90%;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--lime);
   padding: 9px 16px;
@@ -368,8 +368,8 @@
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 90%;
-  font-size: 0.72rem;
-  letter-spacing: 0.22em;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--mut);
   margin-bottom: 4px;
@@ -548,16 +548,16 @@
   font-family: var(--f-display);
   font-weight: 700;
   font-stretch: 88%;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mut);
 }
 
 .statNote {
   color: var(--mut);
-  font-size: 0.72rem;
-  opacity: 0.75;
+  font-size: 0.78rem;
+  opacity: 0.85;
 }
 
 /* ── Bo'limlar ───────────────────────────────────────────────────────────── */
@@ -572,8 +572,8 @@
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 90%;
-  font-size: 0.72rem;
-  letter-spacing: 0.24em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--cyan);
   margin-bottom: 10px;
@@ -612,6 +612,14 @@
   }
 }
 
+/* 320px da ikki ustun kartaga atigi 102px o'qish maydoni qoldirardi —
+   «foydalanuvchilarga» kabi uzun so'z kartadan chiqib ketardi */
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   position: relative;
   display: flex;
@@ -640,13 +648,13 @@
 
 .cardBadge {
   position: absolute;
-  top: -11px;
+  top: -12px;
   left: 14px;
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 85%;
-  font-size: 0.66rem;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #04101c;
   background: var(--grad);
@@ -699,8 +707,9 @@
 
 .cardPer {
   color: var(--mut);
-  font-size: 0.78rem;
-  margin-top: 2px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-top: 4px;
 }
 
 .cardBtn {
@@ -1012,12 +1021,12 @@
 
 .trustChip {
   display: inline-block;
-  padding: 8px 14px;
+  padding: 9px 15px;
   border: 1px solid var(--line);
   border-radius: 999px;
   font-family: var(--f-display);
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--mut);
@@ -1030,15 +1039,15 @@
 
 .finEyebrow {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   background: var(--grad);
   color: #04101c;
   font-family: var(--f-display);
   font-weight: 800;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   margin-bottom: 4px;
 }
 
@@ -1107,6 +1116,65 @@
 
 .footBot:hover {
   color: #fff;
+}
+
+/* ── Keng ekran ────────────────────────────────────────────────────────────
+   1080px ustun 1600px+ monitorda neon osmonning o'rtasida ingichka
+   yo'lakdek qolardi. Kenglik va ikkilamchi matn bir pog'ona ko'tariladi. */
+
+@media (min-width: 1400px) {
+  .hdrIn,
+  .heroIn,
+  .secIn,
+  .footIn {
+    max-width: 1240px;
+  }
+
+  .final {
+    max-width: 1192px;
+  }
+
+  .faq {
+    max-width: 860px;
+  }
+
+  .sub,
+  .secSub,
+  .stepP,
+  .faqA,
+  .footNote {
+    font-size: 1.0625rem;
+  }
+}
+
+/* ── Tor ekran ─────────────────────────────────────────────────────────────
+   320px da header ikki elementi (brend + tugma) bir qatorga sig'masdi va
+   sahifa gorizontal siljib ketardi. */
+
+@media (max-width: 360px) {
+  .brand {
+    font-size: 0.875rem;
+    gap: 8px;
+  }
+
+  .logoTile {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logoImg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* Uzun CTA yorlig'i o'ramdan chiqmasin — tugma uslubi o'zgarmaydi,
+     faqat yorliq ikki qatorga bo'linadi */
+  .secAct .cta {
+    width: 100%;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 /* ── Variant almashtirgich ──────────────────────────────────────────────── */

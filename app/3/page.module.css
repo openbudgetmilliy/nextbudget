@@ -666,8 +666,8 @@
   font-family: var(--f-display);
   font-weight: 800;
   font-stretch: 88%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   border-radius: 999px;
   padding: 6px 13px;
@@ -693,7 +693,13 @@
   letter-spacing: -0.01em;
 }
 
+/* Raqam va birlik ikki alohida `span` — o'ram flex bo'lmasa ular
+   «35 000so'm» bo'lib yopishib qolardi */
 .cardPrice {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 7px;
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 72%;
@@ -757,6 +763,17 @@
   counter-reset: none;
 }
 
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* MUHIM: bu blok bazaviy `.step` dan KEYIN turishi shart. Aks holda teng
+   spetsifiklikda oxirgi qoida yutib, `align-items: flex-start` markazni
+   bekor qilardi — matn markazda, raqam doirasi esa chapda qolardi. */
 @media (min-width: 760px) {
   .timeline {
     grid-template-columns: repeat(3, 1fr);
@@ -781,39 +798,29 @@
   }
 }
 
-.step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-/* Shisha doira raqam, gradient hoshiya bilan */
+/* Shisha doira raqam, gradient hoshiya bilan.
+   Raqam SHU elementning ichida turadi (ichki o'ram yo'q), shuning uchun
+   doira ham, tipografiya ham shu yerda: `display: grid` bo'lmasa span
+   satr ichida qolib, 56px o'lcham umuman qo'llanmaydi. Hoshiya
+   `.cardFeat` dagi bilan bir texnika — padding-box ustida border-box
+   gradienti. */
 .stepNum {
+  display: grid;
+  place-items: center;
   width: 56px;
   height: 56px;
   flex: none;
   border-radius: 50%;
-  padding: 2px;
-  background: linear-gradient(135deg, var(--blue), var(--teal), var(--green));
+  border: 3px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)) padding-box,
+    linear-gradient(135deg, var(--blue), var(--teal), var(--green)) border-box;
   box-shadow: 0 10px 28px rgba(0, 144, 216, 0.2);
-}
-
-.stepNumIn {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.92);
-  -webkit-backdrop-filter: blur(20px);
-  backdrop-filter: blur(20px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 72%;
   font-size: 1.375rem;
+  line-height: 1;
   color: var(--ink);
 }
 
@@ -1119,6 +1126,27 @@
   background: linear-gradient(135deg, #0072b0, #00806f);
 }
 
+/* ── Keng ekran ───────────────────────────────────────────────────────
+   1080px ustun 1600px+ monitorda juda tor ko'rinardi: ikki yonda katta
+   o'lik maydon qolardi. Kenglik va ikkilamchi matn bir pog'ona ko'tariladi. */
+
+@media (min-width: 1400px) {
+  .page {
+    --max: 1240px;
+  }
+
+  .sectionSub,
+  .stepDesc,
+  .faqA,
+  .legal {
+    font-size: 1.0625rem;
+  }
+
+  .faqList {
+    max-width: 860px;
+  }
+}
+
 /* ── Mobil siljishlar ── */
 
 @media (max-width: 560px) {
@@ -1173,12 +1201,14 @@
 }
 
 .finEyebrow {
+  /* Panelning aurora ::before qatlami ustida qolsin */
+  position: relative;
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 999px;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: #fff;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1193,21 +1223,30 @@
   gap: 8px;
 }
 
-.finalList li {
-  padding-left: 18px;
+/* Yakuniy panel foni to'q ko'k (#05314e) — bu qatorlar ranglanmasa
+   sahifaning ink matnini meros qilib olib, fonda butunlay yo'qolardi.
+   `position: relative` — panelning aurora ::before qatlami ustida tursin. */
+.finalList {
   position: relative;
-  opacity: 0.9;
+}
+
+.finalList li {
+  padding-left: 20px;
+  position: relative;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
 .finalList li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.55em;
+  top: 0.5em;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1, #ec4899);
+  background: linear-gradient(135deg, var(--teal), var(--green));
 }
 
 .footNote {

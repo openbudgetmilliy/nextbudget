@@ -210,8 +210,8 @@
   font-family: var(--f-display);
   font-weight: 800;
   font-stretch: 90%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.09em;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 7px 14px;
   border-radius: 999px;
@@ -320,10 +320,10 @@
   font-family: var(--f-display);
   font-weight: 800;
   font-stretch: 90%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .priceFig {
@@ -437,13 +437,17 @@
 
 /* ── Bot katagi ── */
 
+/* `break-all` manzilni istalgan harfda kesardi («@OpenBudgetBo | t»).
+   `break-word` faqat boshqa iloj qolmaganda sindiradi, o'lcham esa
+   katakka sig'adigan darajada. */
 .botName {
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 72%;
-  font-size: clamp(1.3rem, 2.6vw, 1.8rem);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  line-height: 1.15;
   margin-top: 8px;
-  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 .botGo {
@@ -474,7 +478,12 @@
   margin-top: calc(var(--gap) - clamp(36px, 6vw, 64px));
 }
 
+/* Raqam va yorliq ikkalasi ham `span` bo'lib keladi — ustun bo'lmasa ular
+   bir satrga yopishib «0Ovoz berildi» bo'lib chiqardi */
 .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   border-radius: var(--r);
   padding: clamp(16px, 2.2vw, 24px);
 }
@@ -511,20 +520,23 @@
 }
 
 /* Ranglar hero mozaikasidan takrorlanadi — hammasi och fon + ink matn,
-   kontrast 7:1 dan yuqori */
-.statSky {
+   kontrast 7:1 dan yuqori.
+   Rang katak TARTIBIDAN olinadi: alohida class'lar (`statSky` va h.k.)
+   umumiy `VariantSections` orqali uzatilmagani uchun qator butunlay
+   rangsiz qolib, mozaika tilidan uzilib qolgandi. */
+.statRow .stat:nth-child(1) {
   background: var(--sky);
 }
 
-.statLemon {
+.statRow .stat:nth-child(2) {
   background: var(--lemon);
 }
 
-.statGreen {
+.statRow .stat:nth-child(3) {
   background: var(--green);
 }
 
-.statOrange {
+.statRow .stat:nth-child(4) {
   background: var(--orange);
 }
 
@@ -558,9 +570,11 @@
 
 /* ── Paket mozaikasi: 4 ustun, teshiksiz (DOM tartibi page.tsx da) ── */
 
+/* Mukofot kartalari doim UCHTA (VariantSections) — to'r ham uchta ustun.
+   4 ustunda o'ng chekkada abadiy bo'sh katak qolib, qator yarim ko'rinardi. */
 .pkGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--gap);
   margin-top: clamp(18px, 3vh, 28px);
 }
@@ -623,17 +637,19 @@
   gap: 14px;
 }
 
+/* Badge oqimdan tashqarida turgani uchun uzun sarlavha («iPhone 17»)
+   uning tagiga kirib ketardi. Endi u katakning birinchi qatori —
+   hech narsa bilan to'qnashmaydi. */
 .pkBadge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  align-self: flex-start;
+  margin-bottom: 6px;
   background: var(--lemon);
   color: var(--ink);
   font-family: var(--f-display);
   font-weight: 800;
   font-stretch: 90%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 6px 12px;
   border-radius: 999px;
@@ -936,7 +952,7 @@
   color: var(--lemon);
   text-decoration: underline;
   text-underline-offset: 4px;
-  word-break: break-all;
+  overflow-wrap: break-word;
   transition: color 0.18s ease;
 }
 
@@ -1022,6 +1038,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* Uchinchi karta yolg'iz qolmasin — u butun qatorni egallaydi */
+  .pkGrid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
   .cellHero {
     grid-column: 1 / 3;
     grid-row: auto;
@@ -1034,6 +1055,26 @@
 
   .steps {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ── Keng ekran ────────────────────────────────────────────────────────
+   Mozaika 1120px da qotib qolardi: 1600px+ da kataklar kichrayib, ikki
+   yonda katta bo'sh maydon qolardi. */
+
+@media (min-width: 1400px) {
+  .hdrIn,
+  .mainCol,
+  .legal {
+    max-width: 1280px;
+  }
+
+  .sub,
+  .secSub,
+  .stepP,
+  .faqA,
+  .legal {
+    font-size: 1.0625rem;
   }
 }
 
@@ -1072,6 +1113,26 @@
   }
 }
 
+/* Brend so'zi va tugma 360px header'ga birga sig'masdi — belgining o'zi
+   qoladi, nom esa `aria-label` orqali baribir o'qiladi */
+@media (max-width: 400px) {
+  .brand {
+    font-size: 0.9375rem;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand {
+    font-size: 0;
+  }
+
+  .logoImg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 .trustRow {
   display: flex;
   flex-wrap: wrap;
@@ -1095,13 +1156,18 @@
   margin-top: 20px;
 }
 
+/* Panel `color: #fff` beradi — limon fonda oq matn 1.2:1 bo'lib
+   butunlay o'qilmasdi. Ink limonda 12:1. */
 .finEyebrow {
+  position: relative;
   display: inline-block;
-  padding: 6px 12px;
+  padding: 7px 13px;
   border-radius: 8px;
   background: var(--lemon);
+  color: var(--ink);
   font-weight: 800;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -1114,15 +1180,23 @@
   gap: 6px;
 }
 
-.finalList li {
-  padding-left: 14px;
+.finalList {
   position: relative;
 }
 
+.finalList li {
+  padding-left: 24px;
+  position: relative;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* 14px joy o'q kengligining o'ziga ham yetmasdi — matn unga yopishardi */
 .finalList li::before {
   content: '→';
   position: absolute;
   left: 0;
+  color: var(--lemon);
 }
 
 .footIn {

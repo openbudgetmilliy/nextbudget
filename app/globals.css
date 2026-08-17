@@ -246,11 +246,14 @@ button {
 
 /* ── Sarlavha: tor, qalin, ustma-ust ── */
 
+/* Yuqori chegara 7rem edi: 1024px ekranda «TASHABBUSLI» so'zi 555px joy
+   talab qilib, o'zining 518px lik ustunidan narx plitasi tomon chiqib
+   ketardi. 6.4rem — eng uzun so'z ham ustun ichida qoladigan eng katta o'lcham. */
 .stage h1 {
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 62%;
-  font-size: clamp(2.9rem, 14.5vw, 7rem);
+  font-size: clamp(2.9rem, 14.5vw, 6.4rem);
   line-height: 0.85;
   letter-spacing: -0.015em;
   text-transform: uppercase;
@@ -281,8 +284,8 @@ button {
   font-family: var(--f-display);
   font-weight: 900;
   font-stretch: 90%;
-  font-size: 0.6875rem;
-  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   opacity: 0.92;
   margin-bottom: 2px;
@@ -737,6 +740,26 @@ body.leaving .splash-in {
   }
 }
 
+/* ── Keng ekran ───────────────────────────────────────────────────────────
+   1080px o'ram 1600px+ monitorda sahifani ingichka ustunga aylantirardi:
+   plakat o'z og'irligini yo'qotardi. Kenglik va o'qish matni bir pog'ona
+   ko'tariladi — kompozitsiya qoidalari o'zgarmaydi. */
+
+@media (min-width: 1400px) {
+  :root {
+    --max: 1240px;
+  }
+
+  .stage-sub {
+    font-size: 1.125rem;
+    max-width: 44ch;
+  }
+
+  .note {
+    font-size: 0.875rem;
+  }
+}
+
 /* ── Mobil ── */
 
 @media (max-width: 560px) {
@@ -767,6 +790,16 @@ body.leaving .splash-in {
 @media (max-width: 370px) {
   .brand span {
     display: none;
+  }
+
+  /* «Mukofot olishni boshlash» 314px joy talab qiladi, 320px ekranda esa
+     o'ram ichida 284px bor — yorliq bir qatorda turolmasdi va sahifa
+     gorizontal siljirdi. Tugma ko'rinishi o'zgarmaydi, faqat matn
+     ikki qatorga o'tadi. */
+  .btn {
+    max-width: 100%;
+    white-space: normal;
+    text-align: left;
   }
 }
 

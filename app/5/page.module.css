@@ -561,23 +561,26 @@
   margin-top: 3px;
 }
 
-.stBlue {
+/* Pastel juftliklar plita TARTIBIDAN olinadi.
+   Ilgari ular alohida class'lar (`stBlue` va h.k.) orqali kutilardi, lekin
+   umumiy `VariantSections` ularni uzatmaydi — qator rangsiz qolib, hero
+   chiplaridan uzilib qolgandi. Har juftlikda fon och, matn to'q: 4.5:1+ */
+.stats .stat:nth-child(1) {
   background: #e0f2ff;
   color: var(--blue-d);
 }
 
-.stPink {
+.stats .stat:nth-child(2) {
   background: #ffe3f4;
   color: var(--pink-d);
 }
 
-.stMint {
+.stats .stat:nth-child(3) {
   background: #e2f8d9;
   color: var(--mint-d);
 }
 
-/* Peach juftlik faqat shu yerda kerak — to'q ton kontrast uchun lokal */
-.stPeach {
+.stats .stat:nth-child(4) {
   background: #ffedd8;
   color: #a35d13;
 }
@@ -718,8 +721,8 @@
   background: rgba(255, 255, 255, 0.92);
   color: var(--pink-d);
   font-weight: 800;
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 6px 14px;
   border-radius: 999px;
@@ -825,29 +828,32 @@
   text-align: center;
 }
 
+/* Shar rangi qadam TARTIBIDAN olinadi.
+   Ilgari rang alohida class'lar (`ballBlue` va h.k.) orqali kutilardi, lekin
+   ular hech qayerdan berilmasdi: shar foni bo'sh qolib, oq raqam oq-pushti
+   fonda ko'rinmay ketardi. Endi rang shu yerda, `.step` tartibiga qarab. */
 .stepBall {
   display: grid;
   place-items: center;
   width: 68px;
   height: 68px;
+  flex: none;
   border-radius: 50%;
   color: #fff;
   font-family: var(--f-display);
   font-weight: 900;
   font-size: 1.625rem;
-}
-
-.ballBlue {
+  line-height: 1;
   background: linear-gradient(135deg, #6fc9ff, var(--blue-d));
   box-shadow: 0 10px 26px rgba(0, 114, 176, 0.35);
 }
 
-.ballPink {
+.steps .step:nth-child(2) .stepBall {
   background: linear-gradient(135deg, var(--pink), var(--pink-d));
   box-shadow: 0 10px 26px rgba(224, 51, 143, 0.35);
 }
 
-.ballMint {
+.steps .step:nth-child(3) .stepBall {
   background: linear-gradient(135deg, #a9f27f, var(--mint-d));
   box-shadow: 0 10px 26px rgba(63, 154, 44, 0.35);
 }
@@ -1122,6 +1128,35 @@
   background: var(--grad);
 }
 
+/* ── Keng ekran ────────────────────────────────────────────────────────
+   1080px ustun katta monitorda sahifani tor yo'lakka aylantirardi. */
+
+@media (min-width: 1400px) {
+  .hdrIn,
+  .heroIn,
+  .statsSec,
+  .secIn,
+  .footIn,
+  .legal {
+    max-width: 1240px;
+  }
+
+  .final {
+    max-width: 1192px;
+  }
+
+  .faq {
+    max-width: 820px;
+  }
+
+  .sub,
+  .secSub,
+  .stepP,
+  .faqA {
+    font-size: 1.0625rem;
+  }
+}
+
 /* ── Planshet ── */
 
 @media (max-width: 900px) {
@@ -1177,6 +1212,30 @@
   }
 }
 
+/* ── Eng tor telefonlar ── */
+
+@media (max-width: 380px) {
+  /* Brend so'zi va tugma bir qatorga sig'masdi */
+  .brand {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .logoImg {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Halo karta atrofidan 22px chiqadi — 320px ekranda u o'ramdan oshardi */
+  .priceHalo {
+    inset: -12px;
+  }
+
+  .priceCard {
+    padding: 18px 22px;
+  }
+}
+
 .trustRow {
   display: flex;
   flex-wrap: wrap;
@@ -1187,12 +1246,12 @@
 }
 
 .trustChip {
-  padding: 8px 14px;
+  padding: 9px 15px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.85);
   border: 2px solid rgba(255, 105, 180, 0.35);
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .secAct {
@@ -1201,12 +1260,13 @@
 
 .finEyebrow {
   display: inline-block;
-  padding: 6px 14px;
+  padding: 7px 15px;
   border-radius: 999px;
   background: linear-gradient(135deg, #ff6bcb, #7c5cff);
   color: #fff;
   font-weight: 800;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -1219,12 +1279,24 @@
   gap: 6px;
 }
 
-.finalList li::before {
-  content: '♥ ';
-  color: #ff6bcb;
+.finalList li {
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
+/* Panel gradienti pushtiga yaqinlashganda pushti yurakcha yo'qolardi */
+.finalList li::before {
+  content: '♥ ';
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Footer ichi o'z o'lchagichini olishi shart: `.foot` faqat fon beradi,
+   `.legal` esa bu tarmoqda ishlatilmaydi. O'ramsiz kontent ekranning
+   chap chekkasiga yopishib, sahifadan ajralib qolardi. */
 .footIn {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 3vw, 24px) 32px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
