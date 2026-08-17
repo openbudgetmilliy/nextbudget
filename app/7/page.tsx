@@ -59,12 +59,22 @@ export default async function VariantGold() {
 
   return (
     <div className={c.page}>
-      {/* Fon qatlami: suzuvchi oltin-yashil nurlar + nuqtali panjara.
-          Alohida div — matn qatlamiga filter/animatsiya yuqmasin */}
+      {/* Fon qatlami: suzuvchi oltin tangalar + nurlar + nuqtali panjara.
+          Alohida div — matn qatlamiga filter/animatsiya yuqmasin.
+          Tangalar manbadagi 3D tanga yomg'irining (three.js) CSS-only
+          ishorasi: variant nomi "Oltin tanga" shu motivdan olingan,
+          shuning uchun fonda haqiqatan tanga ko'rinishi kerak. */}
       <div className={c.sky} aria-hidden>
         <span className={`${c.orb} ${c.orbGold}`} />
         <span className={`${c.orb} ${c.orbEm}`} />
         <span className={c.mesh} />
+        <span className={`${c.coin} ${c.coin1}`} />
+        <span className={`${c.coin} ${c.coin2}`} />
+        <span className={`${c.coin} ${c.coin3}`} />
+        <span className={`${c.coin} ${c.coin4}`} />
+        <span className={`${c.coin} ${c.coin5}`} />
+        <span className={`${c.coin} ${c.coin6}`} />
+        <span className={`${c.coin} ${c.coin7}`} />
       </div>
 
       {/* ── Yopishqoq header: to'q shisha ── */}
