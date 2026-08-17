@@ -94,27 +94,37 @@ export default async function Landing() {
         {/* ── 3 qadam ── */}
         <section className={`wrap ${x.band}`}>
           <p className="eyebrow">Jarayon</p>
-          <h2 className={x.xh2}>Qanday ishlaydi</h2>
+          <h2 className={x.xh2}>Qanday ovoz beriladi</h2>
+          <p className={x.xsub}>Uch qadam — telefon qo‘lingizda bo‘lsa, bir daqiqa kifoya.</p>
           <ol className={x.how}>
             <li>
               <span className={`${x.hnum} tnum`}>1</span>
-              <h3 className={x.howH}>Botga o‘ting</h3>
+              <h3 className={x.howH}>Tashabbus raqamini oling</h3>
               <p className={x.howP}>
-                Telegram’da @{botClean} botini oching — ro‘yxatdan o‘tish, parol, email
-                so‘ralmaydi.
+                Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha
+                raqamini yozib oling.
               </p>
             </li>
             <li>
               <span className={`${x.hnum} tnum`}>2</span>
-              <h3 className={x.howH}>/start bosing</h3>
-              <p className={x.howP}>Bot o‘zi yo‘l-yo‘riq beradi: paketni tanlaysiz, narx darhol ko‘rinadi.</p>
+              <h3 className={x.howH}>openbudget.uz’da toping</h3>
+              <p className={x.howP}>
+                Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish»
+                tugmasini bosing.
+              </p>
             </li>
             <li>
               <span className={`${x.hnum} tnum`}>3</span>
-              <h3 className={x.howH}>To‘lang</h3>
-              <p className={x.howP}>Humo, Uzcard yoki Payme — to‘lov bir daqiqada tasdiqlanadi.</p>
+              <h3 className={x.howH}>SMS bilan tasdiqlang</h3>
+              <p className={x.howP}>
+                Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi.
+                To‘lov ham, hujjat ham kerak emas.
+              </p>
             </li>
           </ol>
+          <p className={x.xsub}>
+            Ovoz berish bepul, mavsum ochiq paytida ishlaydi — muddatlar openbudget.uz’da.
+          </p>
         </section>
 
         {/* ── Savol-javob ── */}

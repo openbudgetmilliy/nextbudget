@@ -59,9 +59,18 @@ const STAR_POINTS = Array.from({ length: 10 }, (_, i) => {
 const STEP_TONES = [st.numBlue, st.numSun, st.numGreen];
 
 const STEPS = [
-  { t: 'Botga o‘ting', d: 'Telegram’da bir bosishda ochiladi — ro‘yxatdan o‘tish shart emas.' },
-  { t: 'Ovoz sonini tanlang', d: 'Paketlardan mosini belgilang — narx oldindan ko‘rinib turadi.' },
-  { t: 'To‘lang', d: 'Humo, Uzcard yoki Payme bilan. Yashirin komissiya yo‘q.' },
+  {
+    t: 'Tashabbus raqamini oling',
+    d: 'Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha raqamini yozib oling.',
+  },
+  {
+    t: 'openbudget.uz’da toping',
+    d: 'Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish» tugmasini bosing.',
+  },
+  {
+    t: 'SMS bilan tasdiqlang',
+    d: 'Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi. To‘lov ham, hujjat ham kerak emas.',
+  },
 ];
 
 export default async function Variant2() {
@@ -320,7 +329,7 @@ export default async function Variant2() {
         <section className={st.how}>
           <div className={st.secHead}>
             <p className={`${st.kicker} ${st.kickerCoral}`}>Uch qadam</p>
-            <h2 className={st.secTitle}>Qanday ishlaydi</h2>
+            <h2 className={st.secTitle}>Qanday ovoz beriladi</h2>
           </div>
 
           <ol className={st.stepGrid}>
@@ -332,6 +341,9 @@ export default async function Variant2() {
               </li>
             ))}
           </ol>
+          <p className={st.stepText}>
+            Ovoz berish bepul, mavsum ochiq paytida ishlaydi — muddatlar openbudget.uz’da.
+          </p>
         </section>
 
         {/* ── FAQ: oq stiker-kartalar. Native <details> — client JS shart emas,

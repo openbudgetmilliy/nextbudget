@@ -236,25 +236,29 @@ export default async function VariantCandy() {
         <section className={c.sec}>
           <div className={c.secIn}>
             <p className={c.kicker}>Jarayon</p>
-            <h2 className={c.h2}>Qanday ishlaydi</h2>
+            <h2 className={c.h2}>Qanday ovoz beriladi</h2>
+            <p className={c.secSub}>Uch qadam — telefon qo‘lingizda bo‘lsa, bir daqiqa kifoya.</p>
 
             <ol className={c.steps}>
               <li className={c.step}>
                 <span className={`${c.stepBall} ${c.ballBlue} tnum`}>1</span>
-                <h3 className={c.stepH}>Botga o‘ting</h3>
-                <p className={c.stepP}>Telegram’da @{bot} botini oching — ro‘yxatdan o‘tish shart emas.</p>
+                <h3 className={c.stepH}>Tashabbus raqamini oling</h3>
+                <p className={c.stepP}>Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha raqamini yozib oling.</p>
               </li>
               <li className={c.step}>
                 <span className={`${c.stepBall} ${c.ballPink} tnum`}>2</span>
-                <h3 className={c.stepH}>Ovoz sonini tanlang</h3>
-                <p className={c.stepP}>Paketni bosing — narx darhol ko‘rinadi, yashirin komissiya yo‘q.</p>
+                <h3 className={c.stepH}>openbudget.uz’da toping</h3>
+                <p className={c.stepP}>Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish» tugmasini bosing.</p>
               </li>
               <li className={c.step}>
                 <span className={`${c.stepBall} ${c.ballMint} tnum`}>3</span>
-                <h3 className={c.stepH}>To‘lang</h3>
-                <p className={c.stepP}>Humo, Uzcard yoki Payme — to‘lov bir daqiqada tasdiqlanadi.</p>
+                <h3 className={c.stepH}>SMS bilan tasdiqlang</h3>
+                <p className={c.stepP}>Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi. To‘lov ham, hujjat ham kerak emas.</p>
               </li>
             </ol>
+            <p className={c.secSub}>
+              Ovoz berish bepul, mavsum ochiq paytida ishlaydi — muddatlar openbudget.uz’da.
+            </p>
           </div>
         </section>
 

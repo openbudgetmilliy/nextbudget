@@ -31,11 +31,23 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Qadamlar statik — admin sozlamasiga bog'lanmagan, jarayon o'zgarmaydi */
+/** Qadamlar statik — rasmiy openbudget.uz ovoz berish jarayoni, o'zgarmaydi */
 const STEPS = [
-  { n: '1', t: 'Botga o‘ting', d: 'Telegram’da bir bosishda ochiladi — ro‘yxatdan o‘tish shart emas.' },
-  { n: '2', t: 'Ovoz sonini tanlang', d: 'Paketlar 1 tadan 50 tagacha — katta paketda bir ovoz arzonroq.' },
-  { n: '3', t: 'To‘lang', d: 'Humo, Uzcard yoki Payme. Yashirin komissiya yo‘q.' },
+  {
+    n: '1',
+    t: 'Tashabbus raqamini oling',
+    d: 'Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha raqamini yozib oling.',
+  },
+  {
+    n: '2',
+    t: 'openbudget.uz’da toping',
+    d: 'Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish» tugmasini bosing.',
+  },
+  {
+    n: '3',
+    t: 'SMS bilan tasdiqlang',
+    d: 'Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi. To‘lov ham, hujjat ham kerak emas.',
+  },
 ] as const;
 
 export default async function Aurora() {
@@ -198,9 +210,12 @@ export default async function Aurora() {
         {/* ── Qanday ishlaydi: gorizontal timeline ── */}
         <section className={st.how}>
           <h2 className={st.h2}>
-            Qanday <span className={st.gradWord}>ishlaydi</span>
+            Qanday ovoz <span className={st.gradWord}>beriladi</span>
           </h2>
-          <p className={st.sectionSub}>Uch qadam — bir daqiqadan kam vaqt oladi.</p>
+          <p className={st.sectionSub}>
+            Uch qadam — telefon qo‘lingizda bo‘lsa, bir daqiqa kifoya. Ovoz berish bepul,
+            muddatlar openbudget.uz’da.
+          </p>
 
           <ol className={st.timeline}>
             {STEPS.map((step) => (
