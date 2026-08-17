@@ -1,19 +1,12 @@
 import type { Metadata } from 'next';
 
 import Tracker from '@/components/Tracker';
+import VariantSections from '@/components/landing/VariantSections';
 import { Wordmark } from '@/components/Logo';
 import { Check, Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
-import {
-  FALLBACK_PRICES,
-  SITE,
-  applyVars,
-  kindOf,
-  pricePerLine,
-  titleLines,
-  uzs,
-} from '@/lib/content';
+import { SITE, applyVars, titleLines } from '@/lib/content';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -34,7 +27,7 @@ export const dynamic = 'force-static';
 
 export const metadata: Metadata = {
   // Brend nomi layout'dagi `%s · Brend` shablonidan keladi — bu yerda takrorlanmaydi
-  title: 'Ovoz paketlari',
+  title: 'Mukofot dasturi',
   robots: { index: false, follow: false },
 };
 
@@ -48,42 +41,17 @@ const BURST_POINTS = Array.from({ length: 32 }, (_, i) => {
   return `${(100 + r * Math.cos(a)).toFixed(1)},${(100 + r * Math.sin(a)).toFixed(1)}`;
 }).join(' ');
 
-/** 5 qirrali yulduzcha — «Ommabop» kartaning burchak stikeri */
-const STAR_POINTS = Array.from({ length: 10 }, (_, i) => {
-  const r = i % 2 === 0 ? 24 : 10.5;
-  const a = (Math.PI * i) / 5 - Math.PI / 2;
-  return `${(26 + r * Math.cos(a)).toFixed(1)},${(26 + r * Math.sin(a)).toFixed(1)}`;
-}).join(' ');
-
-/** Qadam raqami doirasining rangi — har biri boshqa stiker */
-const STEP_TONES = [st.numBlue, st.numSun, st.numGreen];
-
-const STEPS = [
-  {
-    t: 'Tashabbus raqamini oling',
-    d: 'Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha raqamini yozib oling.',
-  },
-  {
-    t: 'openbudget.uz’da toping',
-    d: 'Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish» tugmasini bosing.',
-  },
-  {
-    t: 'SMS bilan tasdiqlang',
-    d: 'Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi. To‘lov ham, hujjat ham kerak emas.',
-  },
-];
-
 export default async function Variant2() {
   const s = await getSettings();
   const bot = s.bot_username || env.BOT;
+  const botClean = bot.replace(/^@/, '');
   const tg = tgLink(bot, 'web');
 
   const vars = { narx: s.price_one_vote };
   // `|` dan keyingi qism narxni takrorlardi — narx alohida stikerda katta
   const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
-  const packs = FALLBACK_PRICES.filter((p) => kindOf(p.sku) === 'ovoz');
 
-  // Lentada aylanadigan ishonch iboralari — ikki nusxada, uzluksiz halqa uchun
+  // Lentada aylanadigan ishonch iboralari
   const ribbon = [
     'Aniq narx',
     'Humo · Uzcard · Payme',
@@ -214,264 +182,65 @@ export default async function Variant2() {
           </div>
         </div>
 
-        {/* ── Statistika: rangli stiker-plitalar. Faqat strukturaviy faktlar —
-            hech qanday va'da yo'q, odam bir qarashda xizmat hajmini ko'radi ── */}
-        <section className={st.stats} aria-label="Xizmat raqamlarda">
-          <ul className={st.statGrid}>
-            <li className={`${st.stat} ${st.statSun}`}>
-              <p className={st.statNum}>
-                <span className="tnum">{s.reviews_count}</span>
-              </p>
-              <p className={st.statLab}>foydalanuvchi tanlagan</p>
-            </li>
-            <li className={`${st.stat} ${st.statPaper}`}>
-              <p className={st.statNum}>
-                {/* Raqam ma'lumotdan olinadi — paket qo'shilsa plitka o'zi yangilanadi */}
-                <span className="tnum">{packs.length}</span>
-              </p>
-              <p className={st.statLab}>tayyor paket</p>
-            </li>
-            <li className={`${st.stat} ${st.statGreen}`}>
-              <p className={st.statNum}>
-                <span className="tnum">3</span>
-              </p>
-              <p className={st.statLab}>to‘lov usuli</p>
-              <p className={st.statNote}>Humo · Uzcard · Payme</p>
-            </li>
-            <li className={`${st.stat} ${st.statCoral}`}>
-              <p className={st.statNum}>
-                <span className="tnum">≈1</span>
-                <span className={st.statUnit}>daqiqa</span>
-              </p>
-              <p className={st.statLab}>to‘lov tasdig‘i</p>
-            </li>
-          </ul>
-        </section>
-
-        {/* ── Narx paketlari: burilgan stiker-kartalar ── */}
-        <section className={st.prices}>
-          <div className={st.secHead}>
-            <p className={`${st.kicker} ${st.kickerBlue}`}>Paketlar</p>
-            <h2 className={st.secTitle}>Ovoz paketini tanlang</h2>
-            <p className={st.secSub}>
-              Ko‘proq ovoz — bitta ovoz arzonroq. Barcha narxlar yakuniy, to‘lovda ustama yo‘q.
-            </p>
-          </div>
-
-          <ul className={st.grid}>
-            {packs.map((p) => {
-              const hot = p.badge === 'Ommabop';
-              const best = p.badge === 'Eng foydali';
-              const off = p.oldPriceUzs
-                ? Math.round((1 - p.priceUzs / p.oldPriceUzs) * 100)
-                : 0;
-              return (
-                <li
-                  key={p.id}
-                  className={[
-                    st.card,
-                    hot ? st.cardSun : '',
-                    best ? st.cardGreen : '',
-                    p.badge && !hot && !best ? st.cardCoral : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  {hot && (
-                    /* Sariq yulduzcha — eng ko'p olinadigan paketni chetdan belgilaydi */
-                    <svg className={st.cardStar} viewBox="0 0 52 52" aria-hidden>
-                      <polygon
-                        points={STAR_POINTS}
-                        fill="#ffd23f"
-                        stroke="#08243a"
-                        strokeWidth="3"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                  {p.badge && <span className={st.cardBadge}>{p.badge}</span>}
-
-                  <p className={st.cardTitle}>{p.title}</p>
-
-                  <p className={st.cardFig}>
-                    <span className={`${st.cardNum} tnum`}>{uzs(p.priceUzs)}</span>
-                    <span className={st.cardCur}>so‘m</span>
-                  </p>
-
-                  <p className={st.cardMeta}>
-                    {p.oldPriceUzs && (
-                      <>
-                        <s className={`${st.old} tnum`}>{uzs(p.oldPriceUzs)} so‘m</s>
-                        <span className={st.offChip}>−{off}%</span>
-                      </>
-                    )}
-                  </p>
-
-                  <p className={st.per}>{pricePerLine('ovoz', p.priceUzs / p.amount)}</p>
-
-                  <a
-                    href={tg}
-                    className={st.cardBtn}
-                    data-t="cta"
-                    data-t-id={`v2_card_${p.sku}`}
-                    data-tg
-                    rel="noopener"
-                  >
-                    Tanlash
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-
-        {/* ── Qanday ishlaydi: 3 rangli doira-stiker, zigzag chiziq ── */}
-        <section className={st.how}>
-          <div className={st.secHead}>
-            <p className={`${st.kicker} ${st.kickerCoral}`}>Uch qadam</p>
-            <h2 className={st.secTitle}>Qanday ovoz beriladi</h2>
-          </div>
-
-          <ol className={st.stepGrid}>
-            {STEPS.map((step, i) => (
-              <li className={st.step} key={step.t}>
-                <span className={`${st.stepNum} ${STEP_TONES[i]}`}>{i + 1}</span>
-                <p className={st.stepTitle}>{step.t}</p>
-                <p className={st.stepText}>{step.d}</p>
-              </li>
-            ))}
-          </ol>
-          <p className={st.stepText}>
-            Ovoz berish bepul, mavsum ochiq paytida ishlaydi — muddatlar openbudget.uz’da.
-          </p>
-        </section>
-
-        {/* ── FAQ: oq stiker-kartalar. Native <details> — client JS shart emas,
-            sahifa to'liq server component bo'lib qoladi ── */}
-        <section className={st.faq}>
-          <div className={st.secHead}>
-            <p className={`${st.kicker} ${st.kickerSun}`}>Savol-javob</p>
-            <h2 className={st.secTitle}>Savollarga javob</h2>
-          </div>
-
-          <div className={st.faqList}>
-            <details className={st.faqItem}>
-              <summary className={st.faqSum}>
-                <span>Bot qanday ishlaydi?</span>
-                <span className={st.faqIcon} aria-hidden />
-              </summary>
-              <p className={st.faqBody}>
-                Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz. Hammasi
-                bot ichida — saytga qaytish shart emas.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqSum}>
-                <span>Ro‘yxatdan o‘tish kerakmi?</span>
-                <span className={st.faqIcon} aria-hidden />
-              </summary>
-              <p className={st.faqBody}>
-                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqSum}>
-                <span>Qaysi kartalar bilan to‘lash mumkin?</span>
-                <span className={st.faqIcon} aria-hidden />
-              </summary>
-              <p className={st.faqBody}>
-                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqSum}>
-                <span>Narx qancha?</span>
-                <span className={st.faqIcon} aria-hidden />
-              </summary>
-              <p className={st.faqBody}>
-                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
-                yuqoridagi paketlar bo‘limiga qarang.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqSum}>
-                <span>Savolim bor yoki muammo chiqdi — kimga yozaman?</span>
-                <span className={st.faqIcon} aria-hidden />
-              </summary>
-              <p className={st.faqBody}>
-                <a
-                  href={`https://t.me/${s.support_username}`}
-                  rel="noopener"
-                  data-t="click"
-                  data-t-id="support"
-                >
-                  @{s.support_username}
-                </a>{' '}
-                ga yozing — tez javob beramiz.
-              </p>
-            </details>
-          </div>
-        </section>
-
-        {/* ── Yakuniy CTA: ko'k mega-stiker ── */}
-        <section className={st.finalWrap}>
-          <div className={st.final}>
-            <div className={st.finalBlob} aria-hidden />
-            <h2 className={st.finalTitle}>Ovozingiz tayyor turibdi</h2>
-            <p className={st.finalSub}>
-              {s.reviews_count} foydalanuvchi allaqachon sinab ko‘rdi — endi navbat sizda.
-            </p>
-            <a
-              href={tg}
-              className={`${st.btnPop} ${st.btnBig} ${st.btnSun}`}
-              data-t="cta"
-              data-t-id="v2_final"
-              data-tg
-              rel="noopener"
-            >
-              <Telegram />
-              {s.cta_primary}
-            </a>
-            {/* Bot manzili ochiq matnda — tugmani emas, @manzilni qidirgan odam ham topsin */}
-            <a
-              href={tg}
-              className={st.botHandle}
-              data-t="cta"
-              data-t-id="v2_bot_handle"
-              data-tg
-              rel="noopener"
-            >
-              @{bot}
-            </a>
-          </div>
-        </section>
+        <VariantSections
+          prefix="v2"
+          tg={tg}
+          botClean={botClean}
+          s={s}
+          c={{
+            statsSec: st.stats,
+            stats: st.statGrid,
+            stat: st.stat,
+            statNum: st.statNum,
+            statLab: st.statLab,
+            trustRow: st.trustRow,
+            trustChip: st.trustChip,
+            secSteps: st.how,
+            secRewards: st.prices,
+            secFaq: st.faq,
+            secHead: st.secHead,
+            kicker: st.kicker,
+            secTitle: st.secTitle,
+            secSub: st.secSub,
+            secAct: st.secAct,
+            steps: st.stepGrid,
+            step: st.step,
+            stepNum: st.stepNum,
+            stepTitle: st.stepTitle,
+            stepText: st.stepText,
+            grid: st.grid,
+            card: st.card,
+            cardHot: st.cardGreen,
+            cardBadge: st.cardBadge,
+            cardAmt: st.cardFig,
+            cardNum: st.cardNum,
+            cardCur: st.cardCur,
+            cardTitle: st.cardTitle,
+            per: st.per,
+            faqList: st.faqList,
+            faqItem: st.faqItem,
+            faqSum: st.faqSum,
+            faqBody: st.faqBody,
+            faqIcon: st.faqIcon,
+            finalSec: st.finalWrap,
+            final: st.final,
+            finEyebrow: st.finEyebrow,
+            finalTitle: st.finalTitle,
+            finalSub: st.finalSub,
+            finalList: st.finalList,
+            btnPop: st.btnPop,
+            btnBig: st.btnBig,
+            btnSun: st.btnSun,
+            foot: st.foot,
+            footIn: st.footIn,
+            footBrand: st.footBrand,
+            footLogo: st.footLogo,
+            footName: st.footName,
+            footNote: st.footNote,
+            footBot: st.footBot,
+          }}
+        />
       </main>
-
-      {/* ── Footer: majburiy huquqiy izoh ── */}
-      <footer className={st.foot}>
-        <div className={st.footIn}>
-          <p className={st.legal}>
-            {SITE.brand} — mustaqil vositachi xizmat. Rasmiy{' '}
-            <a href="https://openbudget.uz" rel="noopener nofollow" target="_blank">
-              openbudget.uz
-            </a>{' '}
-            portali bilan bog‘liq emas. Savol bo‘lsa —{' '}
-            <a
-              href={`https://t.me/${s.support_username}`}
-              rel="noopener"
-              data-t="click"
-              data-t-id="support"
-            >
-              @{s.support_username}
-            </a>
-            .
-          </p>
-        </div>
-      </footer>
 
       {/* ── Variant almashtirgich — ichki sinov uchun, foydalanuvchiga xalaqit bermaydi ── */}
       <nav className={st.switcher} aria-label="Dizayn variantlari">

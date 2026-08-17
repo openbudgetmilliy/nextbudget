@@ -3,57 +3,43 @@ import type { Metadata } from 'next';
 import Header from '@/components/Header';
 import Poster from '@/components/Poster';
 import Tracker from '@/components/Tracker';
+import Logo from '@/components/Logo';
 import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
-import { SITE, FALLBACK_PRICES, kindOf } from '@/lib/content';
+import { SITE } from '@/lib/content';
+import {
+  FINALE_BULLETS,
+  LANDING_REWARDS,
+  LANDING_STEPS,
+  LANDING_TRUST,
+  LIVE_STATS,
+  landingFaqItems,
+} from '@/lib/landing-sections';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
 import x from './extra.module.css';
 
-/**
- * SSG landing — kirish darvozasidan (`/`) keyingi sahifa.
- *
- * Bu funksiya build va revalidate paytida ishlaydi, foydalanuvchi so'rovida —
- * YO'Q. Shu sabab bu yerda `cookies()`, `headers()`, `searchParams`
- * ISHLATILMASLIGI kerak: aks holda sahifa dinamikaga o'tadi va cho'qqida
- * har so'rov render'ga tushardi.
- *
- * Kirish nazorati `middleware.ts` da: `gt` cookie'siz so'rov `/` ga qaytariladi.
- *
- * Sahifa darvoza bilan BIR XIL plakatdan iborat — farqi faqat harakat uyasida:
- * u yerda tekshiruv chizig'i, bu yerda botga o'tish tugmasi.
- *
- * Tekshirish: `npm run build` chiqishida `/l` yonida `○ (Static)` bo'lishi shart.
- */
-/**
- * 60 sekund, 3600 emas.
- *
- * `revalidatePath()` FAQAT o'z Node protsessining keshini bekor qiladi.
- * PM2 bir nechta instance bilan ishlaganda admin narxni saqlaganda faqat
- * so'rovni bajargan instance yangilanadi — qolganlari eski sahifani
- * `revalidate` muddati tugagunicha berib turadi.
- */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
-/** Darvoza ortidagi sahifa — qidiruvda ko'rinmaydi (`/` indekslanadi) */
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
   robots: { index: false, follow: false },
 };
+
+const REWARD_ACCENT = ['green', 'blue', 'ink'] as const;
 
 export default async function Landing() {
   const s = await getSettings();
   const bot = s.bot_username || env.BOT;
   const botClean = bot.replace(/^@/, '');
   const tg = tgLink(bot, 'web');
-  const packCount = FALLBACK_PRICES.filter((p) => kindOf(p.sku) === 'ovoz').length;
 
   return (
     <>
-      <Header tg={tg} label="Botga o’tish" />
+      <Header tg={tg} label="Botga o'tish" />
 
       <main>
         <Poster
@@ -68,63 +54,77 @@ export default async function Landing() {
           }
         />
 
-        {/* ── Halol raqamlar — faqat tekshirsa bo'ladigan faktlar ── */}
-        <section className={`wrap ${x.band}`}>
-          <p className="eyebrow">Raqamlar</p>
-          <div className={x.facts}>
-            <div className={x.fact}>
-              <p className={`${x.factNum} tnum`}>{s.reviews_count}</p>
-              <p className={x.factLab}>foydalanuvchi tanlagan</p>
-            </div>
-            <div className={x.fact}>
-              <p className={`${x.factNum} tnum`}>{packCount}</p>
-              <p className={x.factLab}>tayyor paket</p>
-            </div>
-            <div className={x.fact}>
-              <p className={`${x.factNum} tnum`}>3</p>
-              <p className={x.factLab}>to‘lov usuli — Humo · Uzcard · Payme</p>
-            </div>
-            <div className={x.fact}>
-              <p className={`${x.factNum} tnum`}>≈1 daq</p>
-              <p className={x.factLab}>to‘lov tasdig‘i</p>
-            </div>
+        {/* ── Jonli ko'rsatkichlar ── */}
+        <section className={`wrap ${x.band}`} aria-label="Ko'rsatkichlar">
+          <div className={x.statsGrid}>
+            {LIVE_STATS.map((item) => (
+              <div key={item.lab} className={x.stat}>
+                <p className={`${x.statNum} tnum`}>{item.num}</p>
+                <p className={x.statLab}>{item.lab}</p>
+              </div>
+            ))}
           </div>
+
+          <ul className={x.trustRow}>
+            {LANDING_TRUST.map((t) => (
+              <li key={t} className={x.trustChip}>
+                {t}
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* ── 3 qadam ── */}
         <section className={`wrap ${x.band}`}>
           <p className="eyebrow">Jarayon</p>
-          <h2 className={x.xh2}>Qanday ovoz beriladi</h2>
-          <p className={x.xsub}>Uch qadam — telefon qo‘lingizda bo‘lsa, bir daqiqa kifoya.</p>
-          <ol className={x.how}>
-            <li>
-              <span className={`${x.hnum} tnum`}>1</span>
-              <h3 className={x.howH}>Tashabbus raqamini oling</h3>
-              <p className={x.howP}>
-                Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha
-                raqamini yozib oling.
-              </p>
-            </li>
-            <li>
-              <span className={`${x.hnum} tnum`}>2</span>
-              <h3 className={x.howH}>openbudget.uz’da toping</h3>
-              <p className={x.howP}>
-                Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish»
-                tugmasini bosing.
-              </p>
-            </li>
-            <li>
-              <span className={`${x.hnum} tnum`}>3</span>
-              <h3 className={x.howH}>SMS bilan tasdiqlang</h3>
-              <p className={x.howP}>
-                Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi.
-                To‘lov ham, hujjat ham kerak emas.
-              </p>
-            </li>
-          </ol>
+          <h2 className={x.xh2}>3 qadam, xolos</h2>
           <p className={x.xsub}>
-            Ovoz berish bepul, mavsum ochiq paytida ishlaydi — muddatlar openbudget.uz’da.
+            Ro'yxatdan o'tish yo'q. Hujjat yo'q. Faqat ovoz va to'lov.
           </p>
+          <ol className={x.how}>
+            {LANDING_STEPS.map((step) => (
+              <li key={step.n}>
+                <span className={`${x.hnum} tnum`}>{step.n}</span>
+                <h3 className={x.howH}>{step.title}</h3>
+                <p className={x.howP}>{step.text}</p>
+              </li>
+            ))}
+          </ol>
+          <div className={x.secAct}>
+            <a href={tg} className="btn" data-t="cta" data-t-id="steps_cta" data-tg rel="noopener">
+              <Telegram />
+              Hoziroq boshlash
+            </a>
+          </div>
+        </section>
+
+        {/* ── Mukofotlar ── */}
+        <section className={`wrap ${x.band}`}>
+          <p className="eyebrow">Mukofot</p>
+          <h2 className={x.xh2}>Nima olasiz</h2>
+          <p className={x.xsub}>Ovoz bergandan so'ng avtomatik to'lanadi.</p>
+          <ul className={x.rewards}>
+            {LANDING_REWARDS.map((r, i) => (
+              <li
+                key={r.tag}
+                className={`${x.reward} ${x[`reward_${REWARD_ACCENT[i]}`]}`}
+              >
+                <span className={x.rewardTag}>{r.tag}</span>
+                <h3 className={x.rewardTitle}>{r.title}</h3>
+                <p className={x.rewardFig}>
+                  <span className={`${x.rewardNum} tnum`}>{r.amount}</span>
+                  {r.unit && <span className={x.rewardUnit}>{r.unit}</span>}
+                </p>
+                <p className={x.rewardDesc}>{r.desc}</p>
+              </li>
+            ))}
+          </ul>
+          <div className={x.secAct}>
+            <a href={tg} className="btn" data-t="cta" data-t-id="rewards_cta" data-tg rel="noopener">
+              <Telegram />
+              Mukofot olishni boshlash
+            </a>
+          </div>
         </section>
 
         {/* ── Savol-javob ── */}
@@ -132,81 +132,82 @@ export default async function Landing() {
           <p className="eyebrow">Savol-javob</p>
           <h2 className={x.xh2}>Savollarga javob</h2>
           <div className={x.faq}>
-            <details className={x.qa}>
-              <summary>Bot qanday ishlaydi?</summary>
-              <p className={x.qaA}>
-                Telegram’da @{botClean} ni ochasiz, /start bosasiz, paketni tanlab to‘laysiz.
-                Hammasi bot ichida — saytga qaytish shart emas.
-              </p>
-            </details>
-            <details className={x.qa}>
-              <summary>Ro‘yxatdan o‘tish kerakmi?</summary>
-              <p className={x.qaA}>
-                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham, hujjat ham so‘ralmaydi.
-              </p>
-            </details>
-            <details className={x.qa}>
-              <summary>Qaysi kartalar bilan to‘lash mumkin?</summary>
-              <p className={x.qaA}>
-                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi orqali o‘tadi.
-              </p>
-            </details>
-            <details className={x.qa}>
-              <summary>Narx qancha?</summary>
-              <p className={x.qaA}>
-                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz narxi arzonroq —
-                paketlar botda ko‘rsatiladi.
-              </p>
-            </details>
-            <details className={x.qa}>
-              <summary>Savolim bor yoki muammo chiqdi — kimga yozaman?</summary>
-              <p className={x.qaA}>
-                <a
-                  href={`https://t.me/${s.support_username}`}
-                  rel="noopener"
-                  data-t="click"
-                  data-t-id="support"
-                >
-                  @{s.support_username}
-                </a>{' '}
-                ga yozing — tez javob beramiz.
-              </p>
-            </details>
+            {landingFaqItems(s).map((item) => (
+              <details key={item.q} className={x.qa}>
+                <summary>{item.q}</summary>
+                <p className={x.qaA}>
+                  {'supportLink' in item && item.supportLink ? (
+                    <>
+                      <a
+                        href={`https://t.me/${s.support_username}`}
+                        rel="noopener"
+                        data-t="click"
+                        data-t-id="support"
+                      >
+                        @{s.support_username}
+                      </a>{' '}
+                      ga yozing — holatingizni tekshirib, tez yordam beramiz.
+                    </>
+                  ) : (
+                    item.a
+                  )}
+                </p>
+              </details>
+            ))}
           </div>
         </section>
 
-        {/* ── Yakuniy da'vat: ink plita + botning ochiq manzili ── */}
+        {/* ── Yakuniy da'vat ── */}
         <section className={`wrap ${x.band} ${x.bandLast}`}>
           <div className={x.finale}>
+            <p className={x.finEyebrow}>Hali kech emas</p>
             <h2 className={x.finH}>
-              Tayyor bo‘lsangiz — <span>boshlang</span>
+              Ovoz bering.
+              <br />
+              Pul oling. <span>Shu.</span>
             </h2>
             <p className={x.finP}>
-              {s.reviews_count} foydalanuvchi allaqachon tanlagan. Uch qadam — bir necha daqiqa.
+              {s.reviews_count} dan ortiq odam allaqachon to'lov oldi. Navbat sizda.
             </p>
+            <ul className={x.finList}>
+              {FINALE_BULLETS.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
             <div className={x.finRow}>
               <a href={tg} className="btn" data-t="cta" data-t-id="final_cta" data-tg rel="noopener">
                 <Telegram />
-                {s.cta_primary}
-              </a>
-              <a
-                href={tg}
-                className={x.finBot}
-                data-t="cta"
-                data-t-id="bot_handle"
-                data-tg
-                rel="noopener"
-              >
-                @{botClean}
+                Hoziroq boshlash
               </a>
             </div>
           </div>
         </section>
       </main>
 
+      <footer className={x.siteFoot}>
+        <div className={`wrap ${x.siteFootIn}`}>
+          <a href="#top" className={x.footBrand} aria-label={SITE.brand}>
+            <Logo size={40} className={x.footLogo} />
+            <span className={x.footName}>Milliy jamoasi</span>
+          </a>
+          <p className={x.footNote}>
+            To'lovlar Telegram bot orqali amalga oshiriladi. Barcha huquqlar himoyalangan.
+          </p>
+          <a
+            href={tg}
+            className={x.footBot}
+            data-t="cta"
+            data-t-id="foot_bot"
+            data-tg
+            rel="noopener"
+          >
+            @{botClean}
+          </a>
+        </div>
+      </footer>
+
       <Tracker />
 
-      {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

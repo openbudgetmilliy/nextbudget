@@ -1071,3 +1071,90 @@
     bottom: 10px;
   }
 }
+
+.trustRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+  list-style: none;
+  padding: 0;
+}
+
+.trustChip {
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid var(--ink);
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.secAct {
+  margin-top: 20px;
+}
+
+.finEyebrow {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: var(--lemon);
+  font-weight: 800;
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+}
+
+.finalList {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.finalList li {
+  padding-left: 14px;
+  position: relative;
+}
+
+.finalList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+}
+
+.footIn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footLogo {
+  width: 36px;
+  height: 36px;
+}
+
+.footName {
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.footNote {
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  max-width: 52ch;
+}
+
+.footBot {
+  font-weight: 700;
+  text-decoration: underline;
+}

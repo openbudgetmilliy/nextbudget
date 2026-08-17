@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 
 import Tracker from '@/components/Tracker';
+import VariantSections from '@/components/landing/VariantSections';
 import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
-import { FALLBACK_PRICES, SITE, applyVars, kindOf, pricePerLine, uzs } from '@/lib/content';
+import { SITE, applyVars } from '@/lib/content';
+import { LIVE_STATS, LANDING_TRUST } from '@/lib/landing-sections';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -27,28 +29,11 @@ export const dynamic = 'force-static';
 /** A/B varianti — qidiruvga chiqmaydi, indeks faqat asosiy sahifada.
     Layout shabloni brend nomini o'zi qo'shadi — bu yerda takrorlanmaydi. */
 export const metadata: Metadata = {
-  title: 'Ovoz paketlari',
+  title: 'Mukofot dasturi',
   robots: { index: false, follow: false },
 };
 
-/** Qadamlar statik — rasmiy openbudget.uz ovoz berish jarayoni, o'zgarmaydi */
-const STEPS = [
-  {
-    n: '1',
-    t: 'Tashabbus raqamini oling',
-    d: 'Har tashabbusning o‘z raqami bor. Qo‘llab-quvvatlamoqchi bo‘lgan loyiha raqamini yozib oling.',
-  },
-  {
-    n: '2',
-    t: 'openbudget.uz’da toping',
-    d: 'Portalga kirib qidiruvga raqamni yozing va tashabbus sahifasida «Ovoz berish» tugmasini bosing.',
-  },
-  {
-    n: '3',
-    t: 'SMS bilan tasdiqlang',
-    d: 'Telefon raqamingizni kiriting — kelgan kodni yozganingizda ovoz hisobga o‘tadi. To‘lov ham, hujjat ham kerak emas.',
-  },
-] as const;
+/** Qadamlar — umumiy matn `lib/landing-sections.ts` dan */
 
 export default async function Aurora() {
   const s = await getSettings();
@@ -63,8 +48,6 @@ export default async function Aurora() {
   const words = title.split(/\s+/);
   const lastWord = words[words.length - 1];
   const headWords = words.slice(0, -1).join(' ');
-
-  const prices = FALLBACK_PRICES.filter((p) => kindOf(p.sku) === 'ovoz');
 
   return (
     <div className={st.page}>
@@ -112,9 +95,6 @@ export default async function Aurora() {
                     <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
-                <a href="#narxlar" className={st.btnGhost}>
-                  Narxlarni ko‘rish
-                </a>
               </div>
 
               <ul className={st.trust}>
@@ -141,207 +121,69 @@ export default async function Aurora() {
           {/* Statistika — shisha kartalar qatori. Faqat halol, tekshiriladigan
               faktlar: va'da emas, xizmatning o'zi haqidagi raqamlar */}
           <div className={st.stats}>
-            <div className={st.stat}>
-              <span className={`${st.statNum} tnum`}>{s.reviews_count}</span>
-              <span className={st.statLab}>foydalanuvchi tanlagan</span>
-            </div>
-            <div className={st.stat}>
-              {/* Soni ro'yxatdan olinadi — paket qo'shilsa raqam o'zi yangilanadi */}
-              <span className={`${st.statNum} tnum`}>{prices.length}</span>
-              <span className={st.statLab}>tayyor paket</span>
-            </div>
-            <div className={st.stat}>
-              <span className={`${st.statNum} tnum`}>3</span>
-              <span className={st.statLab}>to‘lov usuli — Humo · Uzcard · Payme</span>
-            </div>
-            <div className={st.stat}>
-              <span className={`${st.statNum} tnum`}>
-                ≈1<span className={st.statUnit}> daqiqa</span>
-              </span>
-              <span className={st.statLab}>to‘lov tasdig‘i</span>
-            </div>
+            {LIVE_STATS.map((item) => (
+              <div key={item.lab} className={st.stat}>
+                <span className={`${st.statNum} tnum`}>{item.num}</span>
+                <span className={st.statLab}>{item.lab}</span>
+              </div>
+            ))}
           </div>
-        </section>
-
-        {/* ── Narx paketlari ── */}
-        <section className={st.prices} id="narxlar">
-          <h2 className={st.h2}>
-            Ovoz <span className={st.gradWord}>paketlari</span>
-          </h2>
-          <p className={st.sectionSub}>Paket qancha katta bo‘lsa, bir ovoz shuncha arzon.</p>
-
-          <div className={st.grid}>
-            {prices.map((p) => {
-              const featured = p.badge === 'Eng foydali';
-              return (
-                <a
-                  key={p.id}
-                  href={tg}
-                  className={featured ? st.cardFeat : st.card}
-                  data-t="cta"
-                  data-t-id="v3_price"
-                  data-tg
-                  rel="noopener"
-                >
-                  {p.badge && (
-                    <span className={featured ? st.badgeFeat : st.badge}>{p.badge}</span>
-                  )}
-                  <span className={st.cardTitle}>{p.title}</span>
-                  <span className={st.cardPrice}>
-                    <span className="tnum">{uzs(p.priceUzs)}</span>
-                    <small> so‘m</small>
-                  </span>
-                  {p.oldPriceUzs !== null && (
-                    <s className={`${st.cardOld} tnum`}>{uzs(p.oldPriceUzs)} so‘m</s>
-                  )}
-                  <span className={st.cardPer}>{pricePerLine('ovoz', p.priceUzs / p.amount)}</span>
-                  <span className={st.cardGo} aria-hidden="true">
-                    Tanlash
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </a>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* ── Qanday ishlaydi: gorizontal timeline ── */}
-        <section className={st.how}>
-          <h2 className={st.h2}>
-            Qanday ovoz <span className={st.gradWord}>beriladi</span>
-          </h2>
-          <p className={st.sectionSub}>
-            Uch qadam — telefon qo‘lingizda bo‘lsa, bir daqiqa kifoya. Ovoz berish bepul,
-            muddatlar openbudget.uz’da.
-          </p>
-
-          <ol className={st.timeline}>
-            {STEPS.map((step) => (
-              <li key={step.n} className={st.step}>
-                <span className={st.stepNum} aria-hidden="true">
-                  <span className={st.stepNumIn}>{step.n}</span>
-                </span>
-                <h3 className={st.stepTitle}>{step.t}</h3>
-                <p className={st.stepDesc}>{step.d}</p>
+          <ul className={st.trustRow}>
+            {LANDING_TRUST.map((t) => (
+              <li key={t} className={st.trustChip}>
+                {t}
               </li>
             ))}
-          </ol>
+          </ul>
         </section>
 
-        {/* ── Savol-javob: shisha akkordeon ──
-            Native <details> — client JS'siz ochilib-yopiladi, sahifa server
-            component bo'lib qoladi. Belgi (+/×) faqat CSS'da buriladi. */}
-        <section className={st.faq}>
-          <p className={st.faqKick}>Savol-javob</p>
-          <h2 className={st.h2}>
-            Savollarga <span className={st.gradWord}>javob</span>
-          </h2>
-
-          <div className={st.faqList}>
-            <details className={st.faqItem}>
-              <summary className={st.faqQ}>Bot qanday ishlaydi?</summary>
-              <p className={st.faqA}>
-                Telegram’da @{bot} ni ochasiz, /start bosasiz, paketni tanlab
-                to‘laysiz. Hammasi bot ichida — saytga qaytish shart emas.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqQ}>Ro‘yxatdan o‘tish kerakmi?</summary>
-              <p className={st.faqA}>
-                Yo‘q. Telegram hisobingiz yetarli — parol ham, email ham,
-                hujjat ham so‘ralmaydi.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqQ}>Qaysi kartalar bilan to‘lash mumkin?</summary>
-              <p className={st.faqA}>
-                Humo, Uzcard va Payme. To‘lov bot ichida rasmiy to‘lov tizimi
-                orqali o‘tadi.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqQ}>Narx qancha?</summary>
-              <p className={st.faqA}>
-                1 ovoz — {s.price_one_vote} so‘mdan. Katta paketlarda bir ovoz
-                narxi arzonroq — yuqoridagi paketlar bo‘limiga qarang.
-              </p>
-            </details>
-
-            <details className={st.faqItem}>
-              <summary className={st.faqQ}>
-                Savolim bor yoki muammo chiqdi — kimga yozaman?
-              </summary>
-              <p className={st.faqA}>
-                <a
-                  href={`https://t.me/${s.support_username}`}
-                  rel="noopener"
-                  data-t="click"
-                  data-t-id="support"
-                >
-                  @{s.support_username}
-                </a>{' '}
-                ga yozing — tez javob beramiz.
-              </p>
-            </details>
-          </div>
-        </section>
-
-        {/* ── Yakuniy CTA: aurora panel ichida oq tugma ── */}
-        <section className={st.finale}>
-          <div className={st.finaleIn}>
-            <h2 className={st.finaleTitle}>Ovozingiz tayyor — faqat tanlash qoldi</h2>
-            <p className={st.finaleSub}>{SITE.tgline}. Narx oldindan ma’lum, ortiqcha to‘lov yo‘q.</p>
-            <a href={tg} className={st.btnLight} data-t="cta" data-t-id="v3_final" data-tg rel="noopener">
-              {s.cta_primary}
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-            {/* Bot manzili ochiq matnda — tugmani emas, manzilni izlagan ham topsin */}
-            <a
-              href={tg}
-              className={st.finaleHandle}
-              data-t="cta"
-              data-t-id="v3_bot_handle"
-              data-tg
-              rel="noopener"
-            >
-              @{bot}
-            </a>
-          </div>
-        </section>
+        <VariantSections
+          prefix="v3"
+          tg={tg}
+          botClean={bot}
+          s={s}
+          skipStats
+          c={{
+            secSteps: st.how,
+            secRewards: st.prices,
+            secFaq: st.faq,
+            kicker: st.faqKick,
+            h2: st.h2,
+            secSub: st.sectionSub,
+            secAct: st.secAct,
+            steps: st.timeline,
+            step: st.step,
+            stepNum: st.stepNum,
+            stepH: st.stepTitle,
+            stepP: st.stepDesc,
+            grid: st.grid,
+            card: st.card,
+            cardHot: st.cardFeat,
+            cardBadge: st.badge,
+            cardAmt: st.cardPrice,
+            cardTitle: st.cardTitle,
+            cardPer: st.cardPer,
+            faqList: st.faqList,
+            faqItem: st.faqItem,
+            faqQ: st.faqQ,
+            faqA: st.faqA,
+            finalSec: st.finale,
+            final: st.finaleIn,
+            finEyebrow: st.finEyebrow,
+            finalTitle: st.finaleTitle,
+            finalSub: st.finaleSub,
+            finalList: st.finalList,
+            btnLight: st.btnLight,
+            foot: st.foot,
+            footIn: st.footIn,
+            footBrand: st.footBrand,
+            footLogo: st.brandMark,
+            footName: st.brandName,
+            footNote: st.footNote,
+            footBot: st.footBot,
+          }}
+        />
       </main>
-
-      {/* ── Footer: majburiy huquqiy izoh ── */}
-      <footer className={st.foot}>
-        <div className={st.footIn}>
-          <div className={st.footBrand}>
-            <Logo size={28} className={st.brandMark} />
-            <span className={st.brandName}>{SITE.brand}</span>
-          </div>
-          <p className={st.legal}>
-            {SITE.brand} — mustaqil vositachi xizmat. Rasmiy{' '}
-            <a href="https://openbudget.uz" rel="noopener nofollow" target="_blank">
-              openbudget.uz
-            </a>{' '}
-            portali bilan bog‘liq emas. Savol bo‘lsa —{' '}
-            <a
-              href={`https://t.me/${s.support_username}`}
-              rel="noopener"
-              data-t="click"
-              data-t-id="support"
-            >
-              @{s.support_username}
-            </a>
-            .
-          </p>
-        </div>
-      </footer>
 
       {/* Suzuvchi variant almashtirgich — A/B taqqoslash uchun ichki navigatsiya */}
       <nav className={st.switcher} aria-label="Dizayn variantlari">
