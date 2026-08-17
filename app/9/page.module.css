@@ -335,167 +335,6 @@
   color: var(--gold);
 }
 
-/* ── Status paneli: manbadagi chat-mockup shaklidan ── */
-
-.statusCard {
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  overflow: hidden;
-  max-width: 400px;
-  width: 100%;
-  justify-self: center;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
-}
-
-.statusHead {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.statusHead b {
-  display: block;
-  font-family: var(--f-d);
-  font-size: 0.9063rem;
-}
-
-.statusHead span {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: var(--mint);
-  margin-top: 2px;
-}
-
-.statusAv {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  flex: none;
-  background: #fff;
-  border-radius: 50%;
-}
-
-.statusAvImg {
-  width: 20px;
-  height: 20px;
-}
-
-.statusBody {
-  padding: 18px;
-  display: grid;
-  gap: 11px;
-}
-
-.bubble {
-  max-width: 86%;
-  padding: 11px 15px;
-  border-radius: 15px;
-  border-bottom-left-radius: 5px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  justify-self: start;
-  font-size: 0.8125rem;
-  color: var(--dim);
-  line-height: 1.5;
-}
-
-.bubbleSum {
-  display: block;
-  margin-top: 3px;
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: 1.0625rem;
-  color: var(--gold);
-}
-
-.bubbleSum span {
-  font-family: var(--f-b);
-  font-weight: 600;
-  font-size: 0.75rem;
-  color: var(--dim);
-  margin-left: 4px;
-}
-
-.bubbleMe {
-  max-width: 86%;
-  padding: 11px 15px;
-  border-radius: 15px;
-  border-bottom-right-radius: 5px;
-  background: rgba(52, 211, 153, 0.16);
-  border: 1px solid var(--line);
-  justify-self: end;
-  font-size: 0.8438rem;
-}
-
-.statusBtns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  justify-self: start;
-}
-
-.b1,
-.b2 {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  padding: 9px 15px;
-  border-radius: 11px;
-}
-
-.b1 {
-  background: linear-gradient(115deg, #ffe29a, var(--gold));
-  color: #3a2a05;
-}
-
-.b2 {
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: var(--ink);
-}
-
-.typing {
-  display: inline-flex;
-  gap: 5px;
-  padding: 4px 4px 0;
-  justify-self: start;
-}
-
-.typing i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--dim);
-  animation: tp 1.2s ease-in-out infinite;
-}
-
-.typing i:nth-child(2) {
-  animation-delay: 0.18s;
-}
-
-.typing i:nth-child(3) {
-  animation-delay: 0.36s;
-}
-
-@keyframes tp {
-  0%,
-  60%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.5;
-  }
-  30% {
-    transform: translateY(-4px);
-    opacity: 1;
-  }
-}
-
 /* ── Ko'rsatkichlar ── */
 
 .statsSec {
@@ -988,6 +827,10 @@
 @media (min-width: 920px) {
   .heroIn {
     grid-template-columns: 1.05fr 1fr;
+  }
+
+  .heroIn > :last-child {
+    justify-self: end;
   }
 
   .hdrNav {

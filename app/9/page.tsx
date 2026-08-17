@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import Tracker from '@/components/Tracker';
 import Logo from '@/components/Logo';
+import PhoneTelegramMock from '@/components/PhoneTelegramMock';
 import MoneyRain from './MoneyRain';
 import { Telegram } from '@/components/Icons';
 
@@ -63,7 +64,7 @@ export default async function VariantBarakat() {
   const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
   const stats = liveStats(s);
   const faq = landingFaqItems(s);
-  const topReward = LANDING_REWARDS[LANDING_REWARDS.length - 1];
+  const voteReward = LANDING_REWARDS[0].amount;
 
   return (
     <div className={c.page}>
@@ -141,44 +142,7 @@ export default async function VariantBarakat() {
               </p>
             </div>
 
-            {/* Status paneli — manbadagi chat-mockup shaklidan olingan, lekin
-                mazmuni real ma'lumot: xayoliy suhbat yo'q, faqat narx va
-                bosh mukofot */}
-            <aside className={c.statusCard}>
-              <div className={c.statusHead}>
-                <span className={c.statusAv}>
-                  <Logo size={20} className={c.statusAvImg} />
-                </span>
-                <div>
-                  <b>{SITE.brand}</b>
-                  <span>
-                    <span className={c.dot} /> onlayn
-                  </span>
-                </div>
-              </div>
-              <div className={c.statusBody}>
-                <div className={c.bubble}>
-                  1 ovoz narxi
-                  <b className={c.bubbleSum}>
-                    {s.price_one_vote} <span>so‘m</span>
-                  </b>
-                </div>
-                <div className={c.bubble}>
-                  Bosh mukofot
-                  <b className={c.bubbleSum}>{topReward.amount}</b>
-                </div>
-                <div className={c.bubbleMe}>Ovoz berishni boshlayman</div>
-                <div className={c.statusBtns}>
-                  <span className={c.b1}>{s.cta_primary}</span>
-                  <span className={c.b2}>Havolam</span>
-                </div>
-                <div className={c.typing} aria-hidden>
-                  <i />
-                  <i />
-                  <i />
-                </div>
-              </div>
-            </aside>
+            <PhoneTelegramMock botName="OpenBudget Bot" amount={voteReward} />
           </div>
         </section>
 
