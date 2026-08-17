@@ -106,6 +106,25 @@ export function track(e: Ev): void {
   if (sent >= MAX_EVENTS_PER_SESSION) return;
   sent++;
   queue.push(e);
+
+  /**
+   * Meta Pixel: CTA bosilishi — reklama kabinetidagi «Lead» konversiyasi.
+   *
+   * `fbq` layout'dagi bazaviy skriptdan keladi (ID berilmagan bo'lsa umuman
+   * yo'q — shuning uchun optional chaining). Bir nechta pixel init qilingan
+   * bo'lsa `track` hammasiga birdek yuboradi. `content_name` — tugma
+   * identifikatori: qaysi sahifa/joy olib kelganini Meta'da ham ko'rsatadi.
+   */
+  if (e.type === 'cta') {
+    try {
+      (window as unknown as { fbq?: (...args: unknown[]) => void }).fbq?.('track', 'Lead', {
+        content_name: e.elId,
+      });
+    } catch {
+      /* jim — analitika asosiy oqimni hech qachon buzmaydi */
+    }
+  }
+
   // Konversiya eventini kutib turmaymiz: bosgandan keyin sahifa Telegram'ga ketadi
   if (e.type === 'cta' || queue.length >= BATCH) flush();
 }
