@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 
 import Tracker from '@/components/Tracker';
 import Logo from '@/components/Logo';
+import CoinRain from './CoinRain';
 import { Telegram, Check } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
@@ -27,16 +28,19 @@ import c from './page.module.css';
  * referal havola, kalkulyator va jonli to'lov lentasi kabi vidjetlar bu
  * sahifada YO'Q — ular referal-bot kontentiga xos, biznikiga aloqasi yo'q.
  *
- * Manbada uch o'lchamli tanga yomg'iri (three.js, tashqi CDN) bor edi — bu
- * yerda YO'Q: landing sahifa tashqi skriptga muhtoj bo'lmasligi kerak
- * (`Logo` komponentidagi "origin'ga tegmaydi" printsipi shu yerda ham
- * amal qiladi). Kayfiyat CSS'ning o'zi bilan — suzuvchi oltin-yashil
- * nurlar va nozik nuqtali panjara — beriladi.
+ * Manbadagi uch o'lchamli tanga yomg'iri (`CoinRain.tsx`, three.js) ham shu
+ * yerda — lekin tashqi CDN'dan emas, `npm install three` orqali o'zimiz
+ * bilan birga qadoqlanadi. Landing tashqi skriptga muhtoj bo'lmasligi kerak
+ * (`Logo` komponentidagi "origin'ga tegmaydi" printsipi), lekin bu paketni
+ * o'zimiz joylashtirishga to'sqinlik qilmaydi — u endi shunchaki bizning
+ * bundle'imizning bir qismi, boshqa xost'ga so'rov emas. `CoinRain` faqat
+ * `/7` uchun alohida chunk sifatida yuklanadi, qolgan sahifalarga tegmaydi.
  *
  * MATN /3 BILAN AYNAN BIR XIL manbadan: `lib/landing-sections.ts` va admin
  * sozlamalari. Narx yoki qadam matni o'zgarsa, ikkala sahifa birga o'zgaradi.
  *
- * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
+ * Sahifa to'liq statik (SSG) — tanga yomg'iri client komponent bo'lsa ham,
+ * u faqat vizual bezak, server render qilingan matnga bog'liq emas.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
@@ -59,22 +63,13 @@ export default async function VariantGold() {
 
   return (
     <div className={c.page}>
-      {/* Fon qatlami: suzuvchi oltin tangalar + nurlar + nuqtali panjara.
-          Alohida div — matn qatlamiga filter/animatsiya yuqmasin.
-          Tangalar manbadagi 3D tanga yomg'irining (three.js) CSS-only
-          ishorasi: variant nomi "Oltin tanga" shu motivdan olingan,
-          shuning uchun fonda haqiqatan tanga ko'rinishi kerak. */}
-      <div className={c.sky} aria-hidden>
-        <span className={`${c.orb} ${c.orbGold}`} />
-        <span className={`${c.orb} ${c.orbEm}`} />
-        <span className={c.mesh} />
-        <span className={`${c.coin} ${c.coin1}`} />
-        <span className={`${c.coin} ${c.coin2}`} />
-        <span className={`${c.coin} ${c.coin3}`} />
-        <span className={`${c.coin} ${c.coin4}`} />
-        <span className={`${c.coin} ${c.coin5}`} />
-        <span className={`${c.coin} ${c.coin6}`} />
-        <span className={`${c.coin} ${c.coin7}`} />
+      {/* Fon: manbadagi haqiqiy 3D tanga yomg'iri — `position: fixed`,
+          skroll bilan siljimaydi. `.veil` matn zonasi tomon qorong'ilashadi,
+          shuning uchun kontent tangalar animatsiyasidan qat'i nazar
+          o'qiladi (manbadagi texnika, xuddi shu tartibda). */}
+      <div className={c.bgFixed} aria-hidden>
+        <CoinRain />
+        <div className={c.veil} />
       </div>
 
       {/* ── Yopishqoq header: to'q shisha ── */}

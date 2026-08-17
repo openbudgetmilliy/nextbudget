@@ -62,174 +62,52 @@
   color: #221802;
 }
 
-/* ── Fon: suzuvchi nurlar + nuqtali panjara ── */
+/* ── Fon: manbadagi haqiqiy 3D tanga yomg'iri ──
+   `position: fixed` — manbadagidek: fon skroll bilan siljimaydi, kontent
+   esa uning ustidan o'tadi. Ikki qatlam: WebGL canvas (`CoinRain.tsx`,
+   z-index 0) + `.veil` (z-index 1) — kontent zonasi tomon asta
+   qorong'ilashadigan gradient, matn har doim o'qilishi uchun. Ikkalasi
+   ham sahifaning barcha `z-index: 1` o'lchagichlaridan pastda qoladi. */
 
-.sky {
-  position: absolute;
+.bgFixed {
+  position: fixed;
   inset: 0;
-  overflow: hidden;
-  pointer-events: none;
   z-index: 0;
+  pointer-events: none;
 }
 
-.orb {
-  position: absolute;
-  border-radius: 50%;
-}
-
-.orbGold {
-  width: min(680px, 86vw);
-  height: min(680px, 86vw);
-  top: -16%;
-  right: -14%;
-  background: radial-gradient(circle, rgba(245, 194, 66, 0.22) 0%, transparent 62%);
-  animation: drift1 24s ease-in-out infinite alternate;
-}
-
-.orbEm {
-  width: min(560px, 78vw);
-  height: min(560px, 78vw);
-  top: 30%;
-  left: -16%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 62%);
-  animation: drift2 20s ease-in-out infinite alternate;
-}
-
-@keyframes drift1 {
-  to {
-    transform: translate(-7vw, 8vh) scale(1.06);
-  }
-}
-
-@keyframes drift2 {
-  to {
-    transform: translate(8vw, -6vh) scale(1.1);
-  }
-}
-
-.mesh {
+.coinsCanvas {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(245, 194, 66, 0.1) 1px, transparent 1.4px);
-  background-size: 30px 30px;
-  mask-image: radial-gradient(70% 60% at 50% 0%, rgba(0, 0, 0, 0.8), transparent);
-  -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, rgba(0, 0, 0, 0.8), transparent);
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
-/* ── Suzuvchi oltin tangalar ──
-   Manbadagi 3D tanga yomg'irining (three.js, CDN) CSS-only ishorasi.
-   Har bir tanga ikki qatlamdan: `.coin` — metall yuza (yorug'lik manbai
-   yuqori-chapda, radial-gradient bilan) + chekka soya; `.coin::before` —
-   ichkariga chekingan halqa, bosma tanga chekkasining o'zi. Faqat
-   transform/opacity animatsiya qilinadi — filter statik, arzon. */
-.coin {
+.veil {
   position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 33% 28%,
-    #fff6df 0%,
-    var(--gold-l) 16%,
-    var(--gold) 48%,
-    var(--gold-d) 80%,
-    #7a5202 100%
-  );
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 34px rgba(245, 194, 66, 0.22);
-  animation: coinFloat 16s ease-in-out infinite alternate;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(900px 500px at 50% 0%, rgba(16, 185, 129, 0.1), transparent 60%),
+    linear-gradient(180deg, rgba(4, 17, 11, 0.42), rgba(4, 17, 11, 0.78) 60%, rgba(4, 17, 11, 0.92));
 }
 
-.coin::before {
-  content: '';
+/* WebGL ishlamasa (`CoinRain` canvas o'rniga shuni qaytaradi) yoki
+   qurilma juda zaif bo'lsa — sekin rang siljishi hech bo'lmasa fonni
+   jonli tutib turadi. Sof CSS, hech qanday chizishga muhtoj emas.
+   `.coinsCanvas` bilan bir xil joyni egallaydi — `.bgFixed` ichida. */
+.bgFixedNoGl {
   position: absolute;
-  inset: 13%;
-  border-radius: 50%;
-  border: 1.5px solid rgba(255, 246, 223, 0.4);
+  inset: 0;
+  animation: hue 14s ease-in-out infinite alternate;
+  background: linear-gradient(160deg, var(--bg), #0a2a1c, #123);
+  background-size: 200% 200%;
 }
 
-/* Ichki nuqta — chekkaning ikkinchi qatori, "bosma tanga" hissi kuchayadi */
-.coin::after {
-  content: '';
-  position: absolute;
-  inset: 22%;
-  border-radius: 50%;
-  border: 1px solid rgba(122, 82, 2, 0.35);
-}
-
-@keyframes coinFloat {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
+@keyframes hue {
+  to {
+    background-position: 100% 100%;
   }
-  100% {
-    transform: translate(-3%, -8%) rotate(14deg);
-  }
-}
-
-.coin1 {
-  width: 108px;
-  height: 108px;
-  top: 2%;
-  left: -3%;
-  opacity: 0.5;
-  animation-duration: 19s;
-}
-
-.coin2 {
-  width: 58px;
-  height: 58px;
-  top: 15%;
-  right: 7%;
-  opacity: 0.55;
-  animation-duration: 14s;
-  animation-delay: -3s;
-}
-
-.coin3 {
-  width: 40px;
-  height: 40px;
-  top: 33%;
-  left: 6%;
-  opacity: 0.45;
-  animation-duration: 17s;
-  animation-delay: -8s;
-}
-
-.coin4 {
-  width: 84px;
-  height: 84px;
-  top: 48%;
-  right: -3%;
-  opacity: 0.4;
-  animation-duration: 21s;
-  animation-delay: -5s;
-}
-
-.coin5 {
-  width: 50px;
-  height: 50px;
-  top: 63%;
-  left: -2%;
-  opacity: 0.5;
-  animation-duration: 15s;
-  animation-delay: -10s;
-}
-
-.coin6 {
-  width: 96px;
-  height: 96px;
-  top: 78%;
-  right: 5%;
-  opacity: 0.38;
-  animation-duration: 20s;
-  animation-delay: -12s;
-}
-
-.coin7 {
-  width: 54px;
-  height: 54px;
-  top: 92%;
-  left: 12%;
-  opacity: 0.42;
-  animation-duration: 16s;
-  animation-delay: -6s;
 }
 
 /* ── Umumiy o'lchagich ── */
