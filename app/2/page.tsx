@@ -268,6 +268,9 @@ export default async function Variant2() {
         <a href="/8" className={st.swLink}>
           8
         </a>
+        <a href="/9" className={st.swLink}>
+          9
+        </a>
         <a href="/l" className={st.swLink}>
           asl
         </a>

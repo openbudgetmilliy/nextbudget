@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 
 import Tracker from '@/components/Tracker';
 import Logo from '@/components/Logo';
-import { Telegram, Check } from '@/components/Icons';
+import MoneyRain from './MoneyRain';
+import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
@@ -19,23 +20,30 @@ import { env } from '@/lib/env';
 import c from './page.module.css';
 
 /**
- * Variant 8 — «Neon signal».
+ * Variant 9 — «Barakat».
  *
- * Uslub manbasi: files/12-chaqir-referral.html (demo referal-bot sahifasi).
- * Undan FAQAT dizayn tili olingan — to'q binafsha fon (#0B0416), pushti-
- * siyanit neon urg'u, Orbitron sarlavhalar (katta harf, keng treking).
- * Manbadagi reyting jadvali va jonli hisoblagich kabi vidjetlar bu yerda
- * YO'Q — ular referal-bot kontentiga xos, biznikiga aloqasi yo'q.
+ * Uslub manbasi: files/14-barakat-referral.html (demo referal-bot sahifasi).
+ * Undan FAQAT dizayn tili olingan — to'q zumrad fon (#03201C), mint-oltin
+ * urg'u (#34D399 / #F2C14E), shisha panellar, Sora sarlavhalar. Manbadagi
+ * referal havola va reyting kabi vidjetlar YO'Q — referal-bot kontentiga
+ * xos, biznikiga aloqasi yo'q.
  *
- * Manbada uch o'lchamli to'lqin-panjara fon (three.js, tashqi CDN) bor
- * edi — bu yerda YO'Q: landing sahifa tashqi skriptga muhtoj bo'lmasligi
- * kerak. Kayfiyat CSS'ning o'zi bilan — synthwave "quyosh" (radial-gradient
- * + skanerlash chizig'i) va yulduzli fon — beriladi.
+ * Fon — manbadagi haqiqiy 3D pul yomg'iri (`MoneyRain.tsx`, three.js,
+ * `npm install three` bilan o'zimiz bilan qadoqlangan, tashqi CDN emas).
+ * `/7` dagi tajriba: CSS-only taqlid o'rniga chin sahna, chunki variant
+ * nomi va uslubi buni va'da qiladi.
+ *
+ * Manbadagi "chat" paneli (bot bilan xayoliy suhbat) o'rniga — statusli
+ * panel: sarlavha (bot onlayn holati — umumiy, hech qanday soxta voqea
+ * emas) va real ma'lumot (narx, bosh mukofot). Manbada bo'lgani kabi
+ * bitta ismli foydalanuvchi va aniq summa misoli ("Aziz +30 000 oldi")
+ * KIRITILMADI — bu haqiqatda sodir bo'lmagan voqeani da'vo qilardi.
  *
  * MATN /3 BILAN AYNAN BIR XIL manbadan: `lib/landing-sections.ts` va admin
  * sozlamalari. Narx yoki qadam matni o'zgarsa, ikkala sahifa birga o'zgaradi.
  *
- * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
+ * Sahifa to'liq statik (SSG) — pul yomg'iri client komponent bo'lsa ham,
+ * u faqat vizual bezak, server render qilingan matnga bog'liq emas.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
@@ -46,18 +54,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Marquee bir marta aniqlanadi — ikki nusxada aynan shu ro'yxat aylanadi */
-function marqueeItems(reviews: string): string[] {
-  return [
-    'Humo · Uzcard · Payme',
-    'Aniq narx',
-    `${reviews} foydalanuvchi`,
-    'Yashirin komissiya yo‘q',
-    'Bir necha daqiqada',
-  ];
-}
-
-export default async function VariantNeon() {
+export default async function VariantBarakat() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
   const bot = (s.bot_username || env.BOT).replace(/^@/, '');
@@ -66,18 +63,18 @@ export default async function VariantNeon() {
   const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
   const stats = liveStats(s);
   const faq = landingFaqItems(s);
-  const ticker = marqueeItems(s.reviews_count);
+  const topReward = LANDING_REWARDS[LANDING_REWARDS.length - 1];
 
   return (
     <div className={c.page}>
-      {/* Fon: yulduzlar + pastda nozik perspektiv panjara. Alohida qatlam —
-          matn ustiga animatsiya yuqmasin */}
-      <div className={c.sky} aria-hidden>
-        <span className={c.stars} />
-        <span className={c.floor} />
+      {/* Fon: manbadagi haqiqiy 3D pul yomg'iri — `position: fixed`,
+          skroll bilan siljimaydi. `.veil` matn zonasi tomon qorong'ilashadi. */}
+      <div className={c.bgFixed} aria-hidden>
+        <MoneyRain />
+        <div className={c.veil} />
       </div>
 
-      {/* ── Yopishqoq header: to'q shisha ── */}
+      {/* ── Yopishqoq header ── */}
       <header className={c.hdr}>
         <div className={c.hdrIn}>
           <a href="#top" className={c.brand}>
@@ -93,7 +90,7 @@ export default async function VariantNeon() {
             <a href="#savol-javob">Savollar</a>
           </nav>
 
-          <a href={tg} className={c.btnSm} data-t="cta" data-t-id="v8_header" data-tg rel="noopener">
+          <a href={tg} className={c.btnSm} data-t="cta" data-t-id="v9_header" data-tg rel="noopener">
             <Telegram size={16} />
             Botni ochish
           </a>
@@ -101,90 +98,117 @@ export default async function VariantNeon() {
       </header>
 
       <main id="top">
-        {/* ── Hero: synthwave "quyosh" fonda ── */}
+        {/* ── Hero: ikki ustun — matn + status paneli ── */}
         <section className={c.hero}>
-          <div className={c.sun} aria-hidden />
           <div className={c.heroIn}>
-            {s.hero_badge ? <p className={c.chip}>{s.hero_badge}</p> : null}
+            <div className={c.heroCopy}>
+              {s.hero_badge ? (
+                <p className={c.chip}>
+                  <span className={c.dot} />
+                  {s.hero_badge}
+                </p>
+              ) : null}
 
-            <h1 className={c.title}>
-              {lines.map((line, i) => (
-                <span key={line} className={i === lines.length - 1 ? c.titleHl : undefined}>
-                  {line}
-                </span>
-              ))}
-            </h1>
-
-            <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
-
-            <div className={c.heroAct}>
-              <a
-                href={tg}
-                className={c.btnP}
-                data-t="cta"
-                data-t-id="v8_hero"
-                data-tg
-                rel="noopener"
-              >
-                <Telegram size={18} />
-                {s.cta_primary}
-              </a>
-              <a href="#jarayon" className={c.btnC} data-t="click" data-t-id="v8_hero_steps">
-                Qanday ishlaydi?
-              </a>
-            </div>
-
-            {/* Narx paneli — manbadagi "jami to'landi" hisoblagichining shakli,
-                bu yerda esa asosiy raqamni ko'rsatadi */}
-            <div className={c.total}>
-              <span>1 ovoz narxi</span>
-              <b className={`${c.totalNum} tnum`}>
-                {s.price_one_vote} <i>so‘m</i>
-              </b>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Yuguruvchi lenta ── */}
-        <div className={c.tick} aria-hidden>
-          <div className={c.tickTrack}>
-            {[0, 1].map((copy) => (
-              <div key={copy} className={c.tickRow}>
-                {ticker.map((t) => (
-                  <span key={t} className={c.tc}>
-                    {t}
+              <h1 className={c.title}>
+                {lines.map((line, i) => (
+                  <span key={line} className={i === lines.length - 1 ? c.titleHl : undefined}>
+                    {line}
                   </span>
                 ))}
+              </h1>
+
+              <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
+
+              <div className={c.heroAct}>
+                <a
+                  href={tg}
+                  className={c.btnM}
+                  data-t="cta"
+                  data-t-id="v9_hero"
+                  data-tg
+                  rel="noopener"
+                >
+                  <Telegram size={18} />
+                  {s.cta_primary}
+                </a>
+                <a href="#jarayon" className={c.btnO} data-t="click" data-t-id="v9_hero_steps">
+                  Qanday ishlaydi?
+                </a>
               </div>
-            ))}
+
+              <p className={c.mini}>
+                Aniq narx — <b>{s.price_one_vote} so‘m</b> · Humo · Uzcard · Payme
+              </p>
+            </div>
+
+            {/* Status paneli — manbadagi chat-mockup shaklidan olingan, lekin
+                mazmuni real ma'lumot: xayoliy suhbat yo'q, faqat narx va
+                bosh mukofot */}
+            <aside className={c.statusCard}>
+              <div className={c.statusHead}>
+                <span className={c.statusAv}>
+                  <Logo size={20} className={c.statusAvImg} />
+                </span>
+                <div>
+                  <b>{SITE.brand}</b>
+                  <span>
+                    <span className={c.dot} /> onlayn
+                  </span>
+                </div>
+              </div>
+              <div className={c.statusBody}>
+                <div className={c.bubble}>
+                  1 ovoz narxi
+                  <b className={c.bubbleSum}>
+                    {s.price_one_vote} <span>so‘m</span>
+                  </b>
+                </div>
+                <div className={c.bubble}>
+                  Bosh mukofot
+                  <b className={c.bubbleSum}>{topReward.amount}</b>
+                </div>
+                <div className={c.bubbleMe}>Ovoz berishni boshlayman</div>
+                <div className={c.statusBtns}>
+                  <span className={c.b1}>{s.cta_primary}</span>
+                  <span className={c.b2}>Havolam</span>
+                </div>
+                <div className={c.typing} aria-hidden>
+                  <i />
+                  <i />
+                  <i />
+                </div>
+              </div>
+            </aside>
           </div>
-        </div>
+        </section>
 
         {/* ── Ko'rsatkichlar ── */}
         <section className={c.statsSec} aria-label="Ko'rsatkichlar">
           <div className={c.statsIn}>
             {stats.map((it, i) => (
-              <div key={it.lab} className={`${c.stat} ${i % 2 ? c.statC : c.statP}`}>
-                <span className={`${c.statNum} tnum`}>{it.num}</span>
-                <span className={c.statLab}>{it.lab}</span>
+              <div key={it.lab} className={c.stat}>
+                <b className={`${i % 2 ? c.statG : ''} tnum`}>{it.num}</b>
+                <span>{it.lab}</span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── Qadamlar ── */}
+        {/* ── Qadamlar: bog'lovchi chiziqli doiralar ── */}
         <section id="jarayon" className={c.sec}>
           <div className={c.secIn}>
-            <p className={c.kicker}>Qadamlar</p>
-            <h2 className={c.h2}>Sarmoyasiz. Faqat ovoz</h2>
-            <p className={c.secSub}>Ro'yxatdan o'tish yo'q. Hujjat yo'q. Faqat ovoz va to'lov.</p>
+            <p className={c.kicker}>Jarayon</p>
+            <h2 className={c.h2}>Boshlash — 2 daqiqa</h2>
+            <p className={c.secSub}>
+              Ro'yxatdan o'tish shart emas — hammasi Telegram ichida.
+            </p>
 
-            <ol className={c.grid3}>
+            <ol className={c.sw}>
               {LANDING_STEPS.map((step) => (
                 <li key={step.n} className={c.sc}>
-                  <span className={`${c.scNo} tnum`}>{`0${step.n}`}</span>
-                  <h3 className={c.scH}>{step.title}</h3>
-                  <p className={c.scP}>{step.text}</p>
+                  <span className={`${c.scNo} tnum`}>{step.n}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
                 </li>
               ))}
             </ol>
@@ -192,9 +216,9 @@ export default async function VariantNeon() {
             <div className={c.secAct}>
               <a
                 href={tg}
-                className={c.btnP}
+                className={c.btnM}
                 data-t="cta"
-                data-t-id="v8_steps"
+                data-t-id="v9_steps"
                 data-tg
                 rel="noopener"
               >
@@ -205,38 +229,33 @@ export default async function VariantNeon() {
           </div>
         </section>
 
-        {/* ── Mukofot: raqamlangan qator uslubida ── */}
+        {/* ── Mukofot: manbadagi ishonch to'ri uslubida ── */}
         <section id="mukofot" className={c.sec}>
           <div className={c.secIn}>
             <p className={c.kicker}>Mukofot</p>
             <h2 className={c.h2}>Nima olasiz</h2>
             <p className={c.secSub}>Ovoz bergandan so'ng avtomatik to'lanadi.</p>
 
-            <ol className={c.rList}>
+            <ul className={c.tg}>
               {LANDING_REWARDS.map((r, i) => (
-                <li key={r.tag} className={`${c.rRow} ${i === 2 ? c.rRowHot : ''}`}>
-                  <span className={`${c.rk} tnum`}>{`0${i + 1}`}</span>
-                  <div className={c.rWho}>
-                    <b>{r.title}</b>
-                    <span>{r.tag}</span>
-                  </div>
-                  <p className={c.rSum}>
+                <li key={r.tag} className={`${c.tc} ${i === 2 ? c.tcHot : ''}`}>
+                  <span className={c.ti}>{`0${i + 1}`}</span>
+                  <h3>{r.title}</h3>
+                  <p className={c.tcAmt}>
                     <span className="tnum">{r.amount}</span>
-                    {r.unit && <i>{r.unit}</i>}
+                    {r.unit && <span className={c.tcUnit}>{r.unit}</span>}
                   </p>
+                  <p>{r.desc}</p>
                 </li>
               ))}
-            </ol>
-            <p className={c.rNote}>
-              {LANDING_REWARDS.map((r) => r.desc).join(' ')}
-            </p>
+            </ul>
 
             <div className={c.secAct}>
               <a
                 href={tg}
-                className={c.btnP}
+                className={c.btnM}
                 data-t="cta"
-                data-t-id="v8_rewards"
+                data-t-id="v9_rewards"
                 data-tg
                 rel="noopener"
               >
@@ -244,29 +263,6 @@ export default async function VariantNeon() {
                 Mukofot olishni boshlash
               </a>
             </div>
-          </div>
-        </section>
-
-        {/* ── To'lov usullari ── */}
-        <section className={c.sec}>
-          <div className={c.secIn}>
-            <p className={c.kicker}>Yechib olish</p>
-            <h2 className={c.h2}>Pul qayerga tushadi?</h2>
-
-            <ul className={c.pays}>
-              <li className={c.pc}>
-                <Check size={16} /> Humo
-              </li>
-              <li className={c.pc}>
-                <Check size={16} /> Uzcard
-              </li>
-              <li className={c.pc}>
-                <Check size={16} /> Payme
-              </li>
-              <li className={c.pc}>
-                <Check size={16} /> {s.reviews_count} foydalanuvchi
-              </li>
-            </ul>
           </div>
         </section>
 
@@ -320,9 +316,9 @@ export default async function VariantNeon() {
             <div className={c.finAct}>
               <a
                 href={tg}
-                className={c.btnP}
+                className={c.btnM}
                 data-t="cta"
-                data-t-id="v8_final"
+                data-t-id="v9_final"
                 data-tg
                 rel="noopener"
               >
@@ -347,7 +343,7 @@ export default async function VariantNeon() {
             href={tg}
             className={c.footBot}
             data-t="cta"
-            data-t-id="v8_foot_bot"
+            data-t-id="v9_foot_bot"
             data-tg
             rel="noopener"
           >
@@ -356,7 +352,7 @@ export default async function VariantNeon() {
         </div>
       </footer>
 
-      {/* ── Variant almashtirgich: A/B ni qo'lda solishtirish uchun ── */}
+      {/* ── Variant almashtirgich ── */}
       <nav className={c.switcher} aria-label="Dizayn variantlari">
         <a href="/1">1</a>
         <a href="/2">2</a>
@@ -365,10 +361,10 @@ export default async function VariantNeon() {
         <a href="/5">5</a>
         <a href="/6">6</a>
         <a href="/7">7</a>
-        <a href="/8" className={c.swOn} aria-current="page">
-          8
+        <a href="/8">8</a>
+        <a href="/9" className={c.swOn} aria-current="page">
+          9
         </a>
-        <a href="/9">9</a>
         <a href="/l">asl</a>
       </nav>
 

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barakat — Har ulashgan havola 30 000 so'm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#03201C;--panel:rgba(9,44,37,.62);--ink:#ECFDF5;--dim:#8FC4B2;--mint:#34D399;--gold:#F2C14E;--line:rgba(52,211,153,.22);--r:18px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+#gl{position:fixed;inset:0;z-index:0}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:
+radial-gradient(800px 500px at 50% 0%,rgba(52,211,153,.09),transparent 60%),
+linear-gradient(180deg,rgba(3,32,28,.45),rgba(3,32,28,.7) 55%,rgba(3,32,28,.94))}
+body.nogl{background:linear-gradient(160deg,#03201C,#0B4436,#03201C);background-size:200% 200%;animation:dr 12s ease-in-out infinite alternate}
+@keyframes dr{to{background-position:100% 100%}}
+main,nav,footer{position:relative;z-index:2}
+::selection{background:var(--mint);color:#03201C}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:'Sora',sans-serif}
+
+nav{position:fixed;inset:0 0 auto;z-index:50;background:rgba(3,32,28,.6);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{font-family:'Sora';font-weight:800;font-size:20px;display:flex;align-items:center;gap:9px}
+.logo svg{width:24px;height:24px}
+.nav-l{display:flex;gap:26px;font-size:14px;color:var(--dim)}
+.nav-l a:hover{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:14px;font-weight:700;font-size:14.5px;cursor:pointer;border:0;transition:.22s;font-family:'Inter'}
+.btn-m{background:linear-gradient(115deg,#7BEAC0,var(--mint) 50%,#0E9F6E);color:#03201C}
+.btn-m:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(52,211,153,.35)}
+.btn-o{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--ink)}
+.btn-o:hover{background:rgba(255,255,255,.12)}
+@media(max-width:800px){.nav-l{display:none}}
+
+.hero{min-height:100svh;display:grid;grid-template-columns:1.05fr 1fr;gap:36px;align-items:center;padding:130px 24px 60px;max-width:1100px;margin:0 auto}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:99px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(8px);font-size:13px;color:var(--dim);margin-bottom:24px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 10px var(--mint)}
+h1{font-size:clamp(34px,5.4vw,58px);line-height:1.06;letter-spacing:-.02em;margin-bottom:20px}
+h1 em{font-style:normal;color:transparent;background:linear-gradient(110deg,#7BEAC0,var(--mint) 50%,#0E9F6E);-webkit-background-clip:text;background-clip:text}
+.hero p{color:var(--dim);font-size:16.5px;line-height:1.68;max-width:440px;margin-bottom:30px}
+.hero-b{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.mini{font-size:13px;color:var(--dim)}
+.mini b{color:var(--gold)}
+@media(max-width:920px){.hero{grid-template-columns:1fr;text-align:center}.hero p{margin-inline:auto}.hero-b{justify-content:center}}
+
+.chat{background:var(--panel);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.1);border-radius:24px;overflow:hidden;max-width:400px;justify-self:center;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.4)}
+.ch{display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ch .av{width:38px;height:38px;border-radius:50%;background:linear-gradient(140deg,var(--mint),#0E9F6E);display:grid;place-items:center;font-family:'Sora';font-weight:800;color:#03201C}
+.ch b{display:block;font-size:14.5px}
+.ch span{font-size:12px;color:var(--mint)}
+.cb{padding:18px;display:grid;gap:11px}
+.msg{max-width:86%;padding:11px 15px;border-radius:15px;font-size:13.5px;line-height:1.55}
+.msg small{display:block;font-size:12px;color:var(--dim);margin-top:3px}
+.bot{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-bottom-left-radius:5px;justify-self:start}
+.bot .sum{color:var(--gold);font-weight:700}
+.me{background:rgba(52,211,153,.16);border:1px solid var(--line);border-bottom-right-radius:5px;justify-self:end}
+.btns{display:flex;gap:9px;justify-self:start}
+.btns span{font-size:12.5px;font-weight:600;padding:9px 15px;border-radius:11px;cursor:pointer;transition:.2s}
+.btns .b1{background:linear-gradient(115deg,#FFE29A,var(--gold));color:#3A2A05}
+.btns .b2{border:1px solid rgba(255,255,255,.14);color:var(--ink)}
+.btns span:hover{transform:translateY(-2px)}
+.typing{display:inline-flex;gap:5px;padding:13px 16px}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--dim);animation:tp 1.2s ease-in-out infinite}
+.typing i:nth-child(2){animation-delay:.18s}.typing i:nth-child(3){animation-delay:.36s}
+@keyframes tp{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+
+section{padding:92px 0}
+.k{color:var(--mint);font-size:12.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;display:block;text-align:center;margin-bottom:12px}
+h2{font-size:clamp(26px,4vw,42px);letter-spacing:-.02em;text-align:center;margin-bottom:14px}
+.sub{color:var(--dim);text-align:center;max-width:520px;margin:0 auto 48px;line-height:1.68}
+.tg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tc{background:var(--panel);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:26px 22px;transition:.25s}
+.tc:hover{transform:translateY(-5px);border-color:var(--line)}
+.ti{width:44px;height:44px;border-radius:13px;background:rgba(52,211,153,.14);border:1px solid var(--line);display:grid;place-items:center;margin-bottom:15px}
+.ti svg{width:21px;height:21px;color:var(--mint)}
+.tc h3{font-size:15.5px;margin-bottom:7px}
+.tc p{font-size:13.5px;color:var(--dim);line-height:1.6}
+@media(max-width:900px){.tg{grid-template-columns:1fr 1fr}}
+@media(max-width:540px){.tg{grid-template-columns:1fr}}
+
+.sw{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}
+.sw::before{content:"";position:absolute;top:26px;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+.sc{text-align:center;position:relative}
+.sc .no{width:52px;height:52px;border-radius:50%;background:var(--panel);backdrop-filter:blur(8px);border:1px solid var(--line);display:grid;place-items:center;margin:0 auto 18px;font-family:'Sora';font-weight:800;color:var(--mint);position:relative;z-index:1}
+.sc h3{font-size:17px;margin-bottom:9px}
+.sc p{font-size:14px;color:var(--dim);line-height:1.62;max-width:270px;margin:0 auto}
+@media(max-width:780px){.sw{grid-template-columns:1fr}.sw::before{display:none}}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center}
+.st{padding:28px 14px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:var(--panel);backdrop-filter:blur(8px)}
+.st b{font-family:'Sora';font-weight:800;font-size:clamp(24px,3.2vw,36px);display:block;color:var(--mint)}
+.st b.g{color:var(--gold)}
+.st span{font-size:12.5px;color:var(--dim)}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+
+.cta{padding:10px 0 110px;text-align:center}
+.cta-in{max-width:760px;margin:0 auto;border:1px solid var(--line);border-radius:28px;padding:60px 36px;background:
+radial-gradient(440px 220px at 50% 0%,rgba(52,211,153,.15),transparent 70%),var(--panel);backdrop-filter:blur(10px)}
+.cta-in h2{margin-bottom:12px}
+.cta-in p{color:var(--dim);margin-bottom:28px}
+footer{border-top:1px solid rgba(255,255,255,.07);padding:26px 0;font-size:13px;color:var(--dim);text-align:center}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas><div class="veil"></div>
+
+<nav><div class="wrap nav-in">
+<a class="logo" href="#"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#34D399" stroke-width="1.8"/><path d="M12 7v10M15.2 9.2c-.6-1-1.8-1.5-3.2-1.5-1.8 0-3 .9-3 2.3 0 3.2 6.4 1.6 6.4 4.7 0 1.5-1.4 2.4-3.4 2.4-1.6 0-2.9-.6-3.5-1.7" stroke="#F2C14E" stroke-width="1.7" stroke-linecap="round"/></svg>Barakat</a>
+<div class="nav-l"><a href="#n">Nega biz</a><a href="#q">Qadamlar</a><a href="#s">Natijalar</a></div>
+<a class="btn btn-m" style="padding:11px 20px" href="#c">Botni ochish</a>
+</div></nav>
+
+<main>
+<header class="hero">
+<div>
+<span class="chip"><span class="dot"></span>Bugun 4 218 ta to'lov amalga oshirildi</span>
+<h1>Har ulashgan havola — <em>30 000 so'm</em></h1>
+<p>Barakat botida havolangizni do'stlarga yuboring — har bir qo'shilgan do'st uchun hisobingizga naqd pul yoziladi. Sarmoyasiz, sotuvsiz.</p>
+<div class="hero-b"><a class="btn btn-m" href="#c">Havolamni olish</a><a class="btn btn-o" href="#q">Qanday ishlaydi?</a></div>
+<div class="mini">Minimal yechish — <b>30 000 so'm</b> · Click · Payme · Uzcard · Humo</div>
+</div>
+<div class="chat reveal" aria-label="Bot suhbati namunasi">
+<div class="ch"><div class="av">B</div><div><b>Barakat Bot</b><span>online</span></div></div>
+<div class="cb">
+<div class="msg bot">Do'stingiz <b>Aziz</b> havolangiz orqali qo'shildi ✓<small><span class="sum">+30 000 so'm</span> hisobingizga yozildi</small></div>
+<div class="msg bot">Joriy balans: <span class="sum">240 000 so'm</span></div>
+<div class="msg me">Pulni kartaga yechmoqchiman</div>
+<div class="btns"><span class="b1">Yechish — 240 000</span><span class="b2">Havolam</span></div>
+<div class="msg bot">✓ 240 000 so'm <b>Click</b> hamyoningizga yuborildi<small>o'rtacha 15 daqiqada tushadi</small></div>
+<div class="msg bot typing"><i></i><i></i><i></i></div>
+</div>
+</div>
+</header>
+
+<section id="n"><div class="wrap">
+<span class="k reveal">Nega Barakat</span>
+<h2 class="reveal">Ishonch — raqamlarda</h2>
+<p class="sub reveal">Hech qanday yashirin shart yo'q: qo'shildi — to'landi.</p>
+<div class="tg">
+<div class="tc reveal"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></div><h3>Bir zumda hisoblanadi</h3><p>Do'st raqamini tasdiqlashi bilan pul avtomatik yoziladi — kutish yo'q.</p></div>
+<div class="tc reveal"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-4z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></div><h3>Sarmoya shart emas</h3><p>Hech qachon pul so'ramaymiz. Faqat siz olasiz — boshqasi yo'q.</p></div>
+<div class="tc reveal"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M12 7v5l3 2"/></svg></div><h3>24/7 qo'llab-quvvatlash</h3><p>Savol tug'ilsa — operatorlar kechayu kunduz botning o'zida javob beradi.</p></div>
+<div class="tc reveal"><div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M2 11h20M16 15.5h2.5"/></svg></div><h3>Istalgan kartaga</h3><p>Click, Payme, Uzcard yoki Humo — minimal summa atigi 30 000 so'm.</p></div>
+</div>
+</div></section>
+
+<section id="q" style="padding-top:10px"><div class="wrap">
+<span class="k reveal">Qadamlar</span>
+<h2 class="reveal">Boshlash — 2 daqiqa</h2>
+<p class="sub reveal">Ro'yxatdan o'tish ham shart emas — hammasi Telegram ichida.</p>
+<div class="sw">
+<div class="sc reveal"><div class="no">1</div><h3>Botga kiring</h3><p>@BarakatBot'ni oching va raqamingizni tasdiqlang.</p></div>
+<div class="sc reveal"><div class="no">2</div><h3>Havolani ulashing</h3><p>Do'stlar, guruhlar, storis — qayerga qulay bo'lsa, o'sha yerga.</p></div>
+<div class="sc reveal"><div class="no">3</div><h3>Pulingizni oling</h3><p>Har do'st uchun +30 000 so'm. Yig'ilganini kartaga yeching.</p></div>
+</div>
+</div></section>
+
+<section id="s" style="padding-top:10px"><div class="wrap">
+<span class="k reveal">Natijalar</span>
+<h2 class="reveal" style="margin-bottom:44px">Bugungacha</h2>
+<div class="stats">
+<div class="st reveal"><b class="g"><span data-c="1420">0</span> mln</b><span>so'm to'lab berildi</span></div>
+<div class="st reveal"><b data-c="88600">0</b><span>foydalanuvchi</span></div>
+<div class="st reveal"><b data-c="4218">0</b><span>bugungi to'lovlar</span></div>
+<div class="st reveal"><b>15 daq</b><span>o'rtacha yechish</span></div>
+</div>
+</div></section>
+
+<div class="cta" id="c"><div class="wrap"><div class="cta-in reveal">
+<h2>Birinchi 30 000 so'm sizni kutmoqda</h2>
+<p>Botni oching — havolangiz 10 soniyada tayyor bo'ladi.</p>
+<a class="btn btn-m" href="#">@BarakatBot ni ochish</a>
+</div></div></div>
+</main>
+
+<footer>© 2026 Barakat — Demo sahifa. Raqamlar va ismlar namunaviy.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const cv=document.getElementById('gl');
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});}catch(e){cv.remove();document.body.classList.add('nogl');return;}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.1,100);cam.position.set(0,0,12);
+scene.add(new THREE.AmbientLight(0x446655,.95));
+const d=new THREE.DirectionalLight(0xffffff,.9);d.position.set(3,6,5);scene.add(d);
+const p=new THREE.PointLight(0x7BEAC0,.7,40);p.position.set(-3,2,6);scene.add(p);
+// banknotes
+const NB=46;
+const noteG=new THREE.BoxGeometry(2.3,1.1,.03);
+const notes=new THREE.InstancedMesh(noteG,new THREE.MeshStandardMaterial({color:0x2EBD84,metalness:.15,roughness:.75}),NB);
+scene.add(notes);
+// coins
+const NC=46;
+const coinG=new THREE.CylinderGeometry(1,1,.15,22);
+const coins=new THREE.InstancedMesh(coinG,new THREE.MeshStandardMaterial({color:0xF2C14E,metalness:.85,roughness:.32}),NC);
+scene.add(coins);
+const dum=new THREE.Object3D();
+function mk(n){const a=[];for(let i=0;i<n;i++)a.push({
+ bx:(Math.random()-.5)*22,y:Math.random()*24-11,z:(Math.random()-.5)*8-1,
+ s:.3+Math.random()*.45,v:.024+Math.random()*.04,
+ rx:Math.random()*6,ry:Math.random()*6,rz:Math.random()*6,
+ vx:(Math.random()-.5)*.04,vy:(Math.random()-.5)*.04,vz:(Math.random()-.5)*.04,
+ ph:Math.random()*6,am:.5+Math.random()*.9});return a;}
+const DN=mk(NB),DC=mk(NC);DC.forEach(c=>c.s*=.6);
+let mx=0,t=0;
+addEventListener('pointermove',e=>{mx=(e.clientX/innerWidth-.5)*.3;},{passive:true});
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();});
+renderer.setSize(innerWidth,innerHeight);
+function step(mesh,D){
+ for(let i=0;i<D.length;i++){const c=D[i];
+  c.y-=c.v;c.rx+=c.vx;c.ry+=c.vy;c.rz+=c.vz;
+  if(c.y<-13){c.y=12+Math.random()*4;c.bx=(Math.random()-.5)*22;}
+  dum.position.set(c.bx+Math.sin(t*.7+c.ph)*c.am,c.y,c.z);
+  dum.rotation.set(c.rx,c.ry,c.rz);dum.scale.setScalar(c.s);
+  dum.updateMatrix();mesh.setMatrixAt(i,dum.matrix);}
+ mesh.instanceMatrix.needsUpdate=true;}
+function tick(){t+=.016;step(notes,DN);step(coins,DC);
+ scene.rotation.y+=(mx-scene.rotation.y)*.04;
+ renderer.render(scene,cam);if(!rm)requestAnimationFrame(tick);}
+tick();
+})();
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const co=new IntersectionObserver(es=>es.forEach(en=>{if(!en.isIntersecting)return;const el=en.target,end=+el.dataset.c,t0=performance.now();
+(function u(t){const p=Math.min((t-t0)/1400,1);el.textContent=Math.round(end*(1-Math.pow(1-p,3))).toLocaleString("ru-RU");if(p<1)requestAnimationFrame(u);})(t0);co.unobserve(el);}),{threshold:.6});
+document.querySelectorAll('[data-c]').forEach(el=>co.observe(el));
+</script>
+</body>
+</html>
