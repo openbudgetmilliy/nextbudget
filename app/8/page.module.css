@@ -1,0 +1,1040 @@
+/* ==========================================================================
+   Variant 8 — «Neon signal»
+
+   Uslub manbasi: files/12-chaqir-referral.html. Undan FAQAT dizayn tili
+   olingan: to'q binafsha fon, pushti-siyanit neon urg'u, Orbitron
+   sarlavhalar.
+
+   To'rt ustun (buzilsa uslub yo'qoladi):
+
+   1. IKKI NEON RANG, IKKI VAZIFA. Pushti (#FF3D9A) — asosiy harakat
+      (CTA, muhim raqamlar). Siyanit (#22D3EE) — ikkilamchi/ma'lumot
+      (havolalar, ikkilamchi tugma, statistika). Ular hech qachon
+      aralashmaydi — bitta elementda faqat bittasi hukmronlik qiladi.
+   2. ORBITRON — FAQAT SARLAVHA VA RAQAM. Katta harf, keng treking (.05em).
+      Uzun matnda charchatadi, shuning uchun oddiy matn — Inter, 400/1.7.
+   3. QUYOSH VA YULDUZLAR — BIR MARTA, FAQAT HERO'DA. Fon effekti butun
+      sahifani bosib ketmaydi, faqat birinchi ekranda kayfiyat beradi.
+   4. SHISHA PANEL HAMMA JOYDA BIR XIL. Fon #0B0416 dan bir pog'ona ochroq,
+      shaffof, nozik pushti/siyanit chegara — kartalar, lenta, FAQ bir tilda.
+
+   Kontrast (WCAG AA, fon #0B0416):
+     ink #F5EFFF → ~17.5:1       dim #A794C9 → ~7.2:1
+     cy #22D3EE matn sifatida    → ~11:1 (yorqin, xavfsiz)
+     Pushti-binafsha tugmada oq matn — FAQAT katta qalin (16px/700+),
+     kichik matnda hech qachon ishlatilmaydi.
+   ========================================================================== */
+
+.page {
+  --bg: #0b0416;
+  --panel: rgba(24, 10, 40, 0.66);
+  --panel-line: rgba(255, 255, 255, 0.08);
+  --ink: #f5efff;
+  --dim: #a794c9;
+  --pink: #ff3d9a;
+  --cy: #22d3ee;
+  --vio: #7c3aed;
+  --line: rgba(255, 61, 154, 0.25);
+  --line-c: rgba(34, 211, 238, 0.3);
+  --grad-p: linear-gradient(110deg, var(--pink), var(--vio));
+
+  --f-b: var(--f8-body), ui-sans-serif, system-ui, sans-serif;
+  --f-d: var(--f8-display), ui-sans-serif, system-ui, sans-serif;
+
+  position: relative;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-b);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: clip;
+}
+
+.page :focus-visible {
+  outline: 2px solid var(--cy);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.page ::selection {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* ── Fon: yulduzlar + pastki perspektiv panjara ── */
+
+.sky {
+  position: absolute;
+  inset: 0;
+  height: 1400px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(1.6px 1.6px at 20% 30%, rgba(34, 211, 238, 0.7), transparent),
+    radial-gradient(1.6px 1.6px at 70% 15%, rgba(255, 61, 154, 0.6), transparent),
+    radial-gradient(1.2px 1.2px at 45% 55%, rgba(245, 239, 255, 0.55), transparent),
+    radial-gradient(1.6px 1.6px at 88% 40%, rgba(34, 211, 238, 0.6), transparent),
+    radial-gradient(1.2px 1.2px at 12% 70%, rgba(245, 239, 255, 0.5), transparent),
+    radial-gradient(1.6px 1.6px at 60% 80%, rgba(255, 61, 154, 0.5), transparent);
+  background-size: 100% 640px;
+  background-repeat: repeat-y;
+  opacity: 0.8;
+}
+
+/* Pastda uzoqlashuvchi panjara — faqat hero balandligida, pastga so'nadi */
+.floor {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: -6%;
+  height: 46%;
+  background-image: repeating-linear-gradient(
+      rgba(255, 61, 154, 0.22) 0 1.5px,
+      transparent 1.5px 46px
+    ),
+    repeating-linear-gradient(90deg, rgba(34, 211, 238, 0.18) 0 1.5px, transparent 1.5px 64px);
+  transform: perspective(320px) rotateX(62deg);
+  transform-origin: bottom;
+  mask-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8) 40%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.8) 40%, transparent);
+}
+
+/* ── Umumiy o'lchagich ── */
+
+.hdrIn,
+.heroIn,
+.statsIn,
+.secIn,
+.finaleIn,
+.footIn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  padding-left: clamp(18px, 4vw, 24px);
+  padding-right: clamp(18px, 4vw, 24px);
+}
+
+/* ── Tugmalar ── */
+
+.btnP,
+.btnC,
+.btnSm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 13px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.btnP {
+  background: var(--grad-p);
+  color: #fff;
+  padding: clamp(15px, 2.4vw, 17px) clamp(24px, 3.4vw, 28px);
+  font-size: 1rem;
+  box-shadow: 0 0 24px rgba(255, 61, 154, 0.35);
+}
+
+.btnP:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 44px rgba(255, 61, 154, 0.55);
+}
+
+.btnC {
+  background: transparent;
+  border: 1.5px solid var(--line-c);
+  color: var(--cy);
+  padding: clamp(14px, 2.3vw, 16px) clamp(22px, 3vw, 26px);
+}
+
+.btnC:hover {
+  background: rgba(34, 211, 238, 0.1);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.25);
+}
+
+.btnSm {
+  background: var(--grad-p);
+  color: #fff;
+  padding: 11px 20px;
+  font-size: 0.8438rem;
+  box-shadow: 0 0 18px rgba(255, 61, 154, 0.3);
+}
+
+.btnSm:hover {
+  transform: translateY(-1px);
+}
+
+/* ── Header ── */
+
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(11, 4, 22, 0.66);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hdrIn {
+  height: 66px;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 3vw, 30px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  min-height: 36px;
+}
+
+.brandTile {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  background: #fff;
+  border-radius: 9px;
+  box-shadow: 0 0 0 1px rgba(255, 61, 154, 0.35), 0 0 14px rgba(255, 61, 154, 0.25);
+}
+
+.brandMark {
+  width: 22px;
+  height: 22px;
+}
+
+.brandName {
+  font-family: var(--f-d);
+  font-weight: 800;
+  font-size: 0.8125rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hdrNav {
+  display: none;
+  align-items: center;
+  gap: clamp(16px, 2.2vw, 26px);
+  font-size: 0.9375rem;
+  color: var(--dim);
+  margin-left: 8px;
+}
+
+.hdrNav a {
+  padding: 8px 0;
+}
+
+.hdrNav a:hover {
+  color: var(--cy);
+}
+
+.hdr .btnSm {
+  margin-left: auto;
+}
+
+/* ── Hero ── */
+
+.hero {
+  position: relative;
+  z-index: 1;
+  padding: clamp(56px, 10vh, 108px) 0 clamp(40px, 6vh, 72px);
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Synthwave quyosh: radial gradient + skanerlash chiziqlari maskasi.
+   `overflow: hidden` shart — busiz skanerlash pseudo-elementi to'g'ri
+   burchakli quti bo'lib, doiraviy shakldan tashqariga toshib chiqadi.
+   `mask-image` esa pastga tomon shaffoflikka eritadi: manbada bu vazifani
+   butun sahifani bosqichma-bosqich qorong'ilashtiruvchi alohida "veil"
+   qatlami bajaradi — bu yerda soddaroq, quyoshning o'zi so'nadi, shunda
+   pastdagi tavsif va tugmalar doim to'q fon ustida, aniq o'qiladi. */
+.sun {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(360px, 64vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 0;
+  background: linear-gradient(180deg, #ffc46b 5%, var(--pink) 55%, #7a1057);
+  opacity: 0.4;
+  mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 92%);
+}
+
+.sun::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 0;
+  background: repeating-linear-gradient(180deg, transparent 0 11px, var(--bg) 11px 19px);
+}
+
+.heroIn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 2.4vh, 22px);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--line-c);
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cy);
+}
+
+.title {
+  font-family: var(--f-d);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.875rem, 6vw, 3.75rem);
+  line-height: 1.14;
+  text-shadow: 0 0 30px rgba(255, 61, 154, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.titleHl {
+  color: transparent;
+  background: linear-gradient(100deg, var(--cy), #7dd3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.45));
+}
+
+.sub {
+  color: var(--dim);
+  font-size: clamp(0.9375rem, 2.1vw, 1.0313rem);
+  line-height: 1.7;
+  max-width: 46ch;
+}
+
+.heroAct {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* ── Narx paneli: manbadagi "jami to'landi" hisoblagichi shakli ── */
+
+.total {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px 34px;
+  margin-top: 8px;
+}
+
+.total span {
+  font-family: var(--f-d);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.totalNum {
+  font-family: var(--f-d);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4.6vw, 2.5rem);
+  color: var(--cy);
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+}
+
+.totalNum i {
+  font-style: normal;
+  font-size: 0.5em;
+  color: var(--dim);
+}
+
+/* ── Yuguruvchi lenta ── */
+
+.tick {
+  position: relative;
+  z-index: 1;
+  border-block: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(11, 4, 22, 0.5);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  padding: 13px 0;
+}
+
+.tickTrack {
+  display: flex;
+  width: max-content;
+  animation: mar 26s linear infinite;
+}
+
+@keyframes mar {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tickRow {
+  display: flex;
+  gap: 12px;
+  flex: none;
+  padding-right: 12px;
+}
+
+.tc {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--dim);
+}
+
+/* ── Ko'rsatkichlar ── */
+
+.statsSec {
+  position: relative;
+  z-index: 1;
+  padding: clamp(30px, 5vh, 50px) 0 0;
+}
+
+.statsIn {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--panel-line);
+  border-radius: 16px;
+  padding: 20px 18px;
+}
+
+.statP {
+  border-color: var(--line);
+}
+
+.statC {
+  border-color: var(--line-c);
+}
+
+.statNum {
+  font-family: var(--f-d);
+  font-weight: 800;
+  font-size: clamp(1.25rem, 2.6vw, 1.625rem);
+}
+
+.statP .statNum {
+  color: var(--pink);
+}
+
+.statC .statNum {
+  color: var(--cy);
+}
+
+.statLab {
+  color: var(--dim);
+  font-size: 0.8125rem;
+}
+
+/* ── Bo'limlar ── */
+
+.sec {
+  position: relative;
+  z-index: 1;
+  padding: clamp(52px, 9vh, 92px) 0 0;
+  scroll-margin-top: 80px;
+}
+
+.kicker {
+  display: block;
+  color: var(--pink);
+  font-family: var(--f-d);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.h2 {
+  font-family: var(--f-d);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(1.5rem, 4vw, 2.1875rem);
+  line-height: 1.14;
+  margin-top: 12px;
+}
+
+.secSub {
+  color: var(--dim);
+  font-size: 0.9688rem;
+  line-height: 1.7;
+  max-width: 52ch;
+  margin-top: 10px;
+}
+
+.secAct {
+  margin-top: clamp(24px, 3.4vw, 34px);
+}
+
+/* ── Qadamlar ── */
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: clamp(26px, 4vw, 40px);
+}
+
+.sc {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--panel-line);
+  border-radius: 18px;
+  padding: clamp(26px, 3.4vw, 32px) clamp(22px, 3vw, 28px);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.sc::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cy), var(--pink));
+  opacity: 0.7;
+}
+
+.sc:hover {
+  transform: translateY(-6px);
+  border-color: var(--line);
+  box-shadow: 0 0 40px rgba(255, 61, 154, 0.16);
+}
+
+.scNo {
+  display: block;
+  font-family: var(--f-d);
+  font-weight: 800;
+  font-size: 1.625rem;
+  /* Kontur-matn: brauzer `-webkit-text-fill-color`ni qo'llamasa
+     (juda kam), `color` fallback sifatida to'liq siyanit ko'rinadi */
+  color: var(--cy);
+  -webkit-text-stroke: 1px var(--cy);
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 16px;
+}
+
+.scH {
+  font-family: var(--f-d);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.scP {
+  color: var(--dim);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+/* ── Mukofot: raqamlangan qator ── */
+
+.rList {
+  max-width: 680px;
+  margin-top: clamp(26px, 4vw, 40px);
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--panel-line);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.rRow {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rRow:last-child {
+  border-bottom: 0;
+}
+
+.rk {
+  font-family: var(--f-d);
+  font-weight: 800;
+  color: var(--dim);
+  font-size: 0.9375rem;
+}
+
+.rRowHot {
+  background: linear-gradient(90deg, rgba(255, 61, 154, 0.08), transparent);
+}
+
+.rRowHot .rk {
+  color: #ffd24c;
+  text-shadow: 0 0 12px rgba(255, 210, 76, 0.5);
+}
+
+.rWho {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rWho b {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.rWho span {
+  font-size: 0.8125rem;
+  color: var(--dim);
+}
+
+.rSum {
+  font-family: var(--f-d);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--cy);
+  white-space: nowrap;
+}
+
+.rSum i {
+  font-style: normal;
+  margin-left: 4px;
+  font-size: 0.8em;
+  color: var(--dim);
+}
+
+.rNote {
+  margin-top: 16px;
+  color: var(--dim);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  max-width: 68ch;
+}
+
+/* ── To'lov usullari ── */
+
+.pays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(20px, 3vw, 26px);
+}
+
+.pc {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 13px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-weight: 600;
+  font-size: 0.9063rem;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pc svg {
+  color: var(--cy);
+  flex: none;
+}
+
+.pc:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-c);
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+}
+
+/* ── FAQ ── */
+
+.faqList {
+  display: grid;
+  gap: 12px;
+  margin-top: clamp(24px, 4vw, 36px);
+  max-width: 720px;
+}
+
+.faqItem {
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-line);
+  border-radius: 16px;
+  padding: 0 clamp(18px, 3vw, 22px);
+  transition: border-color 0.2s ease;
+}
+
+.faqItem[open] {
+  border-color: var(--line-c);
+}
+
+.faqQ {
+  cursor: pointer;
+  padding: 18px 0;
+  font-weight: 600;
+  font-size: 0.9688rem;
+  line-height: 1.35;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.faqQ::-webkit-details-marker {
+  display: none;
+}
+
+.faqQ::marker {
+  content: '';
+}
+
+.faqQ::after {
+  content: '+';
+  flex: none;
+  font-family: var(--f-d);
+  color: var(--cy);
+  font-size: 1.25rem;
+  line-height: 1;
+  transition: transform 0.22s ease;
+}
+
+.faqItem[open] .faqQ::after {
+  transform: rotate(45deg);
+}
+
+.faqA {
+  color: var(--dim);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 62ch;
+  padding-bottom: 20px;
+}
+
+.faqA a {
+  color: var(--cy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faqA a:hover {
+  color: #fff;
+}
+
+/* ── Yakuniy da'vat ── */
+
+.finaleWrap {
+  position: relative;
+  z-index: 1;
+  padding: clamp(50px, 8vh, 92px) clamp(18px, 4vw, 24px) clamp(52px, 8vh, 92px);
+  text-align: center;
+}
+
+.finaleIn {
+  max-width: 760px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: radial-gradient(420px 220px at 50% 0%, rgba(255, 61, 154, 0.16), transparent 70%),
+    var(--panel);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  padding: clamp(40px, 7vw, 64px) clamp(24px, 5vw, 40px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.finH {
+  font-family: var(--f-d);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(1.5rem, 4.4vw, 2.25rem);
+  line-height: 1.16;
+  max-width: 20ch;
+}
+
+.finHl {
+  color: transparent;
+  background: linear-gradient(100deg, var(--cy), #7dd3fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.finP {
+  color: var(--dim);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 46ch;
+}
+
+.finList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.finList li {
+  position: relative;
+  padding-left: 22px;
+  color: var(--dim);
+  font-size: 0.9375rem;
+}
+
+.finList li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.4em;
+  width: 6px;
+  height: 11px;
+  border: solid var(--cy);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.finAct {
+  margin-top: 6px;
+}
+
+/* ── Footer ── */
+
+.foot {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: clamp(28px, 4vh, 40px) 0 clamp(70px, 8vh, 86px);
+}
+
+.footIn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.footBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footLogo {
+  width: 36px;
+  height: 36px;
+}
+
+.footName {
+  font-family: var(--f-d);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.footNote {
+  color: var(--dim);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  max-width: 52ch;
+}
+
+.footBot {
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--cy);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.footBot:hover {
+  color: #fff;
+}
+
+/* ── Variant almashtirgich ── */
+/* 9 havola (1-8 + asl) tor ekranda pillga sig'maydi va box chapga
+   toshib ketardi. `max-width` uni viewport ichida ushlab turadi, ortiqcha
+   qolgan havolalar esa gorizontal surish bilan ko'rinadi. */
+
+.switcher {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 40;
+  display: flex;
+  gap: 4px;
+  padding: 5px;
+  background: rgba(11, 4, 22, 0.85);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  max-width: calc(100vw - 28px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.switcher::-webkit-scrollbar {
+  display: none;
+}
+
+
+.switcher a {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-family: var(--f-d);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--dim);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.switcher a:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.swOn,
+.switcher a.swOn,
+.switcher a.swOn:hover {
+  color: #fff;
+  background: var(--grad-p);
+}
+
+/* ══ Moslashuv ═══════════════════════════════════════════════════════ */
+
+@media (min-width: 900px) {
+  .hdrNav {
+    display: flex;
+  }
+}
+
+@media (max-width: 900px) {
+  .grid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .statsIn {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+
+  .rRow {
+    grid-template-columns: 32px 1fr;
+    row-gap: 4px;
+  }
+
+  .rSum {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .hdrIn {
+    height: 60px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* 12px'dan pastga tushirish o'rniga so'z butunlay yashiriladi — faqat
+     belgi qoladi. Header'da uch element (belgi, nav, CTA) uchun joy tor. */
+  .brandName {
+    display: none;
+  }
+
+  .hdr .btnSm {
+    padding: 10px 14px;
+    font-size: 0.75rem;
+  }
+
+  .secAct .btnP,
+  .finAct .btnP {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tickTrack {
+    animation: none;
+  }
+}

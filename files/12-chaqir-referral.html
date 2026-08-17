@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chaqir — Do'stingni chaqir, 30 000 so'm ol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0416;--panel:rgba(24,10,40,.66);--ink:#F5EFFF;--dim:#A794C9;--pink:#FF3D9A;--cy:#22D3EE;--vio:#7C3AED;--line:rgba(255,61,154,.25);--lineC:rgba(34,211,238,.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden}
+#grid{position:fixed;inset:0;z-index:0}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:
+linear-gradient(180deg,rgba(11,4,22,.25),rgba(11,4,22,.55) 55%,rgba(11,4,22,.9))}
+body.nogl{background:linear-gradient(200deg,#1B0A33,#0B0416 40%,#2A0A2E);background-size:200% 200%;animation:dr 12s ease-in-out infinite alternate}
+@keyframes dr{to{background-position:100% 100%}}
+main,nav,footer{position:relative;z-index:2}
+::selection{background:var(--pink);color:#fff}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+h1,h2,h3,.orb{font-family:'Orbitron',sans-serif;text-transform:uppercase;letter-spacing:.05em}
+
+nav{position:fixed;inset:0 0 auto;z-index:50;background:rgba(11,4,22,.62);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+.logo{font-family:'Orbitron';font-weight:800;font-size:18px;letter-spacing:.14em;display:flex;align-items:center;gap:10px;color:#fff}
+.logo svg{width:24px;height:24px;filter:drop-shadow(0 0 8px rgba(255,61,154,.8))}
+.nav-l{display:flex;gap:26px;font-size:14px;color:var(--dim)}
+.nav-l a:hover{color:var(--cy)}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;transition:.22s;font-family:'Inter';border:0;letter-spacing:.03em}
+.btn-p{background:linear-gradient(110deg,var(--pink),var(--vio));color:#fff;box-shadow:0 0 24px rgba(255,61,154,.35)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 44px rgba(255,61,154,.6)}
+.btn-c{background:transparent;border:1.5px solid var(--lineC);color:var(--cy)}
+.btn-c:hover{background:rgba(34,211,238,.1);box-shadow:0 0 24px rgba(34,211,238,.3)}
+@media(max-width:800px){.nav-l{display:none}}
+
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;text-align:center;padding:130px 0 70px}
+.sun{position:absolute;top:70px;left:50%;transform:translateX(-50%);width:min(430px,80vw);aspect-ratio:1;border-radius:50%;z-index:0;
+background:linear-gradient(180deg,#FFC46B 5%,var(--pink) 55%,#7A1057);filter:blur(1px);opacity:.85}
+.sun::after{content:"";position:absolute;inset:50% 0 0;background:repeating-linear-gradient(180deg,transparent 0 11px,var(--bg) 11px 19px)}
+.hero .wrap{position:relative;z-index:1;width:100%}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:99px;border:1px solid var(--lineC);background:var(--panel);backdrop-filter:blur(8px);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--cy);margin-bottom:28px}
+h1{font-size:clamp(30px,6.2vw,64px);font-weight:800;line-height:1.14;margin-bottom:20px;
+text-shadow:0 0 30px rgba(255,61,154,.35)}
+h1 .n{color:transparent;background:linear-gradient(100deg,var(--cy),#7DD3FC);-webkit-background-clip:text;background-clip:text;filter:drop-shadow(0 0 22px rgba(34,211,238,.5))}
+.hero p{color:var(--dim);font-size:16.5px;line-height:1.7;max-width:500px;margin:0 auto 32px}
+.hero-b{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.total{display:inline-block;background:var(--panel);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:18px;padding:20px 34px}
+.total span{display:block;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.total b{font-family:'Orbitron';font-size:clamp(24px,4.4vw,38px);color:var(--cy);text-shadow:0 0 20px rgba(34,211,238,.55);transition:transform .18s}
+.total b.pop{transform:scale(1.05)}
+.total i{font-style:normal;font-size:.5em;color:var(--dim)}
+
+.tick{border-block:1px solid rgba(255,255,255,.08);background:rgba(11,4,22,.5);backdrop-filter:blur(6px);overflow:hidden;padding:13px 0}
+.tick-t{display:flex;gap:12px;width:max-content;animation:mar 26s linear infinite}
+.tc{display:flex;align-items:center;gap:8px;padding:8px 15px;border:1px solid var(--line);border-radius:99px;font-size:13px;white-space:nowrap;color:var(--dim)}
+.tc b{color:var(--pink)}
+.tc.c{border-color:var(--lineC)}.tc.c b{color:var(--cy)}
+@keyframes mar{to{transform:translateX(-50%)}}
+
+section{padding:92px 0}
+.k{color:var(--pink);font-size:12px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;display:block;text-align:center;margin-bottom:14px}
+h2{font-size:clamp(22px,3.4vw,34px);font-weight:800;text-align:center;margin-bottom:14px}
+.sub{color:var(--dim);text-align:center;max-width:520px;margin:0 auto 48px;line-height:1.7}
+
+.lb{max-width:680px;margin:0 auto;background:var(--panel);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.09);border-radius:20px;overflow:hidden}
+.lh{padding:16px 22px;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.lr{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:15px 22px;border-bottom:1px solid rgba(255,255,255,.06)}
+.lr:last-child{border-bottom:0}
+.rk{font-family:'Orbitron';font-weight:800;color:var(--dim);font-size:15px}
+.lr:nth-child(2) .rk{color:#FFD24C;text-shadow:0 0 12px rgba(255,210,76,.6)}
+.lr:nth-child(3) .rk{color:#D7DCE8}
+.lr:nth-child(4) .rk{color:#E2955C}
+.lr .who b{display:block;font-size:14.5px;font-weight:600}
+.lr .who span{font-size:12px;color:var(--dim)}
+.bar{height:5px;border-radius:99px;background:rgba(255,255,255,.08);margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--cy),var(--pink));transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+.lr .sum{font-family:'Orbitron';font-size:15px;color:var(--cy);white-space:nowrap}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.sc{background:var(--panel);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:30px 26px;transition:.25s;position:relative;overflow:hidden}
+.sc::before{content:"";position:absolute;inset:0 auto auto 0;width:100%;height:2px;background:linear-gradient(90deg,var(--cy),var(--pink));opacity:.7}
+.sc:hover{transform:translateY(-6px);box-shadow:0 0 40px rgba(255,61,154,.18);border-color:var(--line)}
+.sc .no{font-family:'Orbitron';font-weight:800;font-size:26px;color:transparent;-webkit-text-stroke:1px var(--cy);margin-bottom:16px}
+.sc h3{font-size:15px;letter-spacing:.1em;margin-bottom:10px}
+.sc p{font-size:14px;color:var(--dim);line-height:1.65;text-transform:none}
+@media(max-width:800px){.grid3{grid-template-columns:1fr}}
+
+.pays{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.pc{display:flex;align-items:center;gap:10px;padding:13px 22px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:var(--panel);backdrop-filter:blur(8px);font-weight:600;font-size:14.5px;transition:.22s}
+.pc:hover{border-color:var(--lineC);box-shadow:0 0 22px rgba(34,211,238,.2);transform:translateY(-3px)}
+.pc svg{width:19px;height:19px;color:var(--cy)}
+
+.cta{padding:10px 0 110px;text-align:center}
+.cta-in{max-width:740px;margin:0 auto;border:1px solid var(--line);border-radius:26px;padding:58px 36px;background:
+radial-gradient(420px 200px at 50% 0%,rgba(255,61,154,.16),transparent 70%),var(--panel);backdrop-filter:blur(10px)}
+.cta-in h2{margin-bottom:12px}
+.cta-in p{color:var(--dim);margin-bottom:28px;text-transform:none}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:26px 0;font-size:13px;color:var(--dim);text-align:center}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="grid" aria-hidden="true"></canvas><div class="veil"></div>
+
+<nav><div class="wrap nav-in">
+<a class="logo" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="#FF3D9A" stroke-width="2"><path d="M3 11l18-7-7 18-2.5-7.5L3 11z"/></svg>CHAQIR</a>
+<div class="nav-l"><a href="#t">Reyting</a><a href="#q">Qadamlar</a><a href="#p">Yechish</a></div>
+<a class="btn btn-p" style="padding:11px 20px" href="#c">Botni ochish</a>
+</div></nav>
+
+<main>
+<header class="hero"><div class="sun" aria-hidden="true"></div><div class="wrap">
+<span class="chip">Telegram bot · real to'lov</span>
+<h1 class="reveal in">Do'stingni chaqir —<br><span class="n">30 000 so'm ol</span></h1>
+<p>Har bir taklif qilingan do'st uchun bot hisobingizga naqd 30 000 so'm yozadi. Yig'ilgan pulni istalgan payt Click, Payme yoki kartaga yechasiz.</p>
+<div class="hero-b"><a class="btn btn-p" href="#c">Pul ishlashni boshlash</a><a class="btn btn-c" href="#q">Qanday ishlaydi?</a></div>
+<div class="total reveal"><span>Foydalanuvchilarga jami to'landi</span><b id="tot">0 <i>so'm</i></b></div>
+</div></header>
+
+<div class="tick" aria-hidden="true"><div class="tick-t" id="tt">
+<span class="tc"><b>+30 000</b> Sardor B. · hozirgina</span>
+<span class="tc c"><b>−150 000</b> Malika R. → Payme</span>
+<span class="tc"><b>+30 000</b> Jasur K. · 1 daqiqa oldin</span>
+<span class="tc c"><b>−90 000</b> Aziz T. → Click</span>
+<span class="tc"><b>+30 000</b> Dilnoza S. · 2 daqiqa oldin</span>
+<span class="tc"><b>+30 000</b> Bekzod N. · 3 daqiqa oldin</span>
+</div></div>
+
+<section id="t"><div class="wrap">
+<span class="k reveal">Haftalik reyting</span>
+<h2 class="reveal">Eng ko'p ishlaganlar</h2>
+<p class="sub reveal">Top-3 ga har hafta qo'shimcha bonus beriladi. Keyingisi siz bo'lishingiz mumkin.</p>
+<div class="lb reveal">
+<div class="lh">O'rin · Foydalanuvchi · Daromad</div>
+<div class="lr"><span class="rk">01</span><div class="who"><b>Ulug'bek M.</b><span>214 do'st</span><div class="bar"><i data-w="100"></i></div></div><span class="sum">6 420 000</span></div>
+<div class="lr"><span class="rk">02</span><div class="who"><b>Kamola A.</b><span>176 do'st</span><div class="bar"><i data-w="82"></i></div></div><span class="sum">5 280 000</span></div>
+<div class="lr"><span class="rk">03</span><div class="who"><b>Doston Y.</b><span>131 do'st</span><div class="bar"><i data-w="61"></i></div></div><span class="sum">3 930 000</span></div>
+<div class="lr"><span class="rk">04</span><div class="who"><b>Nilufar H.</b><span>97 do'st</span><div class="bar"><i data-w="45"></i></div></div><span class="sum">2 910 000</span></div>
+<div class="lr"><span class="rk">05</span><div class="who"><b>Shahzod T.</b><span>78 do'st</span><div class="bar"><i data-w="36"></i></div></div><span class="sum">2 340 000</span></div>
+</div>
+</div></section>
+
+<section id="q" style="padding-top:10px"><div class="wrap">
+<span class="k reveal">Qadamlar</span>
+<h2 class="reveal">Sarmoyasiz. Sotuvsiz. Shunchaki ulashing</h2>
+<p class="sub reveal">Butun jarayon Telegram ichida — hech qayerga ro'yxatdan o'tmaysiz.</p>
+<div class="grid3">
+<div class="sc reveal"><div class="no">01</div><h3>Start bosing</h3><p>@ChaqirBot'ni oching, raqamingizni tasdiqlang — shaxsiy havolangiz tayyor.</p></div>
+<div class="sc reveal"><div class="no">02</div><h3>Havolani tarqating</h3><p>Do'stlar, guruhlar, storis. Do'stingiz qo'shilishi bilan hisobingizga +30 000 so'm yoziladi.</p></div>
+<div class="sc reveal"><div class="no">03</div><h3>Pulni yeching</h3><p>30 000 so'mdan boshlab istalgan summani kartaga chiqaring — o'rtacha 15 daqiqada tushadi.</p></div>
+</div>
+</div></section>
+
+<section id="p" style="padding-top:10px"><div class="wrap">
+<span class="k reveal">Yechib olish</span>
+<h2 class="reveal" style="margin-bottom:40px">Pul qayerga tushadi?</h2>
+<div class="pays reveal">
+<span class="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>Click</span>
+<span class="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>Payme</span>
+<span class="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h4"/></svg>Uzcard</span>
+<span class="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h4"/></svg>Humo</span>
+</div>
+</div></section>
+
+<div class="cta" id="c"><div class="wrap"><div class="cta-in reveal">
+<h2>Birinchi do'stingiz allaqachon kutmoqda</h2>
+<p>Botni oching va havolani hoziroq yuboring — 30 000 so'm 5 daqiqada hisobingizda bo'ladi.</p>
+<a class="btn btn-p" href="#">@ChaqirBot ni ochish</a>
+</div></div></div>
+</main>
+
+<footer>© 2026 Chaqir — Demo sahifa. Ismlar va raqamlar namunaviy.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ---- synthwave wave-grid background ----
+(function(){
+const cv=document.getElementById('grid');
+const rm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let renderer;
+try{renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});}catch(e){cv.remove();document.body.classList.add('nogl');return;}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x0B0416,10,70);
+const cam=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,120);
+cam.position.set(0,3.4,16);cam.lookAt(0,0,-14);
+const geo=new THREE.PlaneGeometry(130,80,60,40);
+const mesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xFF3D9A,wireframe:true,transparent:true,opacity:.5}));
+mesh.rotation.x=-Math.PI/2;mesh.position.set(0,-2.6,-22);scene.add(mesh);
+const pos=geo.attributes.position;
+// stars
+const SN=420,sp=new Float32Array(SN*3);
+for(let i=0;i<SN;i++)sp.set([(Math.random()-.5)*90,Math.random()*30,-(Math.random()*70)],i*3);
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0x22D3EE,size:.14,transparent:true,opacity:.8}));
+scene.add(stars);
+addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();});
+renderer.setSize(innerWidth,innerHeight);
+let t=0;
+function tick(){t+=.02;
+ for(let i=0;i<pos.count;i++){const x=pos.getX(i),y=pos.getY(i);
+  pos.setZ(i,Math.sin(x*.24+t)*.75+Math.cos(y*.2+t*.7)*.55+Math.sin((x+y)*.1-t*.4)*.35);}
+ pos.needsUpdate=true;
+ const s=stars.geometry.attributes.position;
+ for(let i=0;i<SN;i++){let z=s.getZ(i)+.04;if(z>-2)z=-70;s.setZ(i,z);}
+ s.needsUpdate=true;
+ renderer.render(scene,cam);
+ if(!rm)requestAnimationFrame(tick);}
+tick();
+})();
+// ---- total counter ----
+const tot=document.getElementById('tot');let base=964530000;const rm2=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function show(){tot.innerHTML=base.toLocaleString("ru-RU")+" <i>so'm</i>";}
+(function up(){const t0=performance.now(),from=base*.965;
+(function u(t){const p=Math.min((t-t0)/1600,1);
+ tot.innerHTML=Math.round(from+(base-from)*(1-Math.pow(1-p,3))).toLocaleString("ru-RU")+" <i>so'm</i>";
+ if(p<1)requestAnimationFrame(u);})(t0);})();
+if(!rm2)setInterval(()=>{base+=30000;show();tot.classList.add('pop');setTimeout(()=>tot.classList.remove('pop'),200);},2800);
+// ---- ticker duplicate ----
+const tt=document.getElementById('tt');tt.innerHTML+=tt.innerHTML;
+// ---- reveal + bars ----
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');
+ e.target.querySelectorAll('.bar i').forEach(b=>b.style.width=b.dataset.w+'%');
+ io.unobserve(e.target);}}),{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

@@ -1093,6 +1093,9 @@
 }
 
 /* ── Variant almashtirgich ───────────────────────────────────────────── */
+/* 9 havola (1-8 + asl) tor ekranda pillga sig'maydi va box chapga
+   toshib ketardi. `max-width` uni viewport ichida ushlab turadi, ortiqcha
+   qolgan havolalar esa gorizontal surish bilan ko'rinadi. */
 
 .switcher {
   position: fixed;
@@ -1108,7 +1111,15 @@
   border: 1px solid var(--line);
   border-radius: 999px;
   box-shadow: var(--shadow-soft);
+  max-width: calc(100vw - 28px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+.switcher::-webkit-scrollbar {
+  display: none;
+}
+
 
 .switcher a {
   display: grid;

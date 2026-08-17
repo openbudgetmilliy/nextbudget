@@ -483,6 +483,8 @@ export default async function VariantDocs() {
         <a href="/6" aria-current="page" className={c.swOn}>
           6
         </a>
+        <a href="/7">7</a>
+        <a href="/8">8</a>
         <a href="/l">asl</a>
       </nav>
 
