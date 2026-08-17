@@ -13,7 +13,7 @@ import { env } from './env';
 
 export const DEFAULT_SETTINGS = {
   bot_username: env.BOT,
-  hero_badge: 'Tashabbusli budjet mavsumi ochilgan',
+  hero_badge: '',
   /**
    * `{narx}` — o'rin egallovchi. Landing render paytida `price_one_vote`
    * qiymatiga almashadi, ya'ni narx BITTA joyda o'zgartiriladi
@@ -21,14 +21,8 @@ export const DEFAULT_SETTINGS = {
    */
   price_one_vote: '30 000',
 
-  // Brend nomi bu yerda ATAYIN yo'q: «Open Budget» — davlat portalining nomi,
-  // bizniki emas. Sarlavha xizmatni tasvirlaydi, brend esa logotipda turadi.
-  hero_title: 'Tashabbusli budjet ovozi',
-  /**
-   * Narx bu matnda TAKRORLANMAYDI: u sahifada alohida, katta ko'rsatiladi.
-   * Bir xil raqamni ikki marta aytish urg'uni kuchaytirmaydi, bo'ladi.
-   */
-  hero_sub: 'Humo, Uzcard yoki Payme bilan to‘lang. Yashirin komissiya yo‘q.',
+  hero_title: 'Ovoz bering — pul ishlab oling!',
+  hero_sub: "Faqat biz har bir ovoz uchun haqiqiy to'lov qilamiz.",
   cta_primary: 'Botda ovoz olish',
   tg_channel: 'openbudget_uz',
   support_username: 'openbudget_help',

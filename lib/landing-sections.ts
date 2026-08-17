@@ -1,18 +1,16 @@
 /** Landing pastki bo'limlari — barcha variantlar (/l, /1–/5) uchun umumiy matnlar */
 
-export const LIVE_STATS = [
-  { num: '0', lab: 'Ovoz berildi' },
-  { num: '0', lab: "So'm to'landi" },
-  { num: '0', lab: 'Qatnashuvchi' },
-  { num: '0%', lab: "To'lovni oldi" },
-] as const;
+type StatsSettings = { reviews_count: string };
 
-export const LANDING_TRUST = [
-  "To'lovlar himoyalangan",
-  'Bir necha daqiqada',
-  'Istalgan karta',
-  '97% muvaffaqiyat',
-] as const;
+/** Jonli ko'rsatkichlar — qatnashuvchi admin sozlamasidan olinadi */
+export function liveStats(s: StatsSettings) {
+  return [
+    { num: '12 500+', lab: 'Ovoz berildi' },
+    { num: '437 mln+', lab: "So'm to'landi" },
+    { num: s.reviews_count, lab: 'Qatnashuvchi' },
+    { num: '97%', lab: "To'lovni oldi" },
+  ] as const;
+}
 
 export const LANDING_STEPS = [
   {

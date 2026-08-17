@@ -90,7 +90,7 @@ export default async function VariantCandy() {
         {/* ── Hero ── */}
         <section className={c.hero}>
           <div className={c.heroIn}>
-            <p className={c.badge}>{s.hero_badge}</p>
+            {s.hero_badge ? <p className={c.badge}>{s.hero_badge}</p> : null}
 
             <h1 className={c.title}>
               {lines.map((line, i) => (
@@ -166,8 +166,6 @@ export default async function VariantCandy() {
             stat: c.stat,
             statNum: c.statNum,
             statLab: c.statLab,
-            trustRow: c.trustRow,
-            trustChip: c.trustChip,
             sec: c.sec,
             kicker: c.kicker,
             h2: c.h2,

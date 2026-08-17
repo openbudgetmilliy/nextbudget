@@ -90,14 +90,16 @@ export default async function Variant2() {
           <div className={st.blobB} aria-hidden />
 
           <div className={st.heroIn}>
-            <p className={st.badge}>
-              <span className={st.badgeWig}>
-                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden fill="currentColor">
-                  <path d="M12 1.8l2.9 6.2 6.8.8-5 4.6 1.3 6.7-6-3.3-6 3.3 1.3-6.7-5-4.6 6.8-.8z" />
-                </svg>
-                {s.hero_badge}
-              </span>
-            </p>
+            {s.hero_badge ? (
+              <p className={st.badge}>
+                <span className={st.badgeWig}>
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden fill="currentColor">
+                    <path d="M12 1.8l2.9 6.2 6.8.8-5 4.6 1.3 6.7-6-3.3-6 3.3 1.3-6.7-5-4.6 6.8-.8z" />
+                  </svg>
+                  {s.hero_badge}
+                </span>
+              </p>
+            ) : null}
 
             <h1 className={st.title}>
               {lines.map((line, i) => (
@@ -193,8 +195,6 @@ export default async function Variant2() {
             stat: st.stat,
             statNum: st.statNum,
             statLab: st.statLab,
-            trustRow: st.trustRow,
-            trustChip: st.trustChip,
             secSteps: st.how,
             secRewards: st.prices,
             secFaq: st.faq,

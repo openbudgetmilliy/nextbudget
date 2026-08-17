@@ -6,7 +6,7 @@ import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
 import { SITE, applyVars } from '@/lib/content';
-import { LIVE_STATS, LANDING_TRUST } from '@/lib/landing-sections';
+import { liveStats } from '@/lib/landing-sections';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -76,10 +76,12 @@ export default async function Aurora() {
 
           <div className={st.heroIn}>
             <div className={st.heroCopy}>
-              <p className={st.eyebrow}>
-                <span className={st.eyebrowDot} aria-hidden="true" />
-                {s.hero_badge}
-              </p>
+              {s.hero_badge ? (
+                <p className={st.eyebrow}>
+                  <span className={st.eyebrowDot} aria-hidden="true" />
+                  {s.hero_badge}
+                </p>
+              ) : null}
 
               <h1 className={st.h1}>
                 {headWords && <>{headWords} </>}
@@ -121,20 +123,13 @@ export default async function Aurora() {
           {/* Statistika — shisha kartalar qatori. Faqat halol, tekshiriladigan
               faktlar: va'da emas, xizmatning o'zi haqidagi raqamlar */}
           <div className={st.stats}>
-            {LIVE_STATS.map((item) => (
+            {liveStats(s).map((item) => (
               <div key={item.lab} className={st.stat}>
                 <span className={`${st.statNum} tnum`}>{item.num}</span>
                 <span className={st.statLab}>{item.lab}</span>
               </div>
             ))}
           </div>
-          <ul className={st.trustRow}>
-            {LANDING_TRUST.map((t) => (
-              <li key={t} className={st.trustChip}>
-                {t}
-              </li>
-            ))}
-          </ul>
         </section>
 
         <VariantSections

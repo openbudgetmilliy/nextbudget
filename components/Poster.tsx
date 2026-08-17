@@ -36,7 +36,7 @@ export default function Poster({
   return (
     <section className="stage" id="top">
       <div className="wrap stage-in">
-        <p className="eyebrow">{s.hero_badge}</p>
+        {s.hero_badge ? <p className="eyebrow">{s.hero_badge}</p> : null}
 
         <h1>
           {lines.map((line, i) => (

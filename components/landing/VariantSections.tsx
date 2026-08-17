@@ -5,9 +5,8 @@ import {
   FINALE_BULLETS,
   LANDING_REWARDS,
   LANDING_STEPS,
-  LANDING_TRUST,
-  LIVE_STATS,
   landingFaqItems,
+  liveStats,
 } from '@/lib/landing-sections';
 
 /** Variant pastki bo'limlari uchun CSS class nomlari */
@@ -20,8 +19,6 @@ export type VariantSectionClasses = {
   stat?: string;
   statNum?: string;
   statLab?: string;
-  trustRow?: string;
-  trustChip?: string;
   sec?: string;
   secSteps?: string;
   secRewards?: string;
@@ -114,27 +111,18 @@ function SectionHeader({ c, kicker, title, sub }: { c: VariantSectionClasses; ki
   return c.secHead ? <div className={c.secHead}>{head}</div> : head;
 }
 
-function StatsBlock({ c }: { c: VariantSectionClasses }) {
+function StatsBlock({ c, s }: { c: VariantSectionClasses; s: Settings }) {
   const wrapClass = c.stats ?? c.statRow;
   return (
     <>
       <div className={wrapClass}>
-        {LIVE_STATS.map((item) => (
+        {liveStats(s).map((item) => (
           <div key={item.lab} className={c.stat}>
             <span className={cx(c.statNum, 'tnum')}>{item.num}</span>
             <span className={c.statLab}>{item.lab}</span>
           </div>
         ))}
       </div>
-      {c.trustRow && c.trustChip && (
-        <ul className={c.trustRow}>
-          {LANDING_TRUST.map((t) => (
-            <li key={t} className={c.trustChip}>
-              {t}
-            </li>
-          ))}
-        </ul>
-      )}
     </>
   );
 }
@@ -365,10 +353,10 @@ export default function VariantSections({ prefix, tg, botClean, s, c, skipStats 
         <section className={c.statsSec} aria-label="Ko'rsatkichlar">
           {c.secIn ? (
             <div className={c.secIn}>
-              <StatsBlock c={c} />
+              <StatsBlock c={c} s={s} />
             </div>
           ) : (
-            <StatsBlock c={c} />
+            <StatsBlock c={c} s={s} />
           )}
         </section>
       )}

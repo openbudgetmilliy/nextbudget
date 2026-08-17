@@ -61,7 +61,7 @@ export default async function VariantBento() {
         <section className={c.bento}>
           {/* Katta katak: sarlavha + CTA */}
           <div className={`${c.cell} ${c.cellHero}`}>
-            <p className={c.badge}>{s.hero_badge}</p>
+            {s.hero_badge ? <p className={c.badge}>{s.hero_badge}</p> : null}
             <h1 className={c.title}>
               {lines.map((line, i) => (
                 // Oxirgi qator ko'k markerda — ko'z avval shunga tushadi
@@ -147,8 +147,6 @@ export default async function VariantBento() {
             stat: c.stat,
             statNum: c.statNum,
             statLab: c.statLab,
-            trustRow: c.trustRow,
-            trustChip: c.trustChip,
             sec: c.sec,
             kicker: c.kicker,
             h2: c.h2,

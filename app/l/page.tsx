@@ -12,9 +12,8 @@ import {
   FINALE_BULLETS,
   LANDING_REWARDS,
   LANDING_STEPS,
-  LANDING_TRUST,
-  LIVE_STATS,
   landingFaqItems,
+  liveStats,
 } from '@/lib/landing-sections';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
@@ -57,21 +56,13 @@ export default async function Landing() {
         {/* ── Jonli ko'rsatkichlar ── */}
         <section className={`wrap ${x.band}`} aria-label="Ko'rsatkichlar">
           <div className={x.statsGrid}>
-            {LIVE_STATS.map((item) => (
+            {liveStats(s).map((item) => (
               <div key={item.lab} className={x.stat}>
                 <p className={`${x.statNum} tnum`}>{item.num}</p>
                 <p className={x.statLab}>{item.lab}</p>
               </div>
             ))}
           </div>
-
-          <ul className={x.trustRow}>
-            {LANDING_TRUST.map((t) => (
-              <li key={t} className={x.trustChip}>
-                {t}
-              </li>
-            ))}
-          </ul>
         </section>
 
         {/* ── 3 qadam ── */}
