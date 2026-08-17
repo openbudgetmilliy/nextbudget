@@ -218,6 +218,7 @@ export default async function VariantCandy() {
         <a href="/5" className={c.swOn} aria-current="page">
           5
         </a>
+        <a href="/6">6</a>
         <a href="/l">asl</a>
       </nav>
 

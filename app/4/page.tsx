@@ -199,6 +199,7 @@ export default async function VariantBento() {
           4
         </a>
         <a href="/5">5</a>
+        <a href="/6">6</a>
         <a href="/l">asl</a>
       </nav>
 

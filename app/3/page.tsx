@@ -187,6 +187,7 @@ export default async function Aurora() {
         <a href="/3" aria-current="page" className={st.switcherNow}>3</a>
         <a href="/4">4</a>
         <a href="/5">5</a>
+        <a href="/6">6</a>
         <a href="/l">asl</a>
       </nav>
 
