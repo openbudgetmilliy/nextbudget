@@ -297,7 +297,7 @@ export default async function HomePage() {
         <div className={c.footIn}>
           <a href="#top" className={c.footBrand} aria-label={SITE.brand}>
             <Logo size={36} className={c.footLogo} />
-            <span className={c.footName}>Milliy jamoasi</span>
+            <span className={c.footName}>{SITE.brand}</span>
           </a>
           <p className={c.footNote}>
             To'lovlar Telegram bot orqali amalga oshiriladi. Barcha huquqlar himoyalangan.

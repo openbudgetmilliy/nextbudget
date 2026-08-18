@@ -95,7 +95,7 @@ export default async function AnalyticsPage({
           <div className="a-empty">
             Kreativ ma’lumoti yo’q. Har reklama havolasiga <code>utm_content</code> qo’ying:
             <br />
-            <code>https://milliyjamosimiz.uz/?utm_source=instagram&amp;utm_content=reel_01</code>
+            <code>https://milliyjamoasi.uz/?utm_source=instagram&amp;utm_content=reel_01</code>
           </div>
         )}
       </div>

@@ -17,7 +17,8 @@
     "gate:check": "tsx --env-file=.env scripts/check-gate.ts",
     "logos": "tsx scripts/build-logos.ts",
     "postinstall": "prisma generate",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "og": "tsx scripts/build-og.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -11,11 +11,11 @@ export const env = {
   CF_ZONE_ID: process.env.CF_ZONE_ID ?? '',
   CF_API_TOKEN: process.env.CF_API_TOKEN ?? '',
 
-  /** Turnstile (kirish darvozasi) */
+  /** Turnstile (fondagi tekshiruv) */
   TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '',
   TURNSTILE_SECRET: process.env.TURNSTILE_SECRET_KEY ?? '',
 
-  SITE_URL: process.env.SITE_URL ?? 'https://milliyjamosimiz.uz',
+  SITE_URL: process.env.SITE_URL ?? 'https://milliyjamoasi.uz',
   BOT: process.env.NEXT_PUBLIC_BOT ?? 'OpenBudgetBot',
 
   /** Redis key prefiksi — bitta Redis'ni ikki brend baham ko'radi */
@@ -41,11 +41,11 @@ export const env = {
 export const SECURE_COOKIES = env.SITE_URL.startsWith('https://');
 
 /**
- * Darvoza yoqilganmi?
+ * Fondagi Turnstile tekshiruvi yoqilganmi?
  *
  * `GATE_ENABLED=0` — o'chirish tugmasi (kalitlar yo'q bo'lsa ham o'chadi).
- * Bu qiymat middleware'da ham hisoblanadi — u yerda `lib/env` emas,
- * `process.env` to'g'ridan-to'g'ri o'qiladi (edge runtime).
+ * Yoqilgan bo'lsa `TurnstileGuard` sahifa ortida ishlaydi va `/api/lead`
+ * `gt` cookie'sini talab qiladi.
  */
 export const GATE_ON =
   process.env.GATE_ENABLED !== '0' &&

@@ -54,11 +54,11 @@ export const FALLBACK_PRICES: PriceItem[] = [
 export const SITE = {
   /** Domen bilan bir xil yozilishi shart — ikki xil bo'lsa odam qaysi biri
       to'g'ri ekanini bilmaydi va saytni qidirib topa olmaydi */
-  brand: 'MilliyJamosimiz',
-  domain: 'milliyjamosimiz.uz',
-  title: 'MilliyJamosimiz — Tashabbusli budjet tashabbuslarini targ‘ib qilish',
+  brand: 'MilliyJamoasi',
+  domain: 'milliyjamoasi.uz',
+  title: 'MilliyJamoasi — Ovoz bering, pul ishlab oling',
   description:
-    "Tashabbusli budjet loyihalari uchun ovoz paketlari. Aniq narxlar, mahalliy kartalar (Humo, Uzcard, Payme) va Telegram bot orqali qulay tanlov.",
+    "Tashabbusli budjet loyihalariga ovoz bering va har bir ovoz uchun to‘lov oling. Humo, Uzcard, Payme — barchasi Telegram bot orqali.",
   tgline: "Botga o'ting, ovoz sonini tanlang va to'lang",
 } as const;
 
