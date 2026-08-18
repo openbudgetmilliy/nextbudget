@@ -1,23 +1,28 @@
-import { Archivo } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 
 /**
- * Plakat tipografikasi — Archivo, `wdth` o'qi bilan.
+ * Sayt shriftlari — root layout'ga ulanadi.
  *
- * Archivo o'zgaruvchan shrift: kenglik 62% dan 125% gacha, og'irlik 100–900.
- * Sarlavha 62% kenglik + 900 og'irlikda teriladi — bu ko'chadagi plakat
- * harflari: tor, qalin, baland. Shu bitta oiladan asosiy matn ham olinadi
- * (100% kenglik, 400), ya'ni ikkinchi shrift fayli yuklanmaydi.
+ * Sayt bitta sahifadan iborat, shuning uchun shriftlar ham shu yerda:
+ * ilgari ular `/7` marshrutining o'z layout'ida edi, chunki boshqa
+ * variantlar boshqa oilada terilardi va ularga ortiqcha preload tushmasligi
+ * kerak edi. Endi bunday muammo yo'q.
  *
- * Nega Anton emas: Anton aynan shu ko'rinish uchun eng ko'p ishlatiladigan
- * shrift va bitta og'irligi bor. `wdth` o'qi esa kenglikni qo'lda boshqarish
- * imkonini beradi — sarlavha tor, yorliqlar keng bo'lib, bitta oila ichida
- * qarama-qarshilik hosil qiladi.
+ * Space Grotesk — sarlavhalar (700), Inter — matn (400/500/600).
+ * Ikkalasi ham `display: swap`: shrift kelguncha matn ko'rinib turadi.
  */
-export const display = Archivo({
+const body = Inter({
   subsets: ['latin'],
-  axes: ['wdth'],
-  variable: '--font-display',
+  weight: ['400', '500', '600'],
+  variable: '--f-body',
   display: 'swap',
 });
 
-export const fontVars = display.variable;
+const display = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '700'],
+  variable: '--f-display',
+  display: 'swap',
+});
+
+export const fontVars = `${body.variable} ${display.variable}`;

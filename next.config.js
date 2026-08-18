@@ -10,10 +10,10 @@ const nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
 
-  // PM2 cluster'da 2 instance ishlaydi. In-memory ISR keshi yoqilgan bo'lsa
-  // `revalidatePath('/')` faqat so'rovni bajargan instance'ga ta'sir qilardi va
-  // ikkinchisi eski narxni ko'rsatib turardi. 0 — kesh faqat diskda,
-  // ikki instance ham bir manbadan o'qiydi. Trafikning 97% CF edge'dan
+  // PM2 bir nechta instansiyada ishlaganda in-memory ISR keshi muammo bo'ladi:
+  // `revalidatePath('/')` faqat so'rovni bajargan instansiyaga ta'sir qilardi
+  // va qolganlari eski narxni ko'rsatib turardi. 0 — kesh faqat diskda, barcha
+  // instansiya bir manbadan o'qiydi. Trafikning katta qismi CF edge'dan
   // kelgani uchun disk o'qish sezilmaydi (OS page cache).
   cacheMaxMemorySize: 0,
 
@@ -37,20 +37,11 @@ const nextConfig = {
     };
 
     return [
-      // ── Statik sahifalar (darvoza `/` shu yerda: hammaga bir xil) ──
+      // ── Landing (`/`) va qolgan ochiq sahifalar ──
+      // Turnstile tekshiruvi endi sahifani to'smaydi, shuning uchun landing
+      // hammaga bir xil va Cloudflare edge'da bemalol cache'lanadi.
       { source: '/', headers: [publicCache] },
-      { source: '/:path((?!api/|admin/|l$|l/|_next/).*)', headers: [publicCache] },
-
-      // ── Landing: darvoza ortida ──
-      // CDN'da cache'lansa `gt` cookie'siz ham berilib ketardi — shuning uchun
-      // no-store. Sahifa baribir prerender qilingan, Node uni diskdan beradi.
-      {
-        source: '/l',
-        headers: [
-          { key: 'Cache-Control', value: 'private, no-store, max-age=0' },
-          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
-        ],
-      },
+      { source: '/:path((?!api/|admin/|_next/).*)', headers: [publicCache] },
 
       // ── Immutable build assetlari ──
       {

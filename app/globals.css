@@ -1,55 +1,39 @@
 /* ==========================================================================
-   MilliyJamoasimiz — plakat
+   Umumiy uslublar — reset va 404 sahifasi.
 
-   Uch qoida (buzilsa uslub yo'qoladi):
+   Sayt bitta sahifadan iborat va uning butun dizayni `app/page.module.css`
+   ichida yashaydi (o'zining rang o'zgaruvchilari bilan, `.page` doirasida).
+   Shu sabab bu fayl ataylab kichik: u har bir tashrifchiga yuklanadi,
+   demak faqat HAQIQATAN umumiy narsalar shu yerda turishi kerak.
 
-   1. HECH NARSA MARKAZDA EMAS. Hamma narsa chapga tekislanadi, o'ng chekka
-      tishli qoladi. Markazlashtirilgan matn "veb-sahifa"ga o'xshaydi; plakat
-      esa chetdan boshlanadi.
-   2. BLOKLAR MAZMUNI BO'YICHA O'LCHANADI. Hech qaysi rangli plita butun
-      kenglikni egallamaydi — u faqat ichidagi matn qadar bo'ladi.
-   3. HAR BIR PLITANING BIR CHEKKASI QIYA. Burchak logotipdagi tasdiq
-      belgisining qiyaligidan olingan. To'g'ri to'rtburchak yo'q.
+   Ilgari bu faylda plakat uslubidagi landing (`/l`) va Turnstile darvozasi
+   (`/`) uslublari ham bor edi — ikkala sahifa ham olib tashlandi, ular bilan
+   birga o'sha ~700 qator ham ketdi.
 
-   Ranglar belgidan piksel bo'yicha olingan:
-     ko'k   #0090D8 — odamlar halqasi va xarita
-     yashil #60C048 — tasdiq belgisi
-     ink    #08243A — matn
-
-   Kontrast: oq matn ko'k ustida 3.7:1 — faqat KATTA qalin matn uchun
-   yaroqli, shuning uchun ko'k plitada faqat narx va yorliq bor. Yashil
-   ustida ink 6.5:1, oq fonda ink 15:1.
+   Admin panel butunlay alohida: `app/admin/admin.css` faqat `/admin/*`
+   marshrutlarida yuklanadi va o'z ranglarini o'zi belgilaydi.
    ========================================================================== */
 
 :root {
-  --ink: #08243a;
-  --ink-2: #41637a;
-  --blue: #0090d8;
-  --blue-d: #0072b0;
-  --green: #60c048;
-  --green-d: #4ca436;
-  --paper: #ffffff;
-  --wash: #f1f6f9;
-  --hair: #d8e3ea;
+  /* 404 va body foni — landing bilan bir xil to'q zumrad, oq yaltirash
+     bo'lmasin (sahifa yuklanayotganda ko'z qamashtirmaydi) */
+  --bg: #04110b;
+  --ink: #edf7f0;
+  --dim: #8fb3a0;
+  --gold: #f5c242;
+  --gold-l: #ffe9a8;
+  --panel-line: rgba(255, 255, 255, 0.09);
 
-  --f-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-  --f-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    'Noto Sans', sans-serif;
+  --f-b: var(--f-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --f-d: var(--f-display), ui-sans-serif, system-ui, sans-serif;
 
-  --pad: 20px;
-  --max: 1080px;
-  --hdr: 66px;
-  /* Qiya kesim chuqurligi — barcha plitalarda bir xil */
-  --cut: 14px;
-
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-  border-radius: 0;
 }
 
 html {
@@ -58,9 +42,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--wash);
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--f-body);
+  font-family: var(--f-b);
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -70,6 +54,7 @@ body {
 
 h1,
 h2,
+h3,
 p,
 ul,
 ol,
@@ -104,716 +89,87 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--ink);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
+  border-radius: 8px;
 }
 
+/* Raqamlar ustma-ust tekis tursin (narx, statistika) */
 .tnum {
   font-variant-numeric: tabular-nums;
 }
 
-.wrap {
-  width: 100%;
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 0 var(--pad);
-}
+/* ── 404 ──────────────────────────────────────────────────────────────────
+   Sayt bitta sahifadan iborat, shuning uchun bu yerga faqat eskirgan havola
+   yoki skaner tushadi. Sahifa ataylab qisqa: yagona foydali harakat — botga
+   yoki bosh sahifaga qaytish.
+   ------------------------------------------------------------------------ */
 
-/* ── Tugma ───────────────────────────────────────────────────────────────
-   O'ng chekkasi qiya kesilgan. `clip-path` fokus konturini ham kesadi —
-   shuning uchun fokus belgisi ICHKARIGA chiziladi (inset soya kesilmaydi).
-   ---------------------------------------------------------------------- */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--green);
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 80%;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  padding: 21px 34px;
-  font-size: 1.0625rem;
-  white-space: nowrap;
-  clip-path: polygon(0 0, 100% 0, calc(100% - var(--cut)) 100%, 0 100%);
-  transition: background-color 0.15s ease;
-}
-
-.btn:hover {
-  background: var(--green-d);
-}
-
-.btn:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 3px var(--ink);
-}
-
-.btn-sm {
-  padding: 12px 20px;
-  font-size: 0.8125rem;
-  gap: 8px;
-  --cut: 10px;
-}
-
-/* ── Header ── */
-
-.hdr {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: var(--paper);
-  border-bottom: 2px solid var(--ink);
-}
-
-.hdr-in {
-  height: var(--hdr);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 75%;
-  font-size: 1.0625rem;
-  text-transform: uppercase;
-  letter-spacing: 0.005em;
-}
-
-.brand-mark {
-  width: 36px;
-  height: 36px;
-  flex: none;
-}
-
-/* ── Sahna ───────────────────────────────────────────────────────────────
-   Chapga tekislangan ustun. `align-items: flex-start` — plitalar mazmuni
-   qadar bo'ladi, cho'zilmaydi (2-qoida).
-   ---------------------------------------------------------------------- */
-
-.stage {
-  position: relative;
-  min-height: calc(100svh - var(--hdr));
-  display: flex;
-  align-items: center;
-  padding: clamp(26px, 4.5vh, 52px) 0 clamp(22px, 4vh, 44px);
-  overflow: hidden;
-}
-
-/* Fonda qiya ko'k xanjar — sahifa tekis qog'oz bo'lib qolmasin.
-   Juda och: matn kontrastiga ta'sir qilmaydi. */
-.stage::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(103deg, transparent 46%, rgba(0, 144, 216, 0.09) 46%);
-  pointer-events: none;
-}
-
-.stage-in {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(16px, 2.4vh, 24px);
-}
-
-/* ── Yuqori yorliq: yashil plita, ink matn ── */
-
-.eyebrow {
-  display: inline-block;
-  background: var(--green);
-  color: var(--ink);
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 85%;
-  font-size: 0.75rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  padding: 8px 16px;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
-}
-
-/* ── Sarlavha: tor, qalin, ustma-ust ── */
-
-/* Yuqori chegara 7rem edi: 1024px ekranda «TASHABBUSLI» so'zi 555px joy
-   talab qilib, o'zining 518px lik ustunidan narx plitasi tomon chiqib
-   ketardi. 6.4rem — eng uzun so'z ham ustun ichida qoladigan eng katta o'lcham. */
-.stage h1 {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 62%;
-  font-size: clamp(2.9rem, 14.5vw, 6.4rem);
-  line-height: 0.85;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-/* Oxirgi so'z yashil plitada — belgidagi tasdiq rangi kalit so'zga tushadi */
-.stage h1 .hl {
-  background: var(--green);
-  padding: 0.04em 0.16em 0.06em 0.1em;
-  margin-top: 0.06em;
-  clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
-}
-
-/* ── Narx plitasi: ko'k, pastki chekkasi qiya ── */
-
-.slab {
-  display: inline-block;
-  background: var(--blue);
-  color: var(--paper);
-  padding: clamp(14px, 2.4vw, 20px) clamp(20px, 3.4vw, 34px) clamp(22px, 3vw, 30px);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--cut)), 0 100%);
-}
-
-.slab-lab {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 90%;
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  opacity: 0.92;
-  margin-bottom: 2px;
-}
-
-.slab-fig {
-  display: flex;
-  align-items: baseline;
-  gap: 0 10px;
-  flex-wrap: wrap;
-}
-
-/* Sahifadagi eng katta element — sahifa aynan shu raqam uchun ochiladi */
-.slab-num {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 66%;
-  font-size: clamp(3.4rem, 17vw, 8rem);
-  line-height: 0.88;
-  letter-spacing: -0.02em;
-}
-
-.slab-cur {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 85%;
-  font-size: clamp(1.0625rem, 3.2vw, 1.625rem);
-  text-transform: lowercase;
-}
-
-/* ── Tavsif, ishonch qatori, izoh ── */
-
-.stage-sub {
-  color: var(--ink-2);
-  font-size: clamp(0.9375rem, 2.3vw, 1.0625rem);
-  line-height: 1.55;
-  max-width: 40ch;
-}
-
-.trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  color: var(--ink-2);
-  font-size: 0.875rem;
-}
-
-.trust li {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.trust svg {
-  color: var(--green-d);
-  flex: none;
-}
-
-.note {
-  border-top: 2px solid var(--hair);
-  padding-top: 14px;
-  color: var(--ink-2);
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  max-width: 52ch;
-}
-
-.note a {
-  color: var(--blue-d);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* -- Harakat uyasi (landing) --------------------------------------------- */
-
-.act {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 59px;
-}
-
-/* == Kutish ekrani (`/`) ==================================================
-   Oq karta, yumshoq soya, tepasida ko'k-yashil qirra. Landing plakati
-   qat'iy va baqiroq; bu ekran esa jim va ishonchli bo'lishi kerak -- odam
-   bu yerda kutadi, o'qimaydi.
-
-   Bu BIZNING sahifamiz: tepada bizning belgimiz va nomimiz turadi,
-   Cloudflare pastda xizmat sifatida ko'rsatiladi.
-   ======================================================================== */
-
-.splash {
-  position: relative;
+.nf {
   min-height: 100svh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 28px var(--pad);
-  background: var(--wash);
-  overflow: hidden;
-  /* Chiqishda landing foniga o'tadi -- kelish uzluksiz tuyuladi */
-  transition: background-color 0.45s ease;
-}
-
-.splash::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(103deg, transparent 46%, rgba(0, 144, 216, 0.07) 46%);
-  pointer-events: none;
-}
-
-.splash-in {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 380px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
-}
-
-.card {
-  position: relative;
-  width: 100%;
-  background: var(--paper);
-  padding: 34px 28px 22px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
   text-align: center;
-  box-shadow: 0 1px 2px rgba(8, 36, 58, 0.06), 0 12px 32px rgba(8, 36, 58, 0.08);
-  animation: card-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
 }
 
-/* Tepadagi qirra -- belgidagi ikki rang */
-.card-edge {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--blue), var(--green));
-}
-
-@keyframes card-in {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-}
-
-.card-logo {
-  width: 72px;
-  height: 72px;
-}
-
-.card-brand {
-  font-family: var(--f-display);
-  font-weight: 900;
-  font-stretch: 72%;
-  font-size: 1.375rem;
-  text-transform: uppercase;
-  line-height: 1;
-  margin-top: 12px;
-}
-
-.card-sub {
-  color: var(--ink-2);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  margin-top: 8px;
-  max-width: 26ch;
-}
-
-/* -- Tekshiruv bloki -- */
-
-.check {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin-top: 22px;
-  width: 100%;
-}
-
-/* Halqa: bosqich tugagani sari to'ladi */
-
-.dial {
-  width: 62px;
-  height: 62px;
-  position: relative;
-}
-
-.dial svg {
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.dial circle {
-  fill: none;
-  stroke-width: 5;
-  stroke-linecap: round;
-}
-
-.dial-bg {
-  stroke: var(--hair);
-}
-
-.dial-fg {
-  stroke: var(--blue);
-  /* Yuqoridan boshlansin */
-  transform: rotate(-90deg);
-  transform-origin: center;
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.3, 0.8, 0.3, 1), stroke 0.3s ease;
-}
-
-/* Tugamaguncha halqa sekin aylanadi -- jarayon to'xtab qolmaganini bildiradi */
-.dial:not(.is-done):not(.is-bad) svg {
-  animation: dial-spin 2.4s linear infinite;
-}
-
-@keyframes dial-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.dial.is-done .dial-fg {
-  stroke: var(--green);
-}
-
-.dial.is-bad .dial-fg {
-  stroke: #b3261e;
-}
-
-.dial-tick {
-  fill: none;
-  stroke: var(--green);
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: draw 0.32s ease 0.12s forwards;
-}
-
-@keyframes draw {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* -- Bosqichlar ro'yxati -- */
-
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  width: 100%;
-  max-width: 250px;
-  text-align: left;
-}
-
-.steps li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--ink-2);
+.nf-code {
+  display: inline-block;
+  font-family: var(--f-d);
   font-size: 0.8125rem;
-  opacity: 0.55;
-  transition: opacity 0.3s ease, color 0.3s ease;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  border: 1px solid var(--panel-line);
+  border-radius: 999px;
+  padding: 6px 14px;
+  margin-bottom: 18px;
 }
 
-.steps-dot {
-  width: 15px;
-  height: 15px;
-  flex: none;
-  border: 2px solid var(--hair);
-  border-radius: 50%;
-  position: relative;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+.nf-title {
+  font-family: var(--f-d);
+  font-size: clamp(1.5rem, 4vw, 2.125rem);
+  font-weight: 700;
+  line-height: 1.2;
 }
 
-.steps li.is-now {
-  opacity: 1;
-  color: var(--ink);
+.nf-sub {
+  margin-top: 10px;
+  color: var(--dim);
+  max-width: 46ch;
+  margin-inline: auto;
 }
 
-.steps li.is-now .steps-dot {
-  border-color: var(--blue);
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  50% {
-    box-shadow: 0 0 0 4px rgba(0, 144, 216, 0.16);
-  }
-}
-
-.steps li.is-done {
-  opacity: 1;
-  color: var(--ink);
-}
-
-.steps li.is-done .steps-dot {
-  border-color: var(--green);
-  background: var(--green);
-}
-
-/* Belgi -- bajarilgan bosqich ichida */
-.steps li.is-done .steps-dot::after {
-  content: '';
-  position: absolute;
-  left: 3px;
-  top: 0.5px;
-  width: 4px;
-  height: 7px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-
-.check-note {
-  color: var(--ink-2);
-  font-size: 0.8125rem;
-  line-height: 1.45;
-  max-width: 30ch;
-}
-
-.check-note.bad {
-  color: #b3261e;
-}
-
-/* Turnstile odatda ko'rinmaydi (`interaction-only`) -- faqat haqiqatan odam
-   aralashuvi kerak bo'lganda paydo bo'ladi */
-.gate-cap:not(:empty) {
-  margin-top: 2px;
-}
-
-/* -- Cloudflare atributsiyasi -- */
-
-.card-foot {
+.nf-act {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: center;
-  gap: 8px;
-  margin-top: 22px;
-  padding-top: 16px;
-  border-top: 1px solid var(--hair);
-  width: 100%;
-  color: var(--ink-2);
-  font-size: 0.75rem;
-  opacity: 0.85;
+  margin-top: 26px;
 }
 
-.cf-mark {
-  width: 26px;
-  height: 12px;
-  flex: none;
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 13px 22px;
+  border-radius: 12px;
+  font-weight: 600;
+  line-height: 1;
+  transition: opacity 0.15s ease;
 }
 
-.splash-host {
-  color: var(--ink-2);
-  font-size: 0.75rem;
-  opacity: 0.6;
-  letter-spacing: 0.02em;
+.nf-btn:hover {
+  opacity: 0.88;
 }
 
-/* -- Chiqish: ekran landing foniga eriydi, karta yuqoriga ko'tariladi -- */
-
-body.leaving .splash {
-  background: var(--wash);
+.nf-btn-gold {
+  background: linear-gradient(120deg, var(--gold-l), var(--gold) 45%, #ca8a04);
+  /* Och oltin fonda oq matn 1.6:1 bo'lardi — shu sabab to'q matn */
+  color: #2a1e03;
 }
 
-body.leaving .splash-in {
-  opacity: 0;
-  transform: translateY(-14px) scale(0.97);
-}
-
-/* -- Landing kirishi -----------------------------------------------------
-   Darvoza fon rangini landing foniga aylantirib ketadi, elementlar esa shu
-   yerda ketma-ket ko'tariladi. Ikkalasi birga -- bitta uzluksiz harakat.
-   `backwards` shart: kechikish davomida element ko'rinmay tursin, aks holda
-   avval paydo bo'lib, keyin sakraydi.
-   ---------------------------------------------------------------------- */
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-}
-
-.stage-in > * {
-  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
-}
-
-.stage-in > *:nth-child(1) { animation-delay: 0.04s; }
-.stage-in > *:nth-child(2) { animation-delay: 0.1s; }
-.stage-in > *:nth-child(3) { animation-delay: 0.16s; }
-.stage-in > *:nth-child(4) { animation-delay: 0.22s; }
-.stage-in > *:nth-child(5) { animation-delay: 0.28s; }
-.stage-in > *:nth-child(6) { animation-delay: 0.34s; }
-.stage-in > *:nth-child(7) { animation-delay: 0.4s; }
-
-/* ── Keng ekran: ikki ustun ───────────────────────────────────────────────
-   Tor ekranda hamma narsa bitta ustunda va narx sarlavhadan keyin turadi —
-   o'qish tartibi shunday. Keng ekranda esa bitta ustun o'ng yarmini bo'sh
-   qoldirardi va sahifa ekrandan oshib ketardi, shuning uchun narx yon
-   ustunga chiqadi. DOM tartibi o'zgarmaydi — faqat joylashuv.
-   ---------------------------------------------------------------------- */
-
-@media (min-width: 900px) {
-  .stage-in {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
-    column-gap: clamp(32px, 4vw, 56px);
-    row-gap: clamp(16px, 2.2vh, 24px);
-    align-content: center;
-  }
-
-  .stage .eyebrow {
-    grid-area: 1 / 1;
-  }
-  .stage h1 {
-    grid-area: 2 / 1;
-  }
-  .stage .stage-sub {
-    grid-area: 3 / 1;
-  }
-  .stage .act {
-    grid-area: 4 / 1;
-  }
-  .stage .trust {
-    grid-area: 5 / 1;
-  }
-
-  /* Narx sarlavha bilan bir balandlikda, o'ng ustunda */
-  .stage .slab {
-    grid-area: 2 / 2 / 5 / 3;
-    align-self: center;
-    justify-self: start;
-  }
-
-  .stage .note {
-    grid-area: 6 / 1 / 7 / 3;
-  }
-}
-
-/* ── Keng ekran ───────────────────────────────────────────────────────────
-   1080px o'ram 1600px+ monitorda sahifani ingichka ustunga aylantirardi:
-   plakat o'z og'irligini yo'qotardi. Kenglik va o'qish matni bir pog'ona
-   ko'tariladi — kompozitsiya qoidalari o'zgarmaydi. */
-
-@media (min-width: 1400px) {
-  :root {
-    --max: 1240px;
-  }
-
-  .stage-sub {
-    font-size: 1.125rem;
-    max-width: 44ch;
-  }
-
-  .note {
-    font-size: 0.875rem;
-  }
-}
-
-/* ── Mobil ── */
-
-@media (max-width: 560px) {
-  :root {
-    --pad: 18px;
-  }
-
-  .brand {
-    font-size: 0.9375rem;
-    gap: 8px;
-  }
-
-  .brand-mark {
-    width: 32px;
-    height: 32px;
-  }
-
-  .hdr .btn-sm {
-    padding: 11px 14px;
-    font-size: 0.75rem;
-  }
-
-  .stage {
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 370px) {
-  .brand span {
-    display: none;
-  }
-
-  /* «Mukofot olishni boshlash» 314px joy talab qiladi, 320px ekranda esa
-     o'ram ichida 284px bor — yorliq bir qatorda turolmasdi va sahifa
-     gorizontal siljirdi. Tugma ko'rinishi o'zgarmaydi, faqat matn
-     ikki qatorga o'tadi. */
-  .btn {
-    max-width: 100%;
-    white-space: normal;
-    text-align: left;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-
-  /* Cheksiz siljish o'chsa chiziq bo'sh ko'rinmasin */
-  .gate-bar span {
-    width: 100%;
-  }
+.nf-btn-ghost {
+  border: 1px solid var(--panel-line);
+  color: var(--ink);
 }

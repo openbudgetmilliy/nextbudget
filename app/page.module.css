@@ -38,8 +38,8 @@
   --grad-gold: linear-gradient(120deg, var(--gold-l), var(--gold) 45%, var(--gold-d));
   --r: 18px;
 
-  --f-b: var(--f7-body), ui-sans-serif, system-ui, sans-serif;
-  --f-d: var(--f7-display), ui-sans-serif, system-ui, sans-serif;
+  --f-b: var(--f-body), ui-sans-serif, system-ui, sans-serif;
+  --f-d: var(--f-display), ui-sans-serif, system-ui, sans-serif;
 
   position: relative;
   min-height: 100svh;
@@ -839,60 +839,6 @@
 
 .footBot:hover {
   color: var(--gold-l);
-}
-
-/* ── Variant almashtirgich ── */
-/* 9 havola (1-8 + asl) tor ekranda pillga sig'maydi va box chapga
-   toshib ketardi. `max-width` uni viewport ichida ushlab turadi, ortiqcha
-   qolgan havolalar esa gorizontal surish bilan ko'rinadi. */
-
-.switcher {
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 40;
-  display: flex;
-  gap: 4px;
-  padding: 5px;
-  background: rgba(4, 17, 11, 0.85);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 999px;
-  max-width: calc(100vw - 28px);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.switcher::-webkit-scrollbar {
-  display: none;
-}
-
-
-.switcher a {
-  display: grid;
-  place-items: center;
-  min-width: 30px;
-  height: 30px;
-  padding: 0 9px;
-  border-radius: 999px;
-  font-family: var(--f-d);
-  font-weight: 500;
-  font-size: 0.75rem;
-  color: var(--dim);
-  transition: color 0.15s ease, background-color 0.15s ease;
-}
-
-.switcher a:hover {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.swOn,
-.switcher a.swOn,
-.switcher a.swOn:hover {
-  color: #2a1e03;
-  background: var(--grad-gold);
 }
 
 /* ══ Moslashuv ═══════════════════════════════════════════════════════ */

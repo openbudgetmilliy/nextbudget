@@ -1,9 +1,19 @@
+import { cookies } from 'next/headers';
+
 import { prisma } from '@/lib/prisma';
 import { rateLimit, clientIp } from '@/lib/auth';
+import { GATE_COOKIE, hasGate } from '@/lib/jwt';
+import { GATE_ON } from '@/lib/env';
 
 /**
  * Forma (agar kerak bo'lsa). Bu yo'l Postgres'ga yozadi, shuning uchun
  * qattiq rate limit ostida: 5 ta yuborish / 10 daqiqa / IP.
+ *
+ * Bundan tashqari fondagi Turnstile tekshiruvidan o'tgan bo'lish shart —
+ * `gt` cookie'si `components/TurnstileGuard.tsx` → `/api/gate` zanjirida
+ * beriladi. Landing hammaga ochiq, lekin BAZAGA YOZADIGAN yagona ommaviy
+ * yo'l shu, shuning uchun himoya aynan shu yerda turadi: skript bilan
+ * yuborilgan minglab soxta lead Postgres'ga tushmaydi.
  */
 
 export const runtime = 'nodejs';
@@ -26,6 +36,16 @@ export async function POST(req: Request): Promise<Response> {
       { ok: false, error: 'Juda ko’p urinish. Keyinroq qayta yuboring.' },
       { status: 429, headers: { 'Retry-After': String(rl.retryAfter) } },
     );
+  }
+
+  if (GATE_ON) {
+    const jar = await cookies();
+    if (!(await hasGate(jar.get(GATE_COOKIE)?.value))) {
+      return Response.json(
+        { ok: false, error: 'Tasdiqlash o’tmadi. Sahifani yangilab, qayta urinib ko’ring.' },
+        { status: 403 },
+      );
+    }
   }
 
   let data: { name?: unknown; phone?: unknown; sessionId?: unknown; source?: unknown };

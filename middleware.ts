@@ -1,47 +1,22 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { COOKIE, GATE_COOKIE, GATE_HINT, hasGate, readToken } from './lib/jwt';
+import { COOKIE, readToken } from './lib/jwt';
 
 /**
- * Ikki himoya: admin panel va kirish darvozasi.
+ * Admin panelini himoyalaydi.
  *
- * MUHIM: `matcher` faqat `/admin/*` va `/l` ni tutadi. Darvoza sahifasi (`/`),
- * statik fayllar va API middleware'ga UMUMAN kirmaydi — aks holda har bir
- * so'rov Node'ga tushib, edge cache'ning ma'nosi qolmasdi.
+ * MUHIM: `matcher` faqat `/admin/*` ni tutadi. Landing (`/`), statik fayllar
+ * va API middleware'ga UMUMAN kirmaydi — aks holda har bir so'rov Node'ga
+ * tushib, Cloudflare edge cache'ining ma'nosi qolmasdi.
+ *
+ * Ilgari bu yerda kirish darvozasining `/l` shoxi ham bor edi: `gt` cookie'si
+ * bo'lmagan odam landingdan darvozaga qaytarilardi. Endi landing to'g'ridan
+ * `/` da ochiladi va Turnstile uni to'smay, fonda tekshiradi
+ * (`components/TurnstileGuard.tsx`) — shu sabab bu yerda tekshiradigan narsa
+ * qolmadi.
  */
-
-/** `lib/env` bu yerda ishlatilmaydi — u `server-only` zanjirini tortadi */
-const gateOn =
-  process.env.GATE_ENABLED !== '0' &&
-  Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && process.env.TURNSTILE_SECRET_KEY);
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ── Landing: darvozadan o'tganlar uchun ──
-  if (pathname === '/l') {
-    if (!gateOn || (await hasGate(req.cookies.get(GATE_COOKIE)?.value))) {
-      return NextResponse.next();
-    }
-
-    const url = req.nextUrl.clone();
-    url.pathname = '/';
-    url.search = '';
-    const res = NextResponse.redirect(url);
-
-    /**
-     * Eskirgan UX belgisini ham o'chiramiz — busiz CHEKSIZ HALQA bo'lardi:
-     * `gt` yaroqsiz, lekin `gt_ok` qolgan → darvoza captchani ko'rsatmay
-     * tugmani yoqadi → bosilsa yana shu yerga qaytadi → yana...
-     *
-     * Bu holat haqiqatda uchraydi: JWT_SECRET almashtirilganda yoki brauzer
-     * soati oldinda bo'lib JWT `exp` cookie `Max-Age` dan erta o'tganda.
-     */
-    res.cookies.delete({ name: GATE_HINT, path: '/' });
-    res.cookies.delete({ name: GATE_COOKIE, path: '/' });
-    return res;
-  }
-
-  // ── Admin panel ──
   const isLogin = pathname === '/admin/login';
   const admin = await readToken(req.cookies.get(COOKIE)?.value);
 
@@ -63,5 +38,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/l', '/admin', '/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*'],
 };

@@ -39,11 +39,12 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   /**
-   * Bitta ko'rinish — yorug'. Plakat oq qog'ozda yashaydi: yorqin ko'k va
-   * yashil bloklar aynan oq fonda eng kuchli chiqadi.
+   * Bitta ko'rinish — to'q. Landing to'q zumrad fonda yashaydi, oltin urg'u
+   * aynan shunda kuchli chiqadi. Mobil brauzer chrome'i ham shu rangga
+   * bo'yaladi, aks holda sahifa tepasida oq chiziq qolardi.
    */
-  themeColor: '#ffffff',
-  colorScheme: 'light',
+  themeColor: '#04110b',
+  colorScheme: 'dark',
 };
 
 /**
@@ -75,7 +76,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Botga o'tish tezroq bo'lsin — TLS/DNS oldindan ochiladi */}
         <link rel="preconnect" href="https://t.me" crossOrigin="" />
         <link rel="dns-prefetch" href="https://t.me" />
-        {/* Darvoza captchasi birinchi paintdayoq yuklana boshlasin */}
+        {/* Fondagi Turnstile tekshiruvi tezroq boshlansin */}
         <link rel="preconnect" href="https://challenges.cloudflare.com" crossOrigin="" />
         {PIXEL_SNIPPET && (
           <>
