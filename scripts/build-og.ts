@@ -6,12 +6,13 @@
  * kerak edi — deploy tarmoqqa bog'lanib qolardi. Rasm esa deyarli
  * o'zgarmaydi, shuning uchun uni BIR MARTA yasab, repoga qo'yamiz.
  *
- * Ishga tushirish:  npx tsx scripts/build-og.ts
+ * Ishga tushirish:  npm run og
  *
- * Dizayn landing bilan bir xil tilda: to'q zumrad fon, oltin gradient urg'u,
- * shisha panel. Narx ATAYIN yozilmagan — u admin paneldan o'zgaradi, rasmga
- * muhrlansa esa eskirib qolardi (eski OG rasmda aynan shu bo'lgan: unda
- * «30 000 so'm» qotib qolgan edi).
+ * Dizayn bosh sahifa bilan bir tilda: sof sariq fon, qora qalin harflar,
+ * oq "qog'oz" bo'laklari va qattiq soya (neo-brutalizm). Narx ATAYIN
+ * yozilmagan — u admin paneldan o'zgaradi, rasmga muhrlansa esa eskirib
+ * qolardi (eski OG rasmda aynan shu bo'lgan: unda «30 000 so'm» qotib
+ * qolgan edi).
  */
 import { ImageResponse } from 'next/og';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -30,16 +31,38 @@ async function font(family: string, weight: number): Promise<ArrayBuffer> {
   return fetch(url).then((r) => r.arrayBuffer());
 }
 
-const BG = '#04110b';
-const INK = '#edf7f0';
-const DIM = '#8fb3a0';
-const GOLD = '#f5c242';
+const BG = '#ffd400';
+const INK = '#0a0a0a';
+const PAPER = '#ffffff';
+const DIM = 'rgba(0,0,0,0.66)';
+const SHADOW = '10px 10px 0 rgba(0,0,0,0.28)';
+
+/** Oq "qog'oz" tabletka — sahifadagi `.pill` bilan bir xil */
+function pill(text: string) {
+  return {
+    type: 'div',
+    props: {
+      style: {
+        display: 'flex',
+        alignItems: 'center',
+        background: PAPER,
+        border: `3px solid ${INK}`,
+        borderRadius: '999px',
+        padding: '10px 22px',
+        fontSize: 24,
+        fontWeight: 700,
+        color: INK,
+      },
+      children: text,
+    },
+  };
+}
 
 async function main() {
-  const [grotesk700, inter400, inter600, logo] = await Promise.all([
-    font('Space+Grotesk', 700),
-    font('Inter', 400),
-    font('Inter', 600),
+  const [inter500, inter700, inter800, logo] = await Promise.all([
+    font('Inter', 500),
+    font('Inter', 700),
+    font('Inter', 800),
     readFile('assets/milliy-logo.png'),
   ]);
 
@@ -56,66 +79,77 @@ async function main() {
           flexDirection: 'column',
           justifyContent: 'space-between',
           background: BG,
-          padding: '64px 72px',
+          padding: '58px 68px',
           fontFamily: 'Inter',
-          position: 'relative',
         },
         children: [
-          // Tepadagi oltin chiziq — brend urg'usi.
-          // Ilgari bu yerda radial "nur" turardi, lekin satori uni loyqa
-          // zaytun dog' qilib chizdi va Telegram'dagi kichik ko'rinishda
-          // kir dog'dek o'qilardi. Aniq chiziq har o'lchamda toza chiqadi.
+          // ── Tepa: belgi + brend, o'ng tomonda "Bepul" yorlig'i ──
           {
             type: 'div',
             props: {
               style: {
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '1200px',
-                height: '10px',
-                backgroundImage: 'linear-gradient(90deg, #ffe9a8, #f5c242 45%, #ca8a04)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               },
-            },
-          },
-
-          // ── Tepa: belgi + brend ──
-          {
-            type: 'div',
-            props: {
-              style: { display: 'flex', alignItems: 'center', gap: '18px' },
               children: [
                 {
                   type: 'div',
                   props: {
-                    style: {
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      width: '76px',
-                      height: '76px',
-                      background: '#fff',
-                      borderRadius: '20px',
-                      // Belgi gradienti oq fonda ishlaydi — to'q fonda uchlari
-                      // dog' bo'lardi, shuning uchun oq plita ustida turadi
-                      boxShadow: '0 0 0 2px rgba(245,194,66,0.35)',
-                    },
-                    children: {
-                      type: 'img',
-                      props: { src: logoSrc, width: 54, height: 54 },
-                    },
+                    style: { display: 'flex', alignItems: 'center', gap: '20px' },
+                    children: [
+                      {
+                        type: 'div',
+                        props: {
+                          style: {
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '78px',
+                            height: '78px',
+                            background: PAPER,
+                            border: `4px solid ${INK}`,
+                            borderRadius: '18px',
+                            // Belgi gradienti oq fonda ishlaydi — sariq fonda
+                            // uchlari dog' bo'lardi, shuning uchun oq plita
+                          },
+                          children: {
+                            type: 'img',
+                            props: { src: logoSrc, width: 52, height: 52 },
+                          },
+                        },
+                      },
+                      {
+                        type: 'div',
+                        props: {
+                          style: {
+                            fontSize: 30,
+                            fontWeight: 800,
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            color: INK,
+                          },
+                          children: SITE.brand,
+                        },
+                      },
+                    ],
                   },
                 },
                 {
                   type: 'div',
                   props: {
                     style: {
-                      fontFamily: 'Space Grotesk',
-                      fontSize: 38,
-                      color: INK,
-                      letterSpacing: '-0.01em',
+                      display: 'flex',
+                      background: INK,
+                      color: BG,
+                      borderRadius: '999px',
+                      padding: '12px 26px',
+                      fontSize: 22,
+                      fontWeight: 800,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
                     },
-                    children: SITE.brand,
+                    children: 'Bepul',
                   },
                 },
               ],
@@ -126,7 +160,7 @@ async function main() {
           {
             type: 'div',
             props: {
-              style: { display: 'flex', flexDirection: 'column', gap: '20px' },
+              style: { display: 'flex', flexDirection: 'column' },
               children: [
                 {
                   type: 'div',
@@ -134,33 +168,28 @@ async function main() {
                     style: {
                       display: 'flex',
                       flexDirection: 'column',
-                      fontFamily: 'Space Grotesk',
-                      fontSize: 84,
-                      lineHeight: 1.08,
-                      letterSpacing: '-0.02em',
+                      fontSize: 104,
+                      fontWeight: 800,
+                      lineHeight: 0.98,
+                      letterSpacing: '-0.045em',
+                      textTransform: 'uppercase',
                       color: INK,
                     },
                     children: [
-                      { type: 'div', props: { children: 'Ovoz bering —' } },
-                      {
-                        type: 'div',
-                        props: {
-                          style: {
-                            backgroundImage:
-                              'linear-gradient(120deg, #ffe9a8, #f5c242 45%, #ca8a04)',
-                            backgroundClip: 'text',
-                            color: 'transparent',
-                          },
-                          children: 'pul ishlab oling',
-                        },
-                      },
+                      { type: 'div', props: { children: 'Ovoz bering' } },
+                      { type: 'div', props: { children: '— pul ishlab oling' } },
                     ],
                   },
                 },
                 {
                   type: 'div',
                   props: {
-                    style: { fontSize: 30, color: DIM, fontWeight: 400 },
+                    style: {
+                      marginTop: '22px',
+                      fontSize: 30,
+                      fontWeight: 500,
+                      color: DIM,
+                    },
                     children: 'Har bir ovoz uchun haqiqiy to’lov. Telegram bot orqali.',
                   },
                 },
@@ -168,7 +197,7 @@ async function main() {
             },
           },
 
-          // ── Past: to'lov usullari va domen ──
+          // ── Past: ishonch belgilari va domen ──
           {
             type: 'div',
             props: {
@@ -176,24 +205,29 @@ async function main() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                borderTop: '1px solid rgba(255,255,255,0.10)',
-                paddingTop: '26px',
               },
               children: [
                 {
                   type: 'div',
                   props: {
-                    style: { fontSize: 26, color: DIM, fontWeight: 400 },
-                    children: 'Humo · Uzcard · Payme',
+                    style: { display: 'flex', gap: '12px' },
+                    children: [pill('2 daqiqa'), pill('Uzcard · Humo'), pill('Hujjat kerak emas')],
                   },
                 },
                 {
                   type: 'div',
                   props: {
                     style: {
-                      fontFamily: 'Space Grotesk',
-                      fontSize: 28,
-                      color: GOLD,
+                      display: 'flex',
+                      background: INK,
+                      color: BG,
+                      border: `3px solid ${INK}`,
+                      borderRadius: '14px',
+                      boxShadow: SHADOW,
+                      padding: '14px 24px',
+                      fontSize: 26,
+                      fontWeight: 800,
+                      letterSpacing: '-0.01em',
                     },
                     children: SITE.domain,
                   },
@@ -208,9 +242,9 @@ async function main() {
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Space Grotesk', data: grotesk700, weight: 700, style: 'normal' },
-        { name: 'Inter', data: inter400, weight: 400, style: 'normal' },
-        { name: 'Inter', data: inter600, weight: 600, style: 'normal' },
+        { name: 'Inter', data: inter500, weight: 500, style: 'normal' },
+        { name: 'Inter', data: inter700, weight: 700, style: 'normal' },
+        { name: 'Inter', data: inter800, weight: 800, style: 'normal' },
       ],
     },
   );

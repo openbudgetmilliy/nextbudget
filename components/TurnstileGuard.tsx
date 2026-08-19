@@ -92,7 +92,7 @@ export default function TurnstileGuard({ siteKey }: { siteKey: string }) {
       if (!alive || !boxRef.current || !window.turnstile || widgetRef.current) return;
       widgetRef.current = window.turnstile.render(boxRef.current, {
         sitekey: siteKey,
-        theme: 'dark',
+        theme: 'auto',
         language: 'auto',
         appearance: 'interaction-only',
         callback: send,
@@ -160,7 +160,9 @@ export default function TurnstileGuard({ siteKey }: { siteKey: string }) {
       style={{
         position: 'fixed',
         right: '16px',
-        bottom: '16px',
+        // Tepada turadi: pastki zona — CTA tugmalari, vidjet interaktiv
+        // rejimga o'tganda ularning bosilishini to'sib qo'ymasligi kerak
+        top: '16px',
         zIndex: 60,
         // Ko'rinmagan holatda joy egallamaydi va bosishlarni ushlamaydi
         opacity: visible ? 1 : 0,

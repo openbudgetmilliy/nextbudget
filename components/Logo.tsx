@@ -13,7 +13,7 @@ import { SITE } from '@/lib/content';
  *
  * `width`/`height` majburiy — ularsiz rasm yuklanguncha layout sakraydi (CLS).
  */
-export default function Logo({ size = 34, className = 'brand-mark' }: { size?: number; className?: string }) {
+export default function Logo({ size = 34, className = '' }: { size?: number; className?: string }) {
   return (
     <img
       src="/logo-mark.webp"

@@ -4,12 +4,13 @@
  * Nega inline: rasm/sprite so'rovi yo'q, LCP'ga ta'sir qilmaydi va
  * `currentColor` orqali matn rangini oladi.
  *
- * Sahifada ikkita ikonka bor, xolos. Bir ekranli landing'da har bir belgi
- * o'z o'rnini oqlashi kerak — bezak uchun ikonka qo'shilmaydi.
+ * Ikkitadan ko'p emas. Bir ekranli slaydda har bir belgi o'z o'rnini
+ * oqlashi kerak — bezak uchun ikonka qo'shilmaydi.
  */
 
 type P = { size?: number; className?: string };
 
+/** 404 sahifasidagi "Botga o'tish" tugmasi uchun */
 export function Telegram({ size = 20, className }: P) {
   return (
     <svg
@@ -25,7 +26,8 @@ export function Telegram({ size = 20, className }: P) {
   );
 }
 
-export function Check({ size = 15, className }: P) {
+/** Bosh sahifada tugmalar tomon ishora qiladi (sakraydi) */
+export function ArrowDown({ size = 26, className }: P) {
   return (
     <svg
       width={size}
@@ -33,13 +35,13 @@ export function Check({ size = 15, className }: P) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={2.6}
+      strokeWidth={3}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
       className={className}
     >
-      <path d="M4.5 12.5l4.5 4.5L19.5 6.5" />
+      <path d="M12 5v14m0 0-6-6m6 6 6-6" />
     </svg>
   );
 }

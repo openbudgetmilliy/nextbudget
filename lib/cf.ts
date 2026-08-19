@@ -41,17 +41,14 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
 /**
  * Landing'ni to'liq yangilash: ISR + CF edge.
  *
- * Narxlar `/l` da, shu sabab ISR o'sha yo'l uchun bekor qilinadi. `/l` CF'da
- * cache'lanmaydi (`no-store`), lekin darvoza `/` va sitemap cache'lanadi —
- * ular purge ro'yxatida qoladi.
+ * Sayt bitta sahifadan iborat — ISR `/` uchun bekor qilinadi, CF'da `/` va
+ * sitemap purge qilinadi. (`/l` marshruti olib tashlangan, havolalari ham.)
  */
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
-  revalidatePath('/l');
   revalidatePath('/');
   const cf = await purgeCloudflare([
     `${env.SITE_URL}/`,
     `${env.SITE_URL}`,
-    `${env.SITE_URL}/l`,
     `${env.SITE_URL}/sitemap.xml`,
   ]);
   return { isr: true, cf };

@@ -23,12 +23,12 @@ export default function NotFound() {
         </p>
 
         <div className="nf-act">
-          <a href="/" className="nf-btn nf-btn-ghost">
+          <a href="/" className="nf-btn nf-btn-paper">
             Bosh sahifa
           </a>
           <a
             href={tgLink(env.BOT, 'web_404')}
-            className="nf-btn nf-btn-gold"
+            className="nf-btn nf-btn-ink"
             rel="noopener"
           >
             <Telegram size={17} />

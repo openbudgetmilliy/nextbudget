@@ -1,4 +1,12 @@
 import './admin.css';
+import type { Viewport } from 'next';
+
+/** Admin to'q — ildiz layout'dagi sariq themeColor bu yerda mobil brauzer
+    chrome'ini begona rangga bo'yab qo'yardi */
+export const viewport: Viewport = {
+  themeColor: '#080a10',
+  colorScheme: 'dark',
+};
 
 export const metadata = {
   title: 'Admin',

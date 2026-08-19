@@ -38,13 +38,16 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Busiz iOS'da env(safe-area-inset-*) doim 0 — .screen padding'idagi
+  // max() zaxiralari o'lik kod bo'lib, sariq fon notch ostiga cho'zilmaydi
+  viewportFit: 'cover',
   /**
-   * Bitta ko'rinish — to'q. Landing to'q zumrad fonda yashaydi, oltin urg'u
+   * Bitta ko'rinish — sariq. Slayd sof sariq fonda yashaydi, qora siyoh
    * aynan shunda kuchli chiqadi. Mobil brauzer chrome'i ham shu rangga
-   * bo'yaladi, aks holda sahifa tepasida oq chiziq qolardi.
+   * bo'yaladi, aks holda sahifa tepasida begona chiziq qolardi.
    */
-  themeColor: '#04110b',
-  colorScheme: 'dark',
+  themeColor: '#ffd400',
+  colorScheme: 'light',
 };
 
 /**

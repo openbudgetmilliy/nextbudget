@@ -1,33 +1,27 @@
 /* ==========================================================================
    Umumiy uslublar — reset va 404 sahifasi.
 
-   Sayt bitta sahifadan iborat va uning butun dizayni `app/page.module.css`
-   ichida yashaydi (o'zining rang o'zgaruvchilari bilan, `.page` doirasida).
-   Shu sabab bu fayl ataylab kichik: u har bir tashrifchiga yuklanadi,
-   demak faqat HAQIQATAN umumiy narsalar shu yerda turishi kerak.
-
-   Ilgari bu faylda plakat uslubidagi landing (`/l`) va Turnstile darvozasi
-   (`/`) uslublari ham bor edi — ikkala sahifa ham olib tashlandi, ular bilan
-   birga o'sha ~700 qator ham ketdi.
+   Sayt bitta ekranli slayddan iborat va uning butun dizayni
+   `app/page.module.css` ichida yashaydi. Shu sabab bu fayl ataylab kichik:
+   u har bir tashrifchiga yuklanadi, demak faqat HAQIQATAN umumiy narsalar
+   shu yerda turishi kerak.
 
    Admin panel butunlay alohida: `app/admin/admin.css` faqat `/admin/*`
    marshrutlarida yuklanadi va o'z ranglarini o'zi belgilaydi.
    ========================================================================== */
 
 :root {
-  /* 404 va body foni — landing bilan bir xil to'q zumrad, oq yaltirash
-     bo'lmasin (sahifa yuklanayotganda ko'z qamashtirmaydi) */
-  --bg: #04110b;
-  --ink: #edf7f0;
-  --dim: #8fb3a0;
-  --gold: #f5c242;
-  --gold-l: #ffe9a8;
-  --panel-line: rgba(255, 255, 255, 0.09);
+  /* Brend ranglari — «Energetik» slayd bilan bir xil: sof sariq va deyarli
+     qora siyoh. Body foni ham shu, shunda sahifa yuklanayotganda oq
+     yaltirash ko'rinmaydi. */
+  --bg: #ffd400;
+  --ink: #0a0a0a;
+  --paper: #fff;
+  --dim: rgba(0, 0, 0, 0.62);
 
   --f-b: var(--f-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --f-d: var(--f-display), ui-sans-serif, system-ui, sans-serif;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 *,
@@ -46,7 +40,7 @@ body {
   color: var(--ink);
   font-family: var(--f-b);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
@@ -89,12 +83,12 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 3px solid var(--ink);
   outline-offset: 3px;
   border-radius: 8px;
 }
 
-/* Raqamlar ustma-ust tekis tursin (narx, statistika) */
+/* Raqamlar ustma-ust tekis tursin (narx) */
 .tnum {
   font-variant-numeric: tabular-nums;
 }
@@ -102,7 +96,8 @@ button {
 /* ── 404 ──────────────────────────────────────────────────────────────────
    Sayt bitta sahifadan iborat, shuning uchun bu yerga faqat eskirgan havola
    yoki skaner tushadi. Sahifa ataylab qisqa: yagona foydali harakat — botga
-   yoki bosh sahifaga qaytish.
+   yoki bosh sahifaga qaytish. Uslub bosh sahifa bilan bir tilda —
+   sariq fon, qora ramka, qattiq soya.
    ------------------------------------------------------------------------ */
 
 .nf {
@@ -115,28 +110,29 @@ button {
 
 .nf-code {
   display: inline-block;
-  font-family: var(--f-d);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.14em;
-  color: var(--gold);
-  border: 1px solid var(--panel-line);
+  background: var(--ink);
+  color: var(--bg);
   border-radius: 999px;
-  padding: 6px 14px;
+  padding: 7px 14px;
   margin-bottom: 18px;
 }
 
 .nf-title {
-  font-family: var(--f-d);
-  font-size: clamp(1.5rem, 4vw, 2.125rem);
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(1.75rem, 7vw, 2.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
 }
 
 .nf-sub {
-  margin-top: 10px;
+  margin-top: 12px;
+  font-weight: 500;
   color: var(--dim);
-  max-width: 46ch;
+  max-width: 40ch;
   margin-inline: auto;
 }
 
@@ -152,24 +148,29 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding: 13px 22px;
-  border-radius: 12px;
-  font-weight: 600;
+  min-height: 54px;
+  padding: 0 22px;
+  border-radius: 14px;
+  border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.28);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   line-height: 1;
-  transition: opacity 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.nf-btn:hover {
-  opacity: 0.88;
+.nf-btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
 }
 
-.nf-btn-gold {
-  background: linear-gradient(120deg, var(--gold-l), var(--gold) 45%, #ca8a04);
-  /* Och oltin fonda oq matn 1.6:1 bo'lardi — shu sabab to'q matn */
-  color: #2a1e03;
+.nf-btn-ink {
+  background: var(--ink);
+  color: var(--bg);
 }
 
-.nf-btn-ghost {
-  border: 1px solid var(--panel-line);
+.nf-btn-paper {
+  background: var(--paper);
   color: var(--ink);
 }
