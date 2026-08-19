@@ -15,13 +15,33 @@ import { mkdir, writeFile } from 'node:fs/promises';
 
 const SRC = 'assets/milliy-logo.png';
 
-/** Brend ranglari — belgidan olingan, `app/globals.css` bilan bir xil */
-const INK = '#08243a';
-const BLUE = '#0090d8';
-const GREEN = '#60c048';
-
 type Out = { file: string; note: string; bytes: number };
 const done: Out[] = [];
+
+/** PNG'larni ICO konteyneriga o'raydi (PNG-in-ICO, 16 baytlik katalog) */
+function ico(images: { size: number; buf: Buffer }[]): Buffer {
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0); // rezerv
+  header.writeUInt16LE(1, 2); // tur: icon
+  header.writeUInt16LE(images.length, 4);
+
+  const entries: Buffer[] = [];
+  const blobs: Buffer[] = [];
+  let offset = 6 + 16 * images.length;
+  for (const { size, buf } of images) {
+    const e = Buffer.alloc(16);
+    e.writeUInt8(size >= 256 ? 0 : size, 0); // eni (0 = 256)
+    e.writeUInt8(size >= 256 ? 0 : size, 1); // bo'yi
+    e.writeUInt16LE(1, 4); // tekisliklar
+    e.writeUInt16LE(32, 6); // bit chuqurligi
+    e.writeUInt32LE(buf.length, 8);
+    e.writeUInt32LE(offset, 12);
+    entries.push(e);
+    blobs.push(buf);
+    offset += buf.length;
+  }
+  return Buffer.concat([header, ...entries, ...blobs]);
+}
 
 async function emit(file: string, note: string, buf: Buffer) {
   await writeFile(file, buf);
@@ -72,52 +92,19 @@ async function main() {
       .toBuffer(),
   );
 
-  // ── Ijtimoiy tarmoq rasmi (1200×630) ──
-  // Sayt dizaynining o'zi: oq fon, qiya ko'k blok, siqilgan katta harflar.
-  const W = 1200;
-  const H = 630;
-
-  const bg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
-    <rect width="${W}" height="${H}" fill="#ffffff"/>
-
-    <!-- Qiya ko'k blok: sahifadagi narx plitasining aynan o'zi -->
-    <polygon points="0,0 ${W},0 ${W},96 0,150" fill="${BLUE}"/>
-
-    <!-- Belgi ko'k tasmada turadi va uning o'zida ham ko'k bor — oq doira ajratadi -->
-    <circle cx="128" cy="130" r="68" fill="#ffffff"/>
-
-    <!-- Yashil chiziq — belgidagi tasdiq belgisining rangi -->
-    <polygon points="72,214 470,214 470,238 72,246" fill="${GREEN}"/>
-
-    <text x="72" y="330" font-family="Arial Narrow, Arial, sans-serif" font-size="96"
-          font-weight="bold" fill="${INK}" letter-spacing="-2">TASHABBUSLI BUDJET</text>
-    <text x="72" y="416" font-family="Arial Narrow, Arial, sans-serif" font-size="96"
-          font-weight="bold" fill="${INK}" letter-spacing="-2">OVOZI</text>
-
-    <!-- Narx plitasi: pastki chekkasi qiya kesilgan -->
-    <polygon points="612,352 1128,352 1128,502 612,524" fill="${BLUE}"/>
-    <text x="648" y="404" font-family="Arial, sans-serif" font-size="24"
-          font-weight="bold" letter-spacing="4" fill="#ffffff">1 OVOZ NARXI</text>
-    <text x="648" y="480" font-family="Arial Narrow, Arial, sans-serif" font-size="76"
-          font-weight="bold" fill="#ffffff">30 000<tspan dx="14" font-size="38">so‘m</tspan></text>
-
-    <text x="72" y="560" font-family="Arial, sans-serif" font-size="26" fill="#41637a">
-      Humo · Uzcard · Payme — Telegram bot orqali</text>
-  </svg>`);
-
-  const emblem = await mark()
-    .clone()
-    .resize(112, 112, { fit: 'contain', background: clear })
-    .png()
-    .toBuffer();
-
+  // Safari va eski brauzerlar /favicon.ico ni to'g'ridan-to'g'ri so'raydi —
+  // Next `app/favicon.ico` ni o'sha manzilda beradi. Busiz Safari tab'da
+  // sayt nomining bosh harfi ("M") ko'rinib turardi.
+  const icoPng = (px: number) =>
+    mark().clone().resize(px, px, { fit: 'contain', background: clear }).png().toBuffer();
   await emit(
-    'app/opengraph-image.png',
-    'Telegram/Facebook ulashuv rasmi (1200×630)',
-    await sharp(bg)
-      .composite([{ input: emblem, left: 72, top: 74 }])
-      .png({ compressionLevel: 9 })
-      .toBuffer(),
+    'app/favicon.ico',
+    'Safari tab belgisi (16/32/48 PNG-in-ICO)',
+    ico([
+      { size: 16, buf: await icoPng(16) },
+      { size: 32, buf: await icoPng(32) },
+      { size: 48, buf: await icoPng(48) },
+    ]),
   );
 
   const kb = (n: number) => `${(n / 1024).toFixed(1)} KB`;
