@@ -1,0 +1,303 @@
+/* ==========================================================================
+   `/3` — «Gradient»: bitta ekranli quyosh botishi slaydi (stories uslubi).
+
+   Manba: files/mobil/10-gradient.html (mobil variantlar to'plamidagi 10-si).
+   To'liq ekranli issiq gradient, oq matn, oq stiker ichida gradient raqam.
+   Skelet `/` va `/2` bilan bir xil: `.mid` cho'ziladi, `.cta` pastdan 5dvh
+   chekinadi — tugmalar bosh barmoq zonasida.
+
+   Gradient manbadagidan ATAYIN bir pog'ona to'qroq (#ea5410→#d22a5c→#8e1d92,
+   manbada #ff7a1f→#ff3d5e→#b0269f edi): oq matn zonalari WCAG'dan o'tsin —
+   sarlavha zonasi ~4.2:1 (katta matnga 3:1 yetadi), tavsif ~5:1, tugma va
+   izoh zonalari 5.5–7.7:1. Ranglar shu modulga muhrlangan, globalga
+   bog'lanmaydi.
+   ========================================================================== */
+
+.screen {
+  --hot: #c2185b;
+  --g1: #ea5410;
+  --g2: #d22a5c;
+  --g3: #8e1d92;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(16px, env(safe-area-inset-top)) 20px max(14px, env(safe-area-inset-bottom));
+  background: linear-gradient(165deg, var(--g1) 0%, var(--g2) 48%, var(--g3) 112%);
+  color: #fff;
+}
+
+/* Global fokus konturi moviy — gradientda ko'rinmaydi. Bu yerda oq. */
+.screen :focus-visible {
+  outline-color: #fff;
+}
+
+/* Yumshoq yorug' dog'lar — tekis gradientga "havo" beradi */
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(34% 22% at 84% 12%, rgba(255, 255, 255, 0.18), transparent 70%),
+    radial-gradient(46% 30% at 8% 58%, rgba(255, 255, 255, 0.1), transparent 70%),
+    radial-gradient(40% 26% at 70% 96%, rgba(255, 214, 140, 0.18), transparent 72%);
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ── Tepa qator ───────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.18);
+}
+
+/* Belgining to'q xaritasi gradientda yo'qolmasin — oq doira plita */
+.mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex: none;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--hot);
+  background: #fff;
+  border-radius: 999px;
+  padding: 7px 13px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* ── O'rta qism ───────────────────────────────────────────────────────── */
+
+.mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* Qator uzilishini kod hal qiladi (`titleLines`), shuning uchun har bir
+   qator alohida `span` — brauzer sarlavhani o'zicha bo'lmaydi. */
+.title {
+  font-family: var(--f-sg), var(--f-b);
+  font-size: clamp(2.125rem, 11vw, 2.875rem);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.16);
+}
+
+.title span {
+  display: block;
+}
+
+.sub {
+  margin-top: 14px;
+  font-size: 1rem;
+  line-height: 1.55;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 21em;
+}
+
+/* Oq stiker — biroz qiyshaygan, sahifadagi yagona qiyshiq element:
+   ko'z aynan shu yerga tushadi */
+.sticker {
+  display: inline-block;
+  transform: rotate(-1.6deg);
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 13px 20px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+}
+
+.sNum {
+  font-family: var(--f-sg), var(--f-b);
+  font-size: clamp(2.375rem, 12vw, 3.125rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  background: linear-gradient(110deg, var(--g1), var(--g2) 55%, var(--g3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sLab {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #667085;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pill {
+  font-size: 0.78125rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 999px;
+  padding: 7px 13px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Pastki harakat zonasi ────────────────────────────────────────────── */
+
+.cta {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 5dvh;
+}
+
+/* Barmoq zonasi: 60px — Apple/Google tavsiyasidan (44/48px) ancha katta,
+   chunki reklama trafigi shoshib bosadi. 19px — WCAG "katta qalin matn"
+   chegarasidan (18.66px) yuqori: shaffof ghost tugmada ham 3:1 yetarli. */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 20px;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-radius: 999px;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: scale(0.975);
+}
+
+.primary {
+  background: #fff;
+  color: var(--hot);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+}
+
+.primary:active {
+  background: #ffe9f1;
+}
+
+.ghost {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.ghost:active {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.note {
+  text-align: center;
+  font-size: 0.78125rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Katta ekranda slayd baribir bitta ustun bo'lib qoladi — kadr mobil
+   reklama uchun terilgan, uni kengaytirish kompozitsiyani buzadi. */
+@media (min-width: 720px) {
+  .screen {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .wrap {
+    max-width: 480px;
+  }
+
+  .cta {
+    padding-bottom: 8dvh;
+  }
+}
+
+/* Past bo'yli ekranlar (iPhone SE, brauzer paneli ochiq holat) — slayd
+   baribir BITTA ekranga sig'ishi shart. Havo va kegl toraytiriladi,
+   tugma 54px da qoladi (Apple minimali 44px dan katta). */
+@media (max-height: 700px) {
+  .mid {
+    padding: 10px 0;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 9vw, 2.375rem);
+  }
+
+  .sub {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+  }
+
+  .sticker {
+    margin-top: 14px;
+    padding: 10px 16px;
+  }
+
+  .sNum {
+    font-size: 2rem;
+  }
+
+  .row {
+    margin-top: 14px;
+  }
+
+  .cta {
+    gap: 10px;
+    padding-bottom: 8px;
+  }
+
+  .btn {
+    min-height: 54px;
+  }
+}

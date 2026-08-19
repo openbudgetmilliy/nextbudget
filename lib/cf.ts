@@ -41,17 +41,19 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
 /**
  * Landing'ni to'liq yangilash: ISR + CF edge.
  *
- * Ikkala landing kadr ham yangilanadi: `/` («Milliy») va `/2» (sariq
- * «Energetik» — muqobil reklama kadri). CF'da shu ikkisi va sitemap purge
- * qilinadi.
+ * Barcha landing kadrlar yangilanadi: `/` («Milliy»), `/2` (sariq
+ * «Energetik») va `/3` («Gradient») — muqobil reklama kadrlari. CF'da
+ * shular va sitemap purge qilinadi.
  */
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
   revalidatePath('/');
   revalidatePath('/2');
+  revalidatePath('/3');
   const cf = await purgeCloudflare([
     `${env.SITE_URL}/`,
     `${env.SITE_URL}`,
     `${env.SITE_URL}/2`,
+    `${env.SITE_URL}/3`,
     `${env.SITE_URL}/sitemap.xml`,
   ]);
   return { isr: true, cf };
