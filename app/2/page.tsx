@@ -1,21 +1,34 @@
 import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
 import Logo from '@/components/Logo';
+import { ArrowDown } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
 import { tgLink } from '@/lib/tg';
 import { env, GATE_ON } from '@/lib/env';
+import type { Metadata, Viewport } from 'next';
 
 import c from './page.module.css';
 
 /**
- * Bosh sahifa — bitta ekranli slayd, «Milliy» (oq-moviy).
+ * `/2` — bitta ekranli sariq «Energetik» slayd.
  *
- * Uslub manbasi: `files/mobil/6-milliy.html`. Bayroq ranglari — moviy,
- * oq, yashil va ingichka qizil iplar; hammasi markazga terilgan. Sariq
- * «Energetik» slayd o'chirilmadi — u `/2` da muqobil reklama kadri bo'lib
- * turibdi, skelet ikkalasida bir xil.
+ * Ilgari bosh sahifa edi; ildizga 6-«Milliy» dizayni kelgach bu yerga
+ * ko'chdi. Reklama kampaniyalarida muqobil kadr sifatida ishlatiladi —
+ * shu sabab index'lanmaydi (bosh sahifa bilan kontenti bir xil, qidiruvda
+ * dublikat bo'lib qolmasin).
+ *
+ * Uslub manbasi: `files/mobil/3-energetik.html`. Sayt bundan oldin ko'p
+ * bo'limli landing edi (hero, qadamlar, mukofotlar, savol-javob, yakuniy
+ * da'vat, tanga yomg'iri). Endi u BITTA ekran: sariq fon, qora qalin
+ * sarlavha, narx stikeri va ikkita tugma. Skroll yo'q — reklamadan kelgan
+ * odam birinchi kadrdayoq nima taklif qilinayotganini ko'radi va bosadi.
+ *
+ * Nima yo'qoldi va nega: uzun bo'limlar Instagram trafigida deyarli
+ * o'qilmasdi (skroll chuqurligi statistikasi shuni ko'rsatgan), ular esa
+ * sahifani og'irlashtirardi. Uch o'lchamli tanga yomg'iri (three.js) ham
+ * shu bilan birga olib tashlandi — sariq tekislikda uning o'rni yo'q.
  *
  * Matn manbai — admin sozlamalari (`getSettings`): sarlavha, tavsif, narx
  * va tugma yozuvi `/admin/settings` dan o'zgaradi va keyingi revalidate'da
@@ -28,11 +41,26 @@ import c from './page.module.css';
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
+export const metadata: Metadata = {
+  // Canonical ATAYIN yo'q: noindex bilan birga o'z-o'ziga canonical qarama-
+  // qarshi signal bo'lardi. Qidiruvga bosh sahifa chiqadi, bu — reklama kadri.
+  robots: { index: false, follow: true },
+};
+
+/** Ildiz endi oq — bu marshrut brauzer chrome'ini o'zi sariqqa bo'yaydi */
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#ffd400',
+  colorScheme: 'light',
+};
+
 /**
  * Ishonch belgilari. Uchtadan oshmasin: to'rtinchisi ikkinchi qatorga
  * tushib slaydni cho'zadi va u bitta ekranga sig'may qoladi.
  */
-const PILLS = ['Ishtirok bepul', '2 daqiqa', 'Hujjatsiz'] as const;
+const PILLS = ['2 daqiqa', 'Uzcard · Humo', 'Hujjat kerak emas'] as const;
 
 export default async function HomePage() {
   const s = await getSettings();
@@ -46,45 +74,34 @@ export default async function HomePage() {
 
   return (
     <div className={c.screen}>
-      <div className={c.sky} aria-hidden />
+      {/* Global body foni endi oq («Milliy») — iOS overscroll'da sariq slayd
+          ortida oq yaltirab qolmasin. Marshrutga bog'langan yagona yo'l —
+          shu yerda kichik style tegi. */}
+      <style>{'body{background:#ffd400}'}</style>
+      <div className={c.dots} aria-hidden />
 
       <div className={c.wrap}>
         <header className={c.head}>
           <div className={c.brand}>
             <span className={c.mark}>
-              <Logo size={40} className="" />
+              <Logo size={22} />
             </span>
-            <span>
-              <span className={c.bname}>{SITE.brand}</span>
-              <span className={c.bsub}>Tashabbusli budjet</span>
-            </span>
+            {SITE.brand}
           </div>
-          <span className={c.year}>{s.hero_badge || '2026'}</span>
+          <span className={c.tag}>{s.hero_badge || 'Bepul'}</span>
         </header>
 
         <div className={c.mid}>
-          {/* Bayroq lentasi — moviy / qizil ip / oq / qizil ip / yashil */}
-          <div className={c.ribbon} aria-hidden>
-            <i className={c.rb} />
-            <i className={c.rr} />
-            <i className={c.rw} />
-            <i className={c.rr} />
-            <i className={c.rg} />
-          </div>
-
           <h1 className={c.title}>
             {lines.map((line, i) => (
-              // Indeks kalitda: titleLines ikkita bir xil qator qaytarishi mumkin.
-              // Oxirgi qator moviy urg'u oladi — mukofot qatori ajralib tursin.
-              <span key={`${i}-${line}`} className={i === lines.length - 1 ? c.hl : undefined}>
-                {line}
-              </span>
+              // Indeks kalitda: titleLines ikkita bir xil qator qaytarishi mumkin
+              <span key={`${i}-${line}`}>{line}</span>
             ))}
           </h1>
 
-          <div className={c.sum}>
+          <div className={c.sticker}>
             <p className={`${c.sNum} tnum`}>{s.price_one_vote}</p>
-            <p className={c.sLab}>so‘m · har bir ovoz uchun</p>
+            <p className={c.sLab}>so‘m / 1 ovoz</p>
           </div>
 
           <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
@@ -99,6 +116,10 @@ export default async function HomePage() {
         </div>
 
         <div className={c.cta}>
+          <span className={c.arrow} aria-hidden>
+            <ArrowDown size={26} />
+          </span>
+
           {/* Ikkala tugma ham bitta botga olib boradi — matn boshqa, chunki
               odam o'zini "ovoz beruvchi" yoki "pul oluvchi" deb ko'rishi
               mumkin. `data-t-id` ajratilgan: qaysi so'z ko'proq bosilishini

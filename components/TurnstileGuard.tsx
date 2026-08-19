@@ -92,7 +92,7 @@ export default function TurnstileGuard({ siteKey }: { siteKey: string }) {
       if (!alive || !boxRef.current || !window.turnstile || widgetRef.current) return;
       widgetRef.current = window.turnstile.render(boxRef.current, {
         sitekey: siteKey,
-        theme: 'auto',
+        theme: 'light',
         language: 'auto',
         appearance: 'interaction-only',
         callback: send,

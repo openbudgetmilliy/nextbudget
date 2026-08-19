@@ -1,8 +1,9 @@
 /* ==========================================================================
    Umumiy uslublar — reset va 404 sahifasi.
 
-   Sayt bitta ekranli slayddan iborat va uning butun dizayni
-   `app/page.module.css` ichida yashaydi. Shu sabab bu fayl ataylab kichik:
+   Bosh sahifa «Milliy» (oq-moviy) — dizayni `app/page.module.css` da,
+   muqobil sariq slayd `/2` esa o'z ranglarini o'zi olib yuradi
+   (`app/2/page.module.css`). Shu sabab bu fayl ataylab kichik:
    u har bir tashrifchiga yuklanadi, demak faqat HAQIQATAN umumiy narsalar
    shu yerda turishi kerak.
 
@@ -11,13 +12,18 @@
    ========================================================================== */
 
 :root {
-  /* Brend ranglari — «Energetik» slayd bilan bir xil: sof sariq va deyarli
-     qora siyoh. Body foni ham shu, shunda sahifa yuklanayotganda oq
-     yaltirash ko'rinmaydi. */
-  --bg: #ffd400;
-  --ink: #0a0a0a;
+  /* Brend ranglari — bosh sahifadagi «Milliy» slayd bilan bir xil: oq
+     varaq, to'q ko'k-yashil siyoh, moviy va yashil urg'ular. Body foni oq —
+     sahifa yuklanayotganda begona rang yaltirab ketmaydi. */
+  --bg: #fff;
+  --ink: #10222b;
   --paper: #fff;
-  --dim: rgba(0, 0, 0, 0.62);
+  --dim: #5f7683;
+  --blue: #0099b5;
+  --blue-d: #007e96;
+  --green: #159947;
+  --line: #dbe8ed;
+  --soft: #eef8fb;
 
   --f-b: var(--f-body), ui-sans-serif, system-ui, -apple-system, sans-serif;
 
@@ -83,9 +89,10 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid var(--ink);
+  /* radius yozilmaydi: zamonaviy brauzerlar konturni elementning o'z
+     radiusi bo'ylab chizadi, bu yerdan berilsa geometriyani buzib yuborardi */
+  outline: 3px solid var(--blue-d);
   outline-offset: 3px;
-  border-radius: 8px;
 }
 
 /* Raqamlar ustma-ust tekis tursin (narx) */
@@ -96,8 +103,8 @@ button {
 /* ── 404 ──────────────────────────────────────────────────────────────────
    Sayt bitta sahifadan iborat, shuning uchun bu yerga faqat eskirgan havola
    yoki skaner tushadi. Sahifa ataylab qisqa: yagona foydali harakat — botga
-   yoki bosh sahifaga qaytish. Uslub bosh sahifa bilan bir tilda —
-   sariq fon, qora ramka, qattiq soya.
+   yoki bosh sahifaga qaytish. Uslub bosh sahifadagi «Milliy» slayd bilan
+   bir tilda — oq varaq, moviy va yashil urg'ular, yumshoq soyalar.
    ------------------------------------------------------------------------ */
 
 .nf {
@@ -111,10 +118,11 @@ button {
 .nf-code {
   display: inline-block;
   font-size: 0.8125rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.14em;
-  background: var(--ink);
-  color: var(--bg);
+  color: var(--blue-d);
+  background: var(--soft);
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 7px 14px;
   margin-bottom: 18px;
@@ -123,9 +131,8 @@ button {
 .nf-title {
   font-size: clamp(1.75rem, 7vw, 2.5rem);
   font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
 }
 
 .nf-sub {
@@ -150,27 +157,25 @@ button {
   gap: 9px;
   min-height: 54px;
   padding: 0 22px;
-  border-radius: 14px;
-  border: 3px solid var(--ink);
-  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.28);
+  border-radius: 13px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
   line-height: 1;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.12s ease, background 0.12s ease;
 }
 
 .nf-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
+  transform: scale(0.975);
 }
 
 .nf-btn-ink {
-  background: var(--ink);
-  color: var(--bg);
+  /* blue-d: oq matn och moviyda AA dan yiqiladi (3.37:1) */
+  background: var(--blue-d);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 153, 181, 0.3);
 }
 
 .nf-btn-paper {
   background: var(--paper);
   color: var(--ink);
+  border: 1.5px solid var(--line);
 }

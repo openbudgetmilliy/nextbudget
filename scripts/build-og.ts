@@ -8,8 +8,8 @@
  *
  * Ishga tushirish:  npm run og
  *
- * Dizayn bosh sahifa bilan bir tilda: sof sariq fon, qora qalin harflar,
- * oq "qog'oz" bo'laklari va qattiq soya (neo-brutalizm). Narx ATAYIN
+ * Dizayn bosh sahifa bilan bir tilda: oq varaq, tepadan och moviy
+ * yorug'lik, bayroq lentasi, moviy-yashil urg'ular («Milliy»). Narx ATAYIN
  * yozilmagan — u admin paneldan o'zgaradi, rasmga muhrlansa esa eskirib
  * qolardi (eski OG rasmda aynan shu bo'lgan: unda «30 000 so'm» qotib
  * qolgan edi).
@@ -31,11 +31,16 @@ async function font(family: string, weight: number): Promise<ArrayBuffer> {
   return fetch(url).then((r) => r.arrayBuffer());
 }
 
-const BG = '#ffd400';
-const INK = '#0a0a0a';
+const BG = 'linear-gradient(180deg, #e6f5f9 0%, #ffffff 45%)';
+const INK = '#10222b';
 const PAPER = '#ffffff';
-const DIM = 'rgba(0,0,0,0.66)';
-const SHADOW = '10px 10px 0 rgba(0,0,0,0.28)';
+const DIM = '#5f7683';
+const BLUE = '#0099b5';
+const BLUE_D = '#007e96';
+const GREEN = '#159947';
+const RED = '#ce1126';
+const LINE = '#dbe8ed';
+const SOFT = '#eef8fb';
 
 /** Oq "qog'oz" tabletka — sahifadagi `.pill` bilan bir xil */
 function pill(text: string) {
@@ -46,7 +51,7 @@ function pill(text: string) {
         display: 'flex',
         alignItems: 'center',
         background: PAPER,
-        border: `3px solid ${INK}`,
+        border: `2px solid ${LINE}`,
         borderRadius: '999px',
         padding: '10px 22px',
         fontSize: 24,
@@ -78,7 +83,7 @@ async function main() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          background: BG,
+          backgroundImage: BG,
           padding: '58px 68px',
           fontFamily: 'Inter',
         },
@@ -101,21 +106,11 @@ async function main() {
                       {
                         type: 'div',
                         props: {
-                          style: {
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '78px',
-                            height: '78px',
-                            background: PAPER,
-                            border: `4px solid ${INK}`,
-                            borderRadius: '18px',
-                            // Belgi gradienti oq fonda ishlaydi — sariq fonda
-                            // uchlari dog' bo'lardi, shuning uchun oq plita
-                          },
+                          style: { display: 'flex' },
+                          // Belgi to'liq rangli — oq fonda plitasiz turadi
                           children: {
                             type: 'img',
-                            props: { src: logoSrc, width: 52, height: 52 },
+                            props: { src: logoSrc, width: 78, height: 78 },
                           },
                         },
                       },
@@ -123,10 +118,9 @@ async function main() {
                         type: 'div',
                         props: {
                           style: {
-                            fontSize: 30,
+                            fontSize: 34,
                             fontWeight: 800,
-                            letterSpacing: '0.1em',
-                            textTransform: 'uppercase',
+                            letterSpacing: '-0.01em',
                             color: INK,
                           },
                           children: SITE.brand,
@@ -140,13 +134,14 @@ async function main() {
                   props: {
                     style: {
                       display: 'flex',
-                      background: INK,
-                      color: BG,
+                      background: SOFT,
+                      border: `2px solid ${LINE}`,
+                      color: BLUE_D,
                       borderRadius: '999px',
                       padding: '12px 26px',
                       fontSize: 22,
-                      fontWeight: 800,
-                      letterSpacing: '0.08em',
+                      fontWeight: 700,
+                      letterSpacing: '0.06em',
                       textTransform: 'uppercase',
                     },
                     children: 'Bepul',
@@ -162,22 +157,46 @@ async function main() {
             props: {
               style: { display: 'flex', flexDirection: 'column' },
               children: [
+                // Bayroq lentasi: moviy / qizil ip / oq / qizil ip / yashil
+                {
+                  type: 'div',
+                  props: {
+                    style: {
+                      display: 'flex',
+                      width: '280px',
+                      height: '16px',
+                      borderRadius: '999px',
+                      border: `1px solid ${LINE}`,
+                      overflow: 'hidden',
+                      marginBottom: '30px',
+                    },
+                    children: [
+                      { type: 'div', props: { style: { flexGrow: 1, background: BLUE } } },
+                      { type: 'div', props: { style: { width: '5px', background: RED } } },
+                      { type: 'div', props: { style: { flexGrow: 1, background: PAPER } } },
+                      { type: 'div', props: { style: { width: '5px', background: RED } } },
+                      { type: 'div', props: { style: { flexGrow: 1, background: GREEN } } },
+                    ],
+                  },
+                },
                 {
                   type: 'div',
                   props: {
                     style: {
                       display: 'flex',
                       flexDirection: 'column',
-                      fontSize: 104,
+                      fontSize: 96,
                       fontWeight: 800,
-                      lineHeight: 0.98,
-                      letterSpacing: '-0.045em',
-                      textTransform: 'uppercase',
+                      lineHeight: 1.04,
+                      letterSpacing: '-0.03em',
                       color: INK,
                     },
                     children: [
                       { type: 'div', props: { children: 'Ovoz bering' } },
-                      { type: 'div', props: { children: '— pul ishlab oling' } },
+                      {
+                        type: 'div',
+                        props: { style: { color: BLUE_D }, children: '— pul ishlab oling' },
+                      },
                     ],
                   },
                 },
@@ -211,7 +230,7 @@ async function main() {
                   type: 'div',
                   props: {
                     style: { display: 'flex', gap: '12px' },
-                    children: [pill('2 daqiqa'), pill('Uzcard · Humo'), pill('Hujjat kerak emas')],
+                    children: [pill('Ishtirok bepul'), pill('2 daqiqa'), pill('Hujjatsiz')],
                   },
                 },
                 {
@@ -219,11 +238,9 @@ async function main() {
                   props: {
                     style: {
                       display: 'flex',
-                      background: INK,
-                      color: BG,
-                      border: `3px solid ${INK}`,
+                      background: BLUE,
+                      color: PAPER,
                       borderRadius: '14px',
-                      boxShadow: SHADOW,
                       padding: '14px 24px',
                       fontSize: 26,
                       fontWeight: 800,

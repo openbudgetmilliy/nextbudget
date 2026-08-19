@@ -1,0 +1,329 @@
+/* ==========================================================================
+   Bosh sahifa — «Energetik»: bitta ekranli sariq slayd.
+
+   Manba: files/mobil/3-energetik.html (mobil variantlar to'plamidagi 3-si).
+   Tanlov sababi: Instagram lentasida qo'lni to'xtatadigan eng shovqinli
+   kadr — sof sariq fon, qora qalin harflar, qattiq soya (neo-brutalizm).
+   Matn kam, kegl katta, hamma narsa BITTA ekranga sig'adi: sahifa
+   skroll qilinmaydi, chunki skroll qilinadigan joy yo'q.
+
+   Skelet (`.screen`/`.wrap`/`.head`/`.mid`/`.cta`) barcha mobil
+   variantlarda bir xil edi — reklama trafigi uchun tekshirilgan joylashuv:
+   `.mid` cho'ziladi, `.cta` esa pastdan 5vh chekinadi. Shunda tugmalar
+   ekranning pastki-o'rta uchdan birida, bosh barmoq yetadigan zonada
+   qoladi va telefon pastidagi brauzer paneliga yopishib qolmaydi.
+
+   Reset va shrift o'zgaruvchilari `globals.css` da.
+
+   Ranglar SHU YERDA, globalda emas: ildiz sahifa endi «Milliy» (oq-moviy)
+   palitrada, globals.css o'shanga xizmat qiladi. Sariq slayd o'z ranglarini
+   o'zi olib yuradi — global o'zgarsa ham bu marshrut buzilmaydi.
+   ========================================================================== */
+
+.screen {
+  --bg: #ffd400;
+  --ink: #0a0a0a;
+  --paper: #fff;
+  --dim: rgba(0, 0, 0, 0.62);
+}
+
+/* Global fokus konturi endi moviy — sariq fonda u zo'rg'a ko'rinadi (~2:1).
+   Bu marshrutda kontur qora siyoh bo'ladi. */
+.screen :focus-visible {
+  outline-color: var(--ink);
+}
+
+.screen {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(16px, env(safe-area-inset-top)) 20px max(14px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Nuqtali fon — sof sariq tekislikka "qog'oz" fakturasini beradi.
+   Alohida qatlam: `z-index: 0` bilan kontent ostida qoladi. */
+.dots {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.09) 1.4px, transparent 1.4px);
+  background-size: 16px 16px;
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ── Tepa qator ───────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Belgining rombllari oqdan tealga o'tuvchi gradient — u faqat OQ fonda
+   to'g'ri ko'rinadi. Shu sabab sariq fonda ham oq plita ustida turadi
+   (`components/Logo.tsx` dagi izohga qarang). */
+.mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+
+.tag {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 7px 11px;
+  border-radius: 999px;
+}
+
+/* ── O'rta blok ───────────────────────────────────────────────────────── */
+
+.mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* Qator uzilishini kod hal qiladi (`titleLines`), shuning uchun har bir
+   qator alohida `span` — brauzer sarlavhani o'zicha bo'lmaydi. */
+.title {
+  font-size: clamp(2rem, 10.5vw, 2.875rem);
+  line-height: 0.96;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.title span {
+  display: block;
+}
+
+/* Narx stikeri — biroz qiyshaygan oq qog'oz, qattiq soya bilan. Sahifadagi
+   yagona qiyshiq element: ko'z aynan shu yerga tushadi. */
+.sticker {
+  display: inline-block;
+  transform: rotate(-2.2deg);
+  margin-top: 14px;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  padding: 12px 18px;
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.sNum {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.sLab {
+  font-size: 0.78125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.sub {
+  margin-top: 20px;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  font-weight: 500;
+  max-width: 20em;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pill {
+  font-size: 0.78125rem;
+  font-weight: 700;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 7px 13px;
+}
+
+/* ── Pastki harakat zonasi ────────────────────────────────────────────── */
+
+.cta {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 5dvh;
+}
+
+/* Sakrayotgan strelka — bitta ekranli slaydda skroll yo'q, shuning uchun
+   uning yagona vazifasi ko'zni tugmaga tushirish. */
+.arrow {
+  display: grid;
+  place-items: center;
+  margin-bottom: 6px;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+/* Barmoq zonasi: 60px — Apple/Google tavsiyasidan (44/48px) ancha katta,
+   chunki reklama trafigi shoshib bosadi. */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 20px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 14px;
+  border: 3px solid var(--ink);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.28);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+/* Bosilganda tugma soyasining ichiga "cho'kadi" — fizik tugma his-tuyg'usi */
+.btn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
+}
+
+.primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.ghost {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.note {
+  text-align: center;
+  font-size: 0.78125rem;
+  line-height: 1.45;
+  /* 700 — chunki Inter faqat 400/500/700/800 og'irliklarda yuklanadi;
+     600 so'ralsa brauzer baribir 700 ni tanlaydi, yaxshisi ochiq yozilsin */
+  font-weight: 700;
+  color: var(--dim);
+}
+
+/* Katta ekranda slayd baribir bitta ustun bo'lib qoladi — kadr mobil
+   reklama uchun terilgan, uni kengaytirish kompozitsiyani buzadi.
+   Faqat havo va kegl biroz kattalashadi. */
+@media (min-width: 720px) {
+  .screen {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .wrap {
+    max-width: 480px;
+  }
+
+  .cta {
+    padding-bottom: 8dvh;
+  }
+}
+
+/* Past bo'yli ekranlar (iPhone SE, brauzer paneli ochiq holat) — slayd
+   baribir BITTA ekranga sig'ishi shart, aks holda «skroll yo'q» va'dasi
+   buziladi. Bezak birinchi qisqaradi: strelka yo'qoladi, havo va kegl
+   toraytiriladi; tugma 54px da qoladi (Apple minimali 44px dan katta). */
+@media (max-height: 700px) {
+  .mid {
+    padding: 10px 0;
+  }
+
+  .title {
+    font-size: clamp(1.75rem, 9vw, 2.4rem);
+  }
+
+  .sticker {
+    margin-top: 10px;
+    padding: 9px 14px;
+  }
+
+  .sNum {
+    font-size: 2.1rem;
+  }
+
+  .sub {
+    margin-top: 14px;
+    font-size: 1rem;
+  }
+
+  .row {
+    margin-top: 14px;
+  }
+
+  .arrow {
+    display: none;
+  }
+
+  .cta {
+    gap: 10px;
+    padding-bottom: 8px;
+  }
+
+  .btn {
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrow {
+    animation: none;
+  }
+}

@@ -39,14 +39,13 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   // Busiz iOS'da env(safe-area-inset-*) doim 0 — .screen padding'idagi
-  // max() zaxiralari o'lik kod bo'lib, sariq fon notch ostiga cho'zilmaydi
+  // max() zaxiralari o'lik kod bo'lib, slayd foni notch ostiga cho'zilmaydi
   viewportFit: 'cover',
   /**
-   * Bitta ko'rinish — sariq. Slayd sof sariq fonda yashaydi, qora siyoh
-   * aynan shunda kuchli chiqadi. Mobil brauzer chrome'i ham shu rangga
-   * bo'yaladi, aks holda sahifa tepasida begona chiziq qolardi.
+   * Bosh sahifa — oq «Milliy» slayd, brauzer chrome'i ham oq bo'yaladi.
+   * Sariq `/2` va to'q admin o'z viewport'larida buni bekor qiladi.
    */
-  themeColor: '#ffd400',
+  themeColor: '#ffffff',
   colorScheme: 'light',
 };
 
