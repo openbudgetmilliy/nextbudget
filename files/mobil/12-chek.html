@@ -135,12 +135,14 @@ ul { padding: 0; list-style: none; }
 .v12 .rRow b { font-weight: 500; }
 
 /* Jami + shtamp: shtamp raqamning ustiga qiyshiq tushadi — haqiqiy muhr kabi */
-.v12 .rSum { position: relative; display: flex; align-items: baseline;
-  justify-content: space-between; gap: 10px; padding: 2px 0; }
-.v12 .rSumL { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
-.v12 .rSumV { font-size: 27px; font-weight: 700; letter-spacing: -0.02em; }
+.v12 .rSum { position: relative; padding: 2px 0 4px; }
+.v12 .rSumL { display: block; font-size: 12px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--dim); }
+.v12 .rSumV { display: block; margin-top: 3px; font-size: 30px; font-weight: 700;
+  letter-spacing: -0.025em; }
 .v12 .rSumV i { font-style: normal; font-size: 13px; font-weight: 400; color: var(--dim); }
-.v12 .rStamp { position: absolute; right: -4px; top: -16px; transform: rotate(-11deg);
+/* Muhr bo'sh joyga bosiladi — raqamning ustiga emas, uning yoniga */
+.v12 .rStamp { position: absolute; right: -2px; top: 4px; transform: rotate(-11deg);
   border: 2.5px double var(--red); color: var(--red); border-radius: 5px;
   padding: 5px 9px; font-size: 12px; font-weight: 700; letter-spacing: .16em;
   opacity: .82; background: rgba(255,253,247,.6); }

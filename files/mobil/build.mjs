@@ -34,6 +34,11 @@ const VARIANTS = [
   { file: '9-fintech.html',   n: '09', name: 'Fintech',    note: 'Bank ilovasi tili: «to‘lov tushdi» bildirishnomasi maketi.' },
   { file: '10-gradient.html', n: '10', name: 'Gradient',   note: 'Quyosh botishi gradienti — Instagram stories uslubi.' },
   { file: '11-moviy.html',    n: '11', name: 'Moviy',      note: '10-variantning ko‘k-oq talqini — logotip ranglarida.' },
+  { file: '12-chek.html',     n: '12', name: 'Chek',       note: 'Butun ekran — kassa kvitansiyasi. Va’da emas, to‘lovning isboti.' },
+  { file: '13-suhbat.html',   n: '13', name: 'Suhbat',     note: 'Bot bilan yozishma: bosgandan keyin nima bo‘lishi darhol ko‘rinadi.' },
+  { file: '14-karta.html',    n: '14', name: 'Karta',      note: 'Mukofot buyum sifatida: yorug‘likdagi karta va tushayotgan pul.' },
+  { file: '15-hisob.html',    n: '15', name: 'Hisob',      note: 'Yagona interaktiv ekran — nechta ovoz, shuncha summa. JavaScript’siz.' },
+  { file: '16-qolyozma.html', n: '16', name: 'Qo‘lyozma',  note: 'Katak daftar, ruchka va skotch. Reklamaga eng kam o‘xshaydigan kadr.' },
 ];
 
 const cut = (src, tag) => {
@@ -51,7 +56,7 @@ for (const v of VARIANTS) {
 const FONTS =
   '<link rel="preconnect" href="https://fonts.googleapis.com" />\n' +
   '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />\n' +
-  '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />';
+  '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />';
 
 /* Qobiq — ataylab jim: butun rangni variantlarning o'zi olib chiqadi.
    To'q neytral fon oq variantni ham, to'q variantni ham bir xil halol
@@ -116,11 +121,14 @@ ${parts.map((p) => p.style.replace(/<\/?style>/g, '').trim()).join('\n\n')}
 <div class="sh">
   <header class="sh__top">
     <p class="sh__eyebrow">MilliyJamoasi · mobil landing</p>
-    <h1 class="sh__h">Instagram trafigi uchun o‘n bitta ekran</h1>
-    <p class="sh__p">Har bir variant — bitta to‘liq telefon ekrani. Tuzilishi beshalasida bir xil:
-      sarlavha, 20 000 so‘m urg‘usi, so‘ng «Ovoz berish» va «Pulni olish» tugmalari ekranning
-      pastki-o‘rta qismida. Farq faqat uslubda.</p>
-    <p class="sh__hint">Pastga suring · 11 ta variant</p>
+    <h1 class="sh__h">Instagram trafigi uchun o‘n olti ta ekran</h1>
+    <p class="sh__p"><b>01–11</b> — bitta skelet, o‘n bitta uslub: sarlavha, 20 000 so‘m urg‘usi,
+      so‘ng «Ovoz berish» va «Pulni olish» tugmalari ekranning pastki-o‘rta qismida.
+      Farq faqat uslubda.<br />
+      <b>12–16</b> — boshqacha yondashuv: bu yerda uslub emas, ekranning o‘zi boshqacha quriladi.
+      Chek, suhbat, buyum, hisoblagich, qo‘lyozma — har biri bitta va’dani boshqa yo‘l bilan
+      isbotlaydi. Taklif esa beshalasida bir xil: 20 000 so‘m, bitta ovoz.</p>
+    <p class="sh__hint">Pastga suring · 16 ta variant</p>
   </header>
 
 ${shell}
@@ -173,8 +181,9 @@ figcaption small { display: block; margin-top: 4px; font-size: 12.5px; line-heig
 <body class="sh">
   <header class="sh__top">
     <p class="sh__eyebrow">MilliyJamoasi · mobil landing</p>
-    <h1 class="sh__h">Instagram trafigi uchun o‘n bitta ekran</h1>
-    <p class="sh__p">390×844 (iPhone 14/15) kadrda. Yonma-yon taqqoslash uchun o‘ngga suring.
+    <h1 class="sh__h">Instagram trafigi uchun o‘n olti ta ekran</h1>
+    <p class="sh__p">390×844 (iPhone 14/15) kadrda. 01–11 — bitta skeletning uslub variantlari,
+      12–16 — butunlay boshqacha yondashuvlar. Yonma-yon taqqoslash uchun o‘ngga suring.
       Bitta variantni to‘liq ko‘rish uchun uning faylini alohida oching.</p>
     <p class="sh__hint">HTTP orqali oching: npx serve files/mobil</p>
   </header>

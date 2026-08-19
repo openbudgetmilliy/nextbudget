@@ -1,0 +1,327 @@
+/* ==========================================================================
+   `/5` — «Fintech»: bitta ekranli bank-ilova slaydi.
+
+   Manba: files/mobil/9-fintech.html (mobil variantlar to'plamidagi 9-si).
+   Kulrang fon (#eef1f6), oq kartochkalar, moviy urg'u, «to'lov tushdi»
+   bildirishnomasi maketi. Skelet boshqa kadrlar bilan bir xil, ranglar
+   modulga muhrlangan.
+
+   Kontrast: xira matn #5d6673 (5.3:1 kulrangda), yashil summa #0c8a52
+   19px/800 da (WCAG katta qalin matn, 4.4:1 ≥ 3:1), tugma oq/#1a6df0
+   19px da 4.68:1 — hammasi o'z chegarasidan o'tadi.
+   ========================================================================== */
+
+.screen {
+  --bg: #eef1f6;
+  --card: #fff;
+  --ink: #101623;
+  --dim: #5d6673;
+  --az: #1a6df0;
+  --az-d: #1257c8;
+  --ok: #0c8a52;
+  --line: #e1e6ee;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(16px, env(safe-area-inset-top)) 20px max(14px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ── Tepa qator ───────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.safe {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dim);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 12px;
+}
+
+.safe svg {
+  color: var(--ok);
+}
+
+/* ── O'rta qism ───────────────────────────────────────────────────────── */
+
+.mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* Logo sarlavha oldida — oq kartochka-plitada, kulrang fondan ajralib turadi */
+.mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 26px rgba(16, 22, 35, 0.07);
+}
+
+/* Qator uzilishini kod hal qiladi (`titleLines`) — har qator alohida span */
+.title {
+  font-size: clamp(1.9375rem, 9.2vw, 2.375rem);
+  line-height: 1.16;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.title span {
+  display: block;
+}
+
+/* Oxirgi qator — moviy urg'u (mukofot qatori) */
+.hl {
+  color: var(--az-d);
+}
+
+.sub {
+  margin-top: 12px;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--dim);
+  max-width: 22em;
+}
+
+/* ── Bildirishnoma maketi ─────────────────────────────────────────────── */
+
+.stack {
+  align-self: stretch;
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.notif {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 16px;
+  box-shadow: 0 10px 26px rgba(16, 22, 35, 0.07);
+}
+
+.nIco {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.nVote {
+  background: rgba(26, 109, 240, 0.12);
+  color: var(--az-d);
+}
+
+.nIn {
+  background: rgba(12, 138, 82, 0.12);
+  color: var(--ok);
+}
+
+.nCol {
+  flex: 1;
+  min-width: 0;
+}
+
+.nT {
+  display: block;
+  font-size: 0.90625rem;
+  font-weight: 600;
+}
+
+.nS {
+  display: block;
+  font-size: 0.78125rem;
+  color: var(--dim);
+  margin-top: 2px;
+}
+
+/* 19px/800 — WCAG "katta qalin matn": #0c8a52 (4.4:1) 3:1 dan bemalol o'tadi */
+.nAmt {
+  font-size: 1.1875rem;
+  font-weight: 800;
+  color: var(--ok);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.nOk {
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: var(--az-d);
+}
+
+.total {
+  text-align: center;
+  font-size: 0.78125rem;
+  color: var(--dim);
+  margin-top: 4px;
+}
+
+.total b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ── Pastki harakat zonasi ────────────────────────────────────────────── */
+
+.cta {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 5dvh;
+}
+
+/* Barmoq zonasi: 60px. 19px — WCAG katta qalin matn: oq/#1a6df0 4.68:1 */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 20px;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-radius: 14px;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: scale(0.975);
+}
+
+.primary {
+  background: var(--az);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(26, 109, 240, 0.32);
+}
+
+.primary:active {
+  background: var(--az-d);
+}
+
+.ghost {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid #c9d1dd;
+}
+
+.ghost:active {
+  background: #f3f6fa;
+}
+
+.note {
+  text-align: center;
+  font-size: 0.78125rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--dim);
+}
+
+/* Katta ekranda bitta ustun qoladi — kadr mobil reklama uchun terilgan */
+@media (min-width: 720px) {
+  .screen {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .wrap {
+    max-width: 480px;
+  }
+
+  .cta {
+    padding-bottom: 8dvh;
+  }
+}
+
+/* Past bo'yli ekranlar — slayd baribir BITTA ekranga sig'ishi shart */
+@media (max-height: 700px) {
+  .mid {
+    padding: 10px 0;
+  }
+
+  .mark {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: clamp(1.625rem, 8vw, 2rem);
+  }
+
+  .sub {
+    margin-top: 8px;
+    font-size: 0.9375rem;
+  }
+
+  .stack {
+    margin-top: 14px;
+    gap: 8px;
+  }
+
+  .notif {
+    padding: 10px 14px;
+  }
+
+  .nIco {
+    width: 34px;
+    height: 34px;
+  }
+
+  .cta {
+    gap: 10px;
+    padding-bottom: 8px;
+  }
+
+  .btn {
+    min-height: 54px;
+  }
+}
