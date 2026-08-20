@@ -39,6 +39,7 @@ export const LANDING_PAGES: LandingPage[] = [
   { path: '/6', slug: 'p6', name: 'Poster', note: 'Tayyor kreativ: tangali banka' },
   { path: '/7', slug: 'p7', name: 'Telegram', note: 'Tayyor kreativ: qora-yashil bot' },
   { path: '/8', slug: 'p8', name: 'Taymer', note: "Yorug' ko'k-firuza, muddat taymeri bilan" },
+  { path: '/9', slug: 'p9', name: 'Banknota', note: "To'q fon, 100 ming so'mlik, qizil tugma" },
 ];
 
 export const LANDING_PATHS = LANDING_PAGES.map((p) => p.path);

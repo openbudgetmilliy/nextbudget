@@ -42,6 +42,7 @@ export const DEFAULT_SETTINGS = {
   pixel_p6: '',
   pixel_p7: '',
   pixel_p8: '',
+  pixel_p9: '',
 } as const;
 
 export type Settings = Record<keyof typeof DEFAULT_SETTINGS, string>;

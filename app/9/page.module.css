@@ -1,0 +1,214 @@
+/* ==========================================================================
+   `/9` — «Banknota»: to'q fon, 100 ming so'mlik, qizil tugma.
+
+   Manba — story-kreativ: qop-qora fon (#0c0e12), markazda banknota,
+   ko'k urg'uli qalin sarlavha, pastda qizil to'liq enli tugma va uning
+   ortida qizil nur. Skelet boshqa kadrlar bilan bir xil (bitta ekran).
+
+   Kontrast: oq matn 17:1, ko'k urg'u #4d9fff ~7:1, xira matn #98a1ad ~6:1,
+   tugmada oq matn #e03a2c ustida ~4.6:1 (20px/800 — katta qalin matn).
+   ========================================================================== */
+
+.screen {
+  --ink: #f2f5f9;
+  --dim: #98a1ad;
+  --blue: #4d9fff;
+  --red: #e03a2c;
+  --red-d: #c22f23;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(16px, env(safe-area-inset-top)) 20px max(14px, env(safe-area-inset-bottom));
+  background: #0c0e12;
+  color: var(--ink);
+  text-align: center;
+}
+
+.screen :focus-visible {
+  outline-color: var(--blue);
+}
+
+/* Pastdagi qizil nur — kreativdagi tugma atrofidagi yog'du */
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(60% 30% at 50% 96%, rgba(224, 58, 44, 0.38), transparent 70%);
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ── Tepa qator: belgi + nom, markazda ────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 6px;
+}
+
+/* Belgining to'q xaritasi qora fonda yo'qolmasin — oq plita */
+.mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #fff;
+  display: grid;
+  place-items: center;
+  flex: none;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+.brand {
+  font-size: 1.1875rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* ── O'rta qism ───────────────────────────────────────────────────────── */
+
+.mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.note100 {
+  width: min(330px, 86%);
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55);
+}
+
+.title {
+  margin-top: 30px;
+  font-size: clamp(1.9375rem, 9vw, 2.375rem);
+  line-height: 1.22;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.hl {
+  color: var(--blue);
+  font-weight: 800;
+}
+
+.sub {
+  margin-top: 14px;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--dim);
+  max-width: 21em;
+}
+
+/* ── Pastki harakat zonasi ────────────────────────────────────────────── */
+
+.cta {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding-bottom: 5dvh;
+}
+
+/* Katta qizil tugma — kreativdagi kabi to'liq enli, kuchli nur bilan */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  width: 100%;
+  min-height: 64px;
+  padding: 0 24px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+  background: var(--red);
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(224, 58, 44, 0.45);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: scale(0.975);
+  background: var(--red-d);
+}
+
+.arrow {
+  font-weight: 700;
+  transition: transform 0.15s ease;
+}
+
+.btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+.note {
+  font-size: 0.78125rem;
+  line-height: 1.45;
+  color: #6e7681;
+}
+
+/* Katta ekranda bitta ustun qoladi — kadr mobil reklama uchun terilgan */
+@media (min-width: 720px) {
+  .screen {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .wrap {
+    max-width: 480px;
+  }
+
+  .cta {
+    padding-bottom: 8dvh;
+  }
+}
+
+/* Past bo'yli ekranlar — slayd baribir BITTA ekranga sig'ishi shart */
+@media (max-height: 700px) {
+  .mid {
+    padding: 10px 0;
+  }
+
+  .note100 {
+    width: min(270px, 76%);
+  }
+
+  .title {
+    margin-top: 20px;
+    font-size: clamp(1.625rem, 8vw, 2rem);
+  }
+
+  .sub {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+  }
+
+  .cta {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .btn {
+    min-height: 56px;
+  }
+}
