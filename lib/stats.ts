@@ -306,3 +306,94 @@ export async function pageButtons(hours = 168, limit = 40): Promise<PageButtonRo
     LIMIT ${limit}::int
   `;
 }
+
+/**
+ * BITTA kadr kesimi — /admin/kadr/[slug] sahifasi uchun.
+ *
+ * `landedAt` ham, `Event.page` ham xom yo'l sifatida yoziladi, shuning
+ * uchun taqqoslash `rtrim(..., '/')` normalizatsiyasi bilan: `/7` va `/7/`
+ * bitta kadr. Ildiz uchun rtrim bo'sh satr beradi — ${'$'}{path} ham xuddi
+ * shu ko'rinishga keltirilib solishtiriladi.
+ */
+const norm = (path: string) => (path === '/' ? '' : path.replace(/\/+$/, ''));
+
+export type PageOverview = {
+  sessions: number;
+  conv: number;
+  clicks: number;
+  clickUsers: number;
+  crPct: number;
+};
+
+export async function pageOverview(path: string, hours = 168): Promise<PageOverview> {
+  const target = norm(path);
+
+  const [se] = await prisma.$queryRaw<{ sessions: number; conv: number }[]>`
+    SELECT count(*)::int                          AS sessions,
+           count(*) FILTER (WHERE converted)::int AS conv
+    FROM "Session"
+    WHERE "createdAt" >= now() - (${'$'}{hours}::int * interval '1 hour')
+      AND rtrim(COALESCE("landedAt", ''), '/') = ${'$'}{target}
+  `;
+
+  const [cl] = await prisma.$queryRaw<{ clicks: number; users: number }[]>`
+    SELECT count(*)::int                    AS clicks,
+           count(DISTINCT "sessionId")::int AS users
+    FROM "Event"
+    WHERE type = 'cta' AND ts >= now() - (${'$'}{hours}::int * interval '1 hour')
+      AND rtrim(COALESCE(page, ''), '/') = ${'$'}{target}
+  `;
+
+  const sessions = se?.sessions ?? 0;
+  const conv = se?.conv ?? 0;
+  return {
+    sessions,
+    conv,
+    clicks: cl?.clicks ?? 0,
+    clickUsers: cl?.users ?? 0,
+    crPct: sessions ? Math.round((10000 * conv) / sessions) / 100 : 0,
+  };
+}
+
+/** Kadr bo'yicha soatlik trafik — TrafficChart bilan bir shaklda */
+export async function pageHourly(path: string, hours = 168): Promise<HourRow[]> {
+  const target = norm(path);
+  return prisma.$queryRaw<HourRow[]>`
+    SELECT to_char(date_trunc('hour', "createdAt"), 'DD.MM HH24:00') AS h,
+           count(*)::int                                             AS sessions,
+           count(*) FILTER (WHERE converted)::int                    AS conv
+    FROM "Session"
+    WHERE "createdAt" >= now() - (${'$'}{hours}::int * interval '1 hour')
+      AND rtrim(COALESCE("landedAt", ''), '/') = ${'$'}{target}
+    GROUP BY date_trunc('hour', "createdAt")
+    ORDER BY date_trunc('hour', "createdAt")
+  `;
+}
+
+/** Kadr ichidagi tugmalar kesimi */
+export async function pageButtonsOf(path: string, hours = 168): Promise<ButtonRow[]> {
+  const target = norm(path);
+  return prisma.$queryRaw<ButtonRow[]>`
+    SELECT "elId", "elText",
+           count(*)::int                    AS clicks,
+           count(DISTINCT "sessionId")::int AS users
+    FROM "Event"
+    WHERE type = 'cta' AND ts >= now() - (${'$'}{hours}::int * interval '1 hour')
+      AND rtrim(COALESCE(page, ''), '/') = ${'$'}{target}
+    GROUP BY "elId", "elText"
+    ORDER BY clicks DESC
+  `;
+}
+
+/** Kadrning oxirgi CTA bosishlari */
+export async function pageRecentCta(path: string, limit = 12): Promise<RecentCta[]> {
+  const target = norm(path);
+  return prisma.$queryRaw<RecentCta[]>`
+    SELECT e.ts, e."elId", e."elText", e."sessionId", e.page, s."utmContent", s.device
+    FROM "Event" e
+    JOIN "Session" s ON s.id = e."sessionId"
+    WHERE e.type = 'cta' AND rtrim(COALESCE(e.page, ''), '/') = ${'$'}{target}
+    ORDER BY e.ts DESC
+    LIMIT ${'$'}{limit}::int
+  `;
+}

@@ -7,11 +7,15 @@ export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Sozlamalar' };
 
 export default async function SettingsPage() {
+  // Formada faqat shu ikkisi — qolgan sozlamalar bazada qoladi, tegilmaydi
+  const EDITABLE = ['price_one_vote', 'bot_username'] as const;
+
   let values: Record<string, string>;
   try {
     const rows = await prisma.setting.findMany();
-    values = { ...DEFAULT_SETTINGS };
-    for (const r of rows) if (r.key in values) values[r.key] = r.value;
+    const all: Record<string, string> = { ...DEFAULT_SETTINGS };
+    for (const r of rows) if (r.key in all) all[r.key] = r.value;
+    values = Object.fromEntries(EDITABLE.map((k) => [k, all[k]]));
   } catch (err) {
     return (
       <>
@@ -24,7 +28,7 @@ export default async function SettingsPage() {
   return (
     <>
       <h1 className="a-h1">Sozlamalar</h1>
-      <p className="a-sub">Landing matnlari va bot manzili — kod tegmasdan o’zgaradi</p>
+      <p className="a-sub">Narx va bot manzili — saqlangach sakkizala kadrga birdek tushadi</p>
       <SettingsForm values={values} />
     </>
   );

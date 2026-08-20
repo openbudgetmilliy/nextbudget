@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { LANDING_PAGES, pageOf } from '@/lib/pages';
 import type { PageRow } from '@/lib/stats';
 
@@ -12,7 +13,7 @@ import type { PageRow } from '@/lib/stats';
  * «bu kadrga reklama umuman kelmayapti» degani, aynan shuni ko'rish kerak.
  * Faqat bazadagi qatorlarni chizsak, o'lik kadr jadvaldan yo'qolib ketardi.
  */
-export type MergedRow = PageRow & { name: string; note: string; known: boolean };
+export type MergedRow = PageRow & { name: string; note: string; known: boolean; slug?: string };
 
 export function mergePageRows(rows: PageRow[]): MergedRow[] {
   const byPath = new Map(rows.map((r) => [r.page, r]));
@@ -30,6 +31,7 @@ export function mergePageRows(rows: PageRow[]): MergedRow[] {
       name: p.name,
       note: p.note,
       known: true,
+      slug: p.slug,
     };
   });
 
@@ -73,7 +75,14 @@ export default function PageStats({ rows, hours }: { rows: MergedRow[]; hours: n
             {rows.map((r) => (
               <tr key={r.page}>
                 <td style={{ fontWeight: 600 }}>
-                  {r.name}
+                  {/* Qator nomi — kadrning alohida analitika sahifasiga */}
+                  {r.slug ? (
+                    <Link href={`/admin/kadr/${r.slug}`} style={{ textDecoration: 'none' }}>
+                      {r.name} →
+                    </Link>
+                  ) : (
+                    r.name
+                  )}
                   <span className="muted" style={{ display: 'block', fontSize: 12 }}>
                     {r.note}
                   </span>

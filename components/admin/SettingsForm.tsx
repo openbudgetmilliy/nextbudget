@@ -4,22 +4,16 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**
- * Bu ikki maydon YETTALA kadrga birdek tegadi — shuning uchun yorliqda ham
- * shu aytilgan. Ilgari `/6` va `/7` da narx kodda qotib turgan edi.
+ * ATAYIN faqat ikki maydon: narx va bot manzili — ikkalasi SAKKIZALA
+ * kadrga birdek tegadi. Qolgan matn sozlamalari (sarlavha, tavsif, tugma
+ * matni va h.k.) bazada turaveradi va sahifalar ularni o'qiyveradi, lekin
+ * formadan olib tashlangan: kunlik ishda faqat shu ikkisi o'zgaradi,
+ * qolganini tasodifan buzib qo'yish xavfi bor edi.
  */
 const LABELS: Record<string, string> = {
-  bot_username: 'Bot havolasi yoki username — 7 ta sahifada ham o‘zgaradi',
-  price_one_vote: '1 ovoz narxi — 7 ta sahifada ham o‘zgaradi ({narx})',
-  hero_badge: 'Yuqori yozuv (sarlavha ustida)',
-  hero_title: 'Sarlavha',
-  hero_sub: 'Tavsif (sarlavha ostida)',
-  cta_primary: 'Tugma matni',
-  tg_channel: 'Telegram kanal (@ siz)',
-  support_username: 'Yordam akkaunti (@ siz)',
-  reviews_count: 'Mijozlar soni',
+  price_one_vote: '1 ovoz narxi — sakkizala sahifada o‘zgaradi',
+  bot_username: 'Bot username — tugma bosilganda shu botga o‘tadi',
 };
-
-const LONG = new Set(['hero_sub', 'hero_title']);
 
 export default function SettingsForm({ values }: { values: Record<string, string> }) {
   const router = useRouter();
@@ -59,7 +53,7 @@ export default function SettingsForm({ values }: { values: Record<string, string
   return (
     <div className="a-panel">
       <div className="a-panel-h">
-        <span>Sayt matnlari</span>
+        <span>Narx va bot</span>
         <button className="a-btn p sm" disabled={!dirty || busy} onClick={save}>
           {busy ? 'Saqlanmoqda…' : 'Saqlash'}
         </button>
@@ -77,33 +71,20 @@ export default function SettingsForm({ values }: { values: Record<string, string
               <label className="a-lbl" htmlFor={k}>
                 {LABELS[k]} <code style={{ color: '#3f4a5c' }}>{k}</code>
               </label>
-              {LONG.has(k) ? (
-                <textarea
-                  id={k}
-                  className="a-in"
-                  rows={3}
-                  style={{ resize: 'vertical', lineHeight: 1.55 }}
-                  value={draft[k] ?? ''}
-                  disabled={busy}
-                  onChange={(e) => setDraft({ ...draft, [k]: e.target.value })}
-                />
-              ) : (
-                <input
-                  id={k}
-                  className="a-in"
-                  value={draft[k] ?? ''}
-                  disabled={busy}
-                  onChange={(e) => setDraft({ ...draft, [k]: e.target.value })}
-                />
-              )}
+              <input
+                id={k}
+                className="a-in"
+                value={draft[k] ?? ''}
+                disabled={busy}
+                onChange={(e) => setDraft({ ...draft, [k]: e.target.value })}
+              />
             </div>
           ))}
         </div>
 
         <p style={{ fontSize: 12.5, color: '#59637a', marginTop: 16, lineHeight: 1.6 }}>
-          Saqlangach yettala kadr (<code>/</code>, <code>/2</code>…<code>/7</code>) qayta build
-          bo’ladi va Cloudflare keshi tozalanadi — o’zgarish ~5 sekundda ko’rinadi. Narx va bot
-          havolasi hamma sahifada bir vaqtda yangilanadi.
+          Saqlangach sakkizala kadr (<code>/</code>, <code>/2</code>…<code>/8</code>) qayta
+          build bo’ladi — o’zgarish bir necha sekundda hamma sahifada ko’rinadi.
           <br />
           Bot maydoniga <code>@Bot</code>, <code>Bot</code> yoki to’liq
           <code> https://t.me/Bot</code> — uchalasi ham ishlaydi.
