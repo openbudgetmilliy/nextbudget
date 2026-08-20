@@ -19,7 +19,7 @@ export default async function DashLayout({ children }: { children: React.ReactNo
         <div className="a-top-in">
           <span className="a-brand">
             <img className="a-mark" src="/logo-mark.webp" alt="" width={26} height={26} />
-            {SITE.brand}
+            <span className="a-domain">{SITE.domain}</span>
           </span>
           <AdminNav />
           <a

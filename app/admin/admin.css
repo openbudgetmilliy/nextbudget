@@ -50,10 +50,16 @@
 .a-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  gap: 10px;
   margin-right: auto;
+}
+
+.a-domain {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+  line-height: 1.1;
 }
 
 .a-nav {
@@ -660,7 +666,7 @@ table.a-t {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .a-brand {
-    font-size: 15px;
+  .a-domain {
+    font-size: 1.2rem;
   }
 }
