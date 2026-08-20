@@ -31,9 +31,16 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
 
   async headers() {
+    /**
+     * s-maxage=60 ATAYIN qisqa: CF edge'da HTML keshi yoqilgan (Cache Rule),
+     * lekin serverda purge tokeni yo'q — narx/bot/pixel o'zgarishi 60
+     * soniyadan oshiq kutmasligi kerak. stale-while-revalidate tufayli CF
+     * baribir deyarli hamma so'rovni keshdan beradi (fonda minutiga bir
+     * marta yangilab oladi) — origin yuki ~1 so'rov/daq/sahifa/PoP.
+     */
     const publicCache = {
       key: 'Cache-Control',
-      value: 'public, max-age=60, s-maxage=3600, stale-while-revalidate=86400',
+      value: 'public, max-age=60, s-maxage=60, stale-while-revalidate=86400',
     };
 
     return [
