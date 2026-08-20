@@ -7,7 +7,7 @@ import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
 import Logo from '@/components/Logo';
 
-import { getSettings } from '@/lib/data';
+import { getSettings, pagePixels } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
 import { botUsername, tgLink } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
@@ -166,7 +166,7 @@ export default async function ZamonaviyPage() {
       </div>
 
       <Tracker />
-      <MetaPixel ids={PAGE.pixels} />
+      <MetaPixel ids={pagePixels(s, PAGE.slug)} />
 
       {/* Fonda ishlaydigan Turnstile — sahifani to'smaydi, odatda ko'rinmaydi */}
       <TurnstileGuard siteKey={GATE_ON ? env.TURNSTILE_SITE_KEY : ''} />

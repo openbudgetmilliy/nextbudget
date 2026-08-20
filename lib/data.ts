@@ -27,6 +27,21 @@ export const DEFAULT_SETTINGS = {
   tg_channel: 'openbudget_uz',
   support_username: 'openbudget_help',
   reviews_count: '8 000+',
+
+  /**
+   * Kadr pixellari — Meta Pixel ID, har kadrga alohida (reklama akkauntiga
+   * qarab). Vergul bilan bir nechtasi ham bo'ladi. Bo'sh — kadr pixelsiz.
+   * Admin /admin/settings dan ulaydi; saqlangach refreshLanding hamma
+   * kadrni qayta build qiladi va pixel bir necha soniyada yonadi.
+   */
+  pixel_p1: '',
+  pixel_p2: '',
+  pixel_p3: '',
+  pixel_p4: '',
+  pixel_p5: '',
+  pixel_p6: '',
+  pixel_p7: '',
+  pixel_p8: '',
 } as const;
 
 export type Settings = Record<keyof typeof DEFAULT_SETTINGS, string>;
@@ -43,4 +58,13 @@ export async function getSettings(): Promise<Settings> {
     console.warn('[build] sozlamalar DB dan olinmadi:', (err as Error).message);
   }
   return out;
+}
+
+/** Sozlamadagi kadr pixellari — `MetaPixel` uchun massiv ko'rinishida */
+export function pagePixels(s: Settings, slug: string): string[] {
+  const raw = (s as Record<string, string>)[`pixel_${slug}`] ?? '';
+  return raw
+    .split(',')
+    .map((x) => x.trim())
+    .filter(Boolean);
 }
