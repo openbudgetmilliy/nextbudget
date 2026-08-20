@@ -43,9 +43,10 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
  *
  * Barcha landing kadrlar yangilanadi: `/` («Milliy») va muqobil reklama
  * kadrlari — `/2` «Energetik», `/3` «Gradient», `/4` «Zamonaviy»,
- * `/5` «Fintech», `/6` «Poster». CF'da shular va sitemap purge qilinadi.
+ * `/5` «Fintech», `/6` «Poster», `/7` «Telegram». CF'da shular va sitemap
+ * purge qilinadi.
  */
-const LANDING_PATHS = ['/', '/2', '/3', '/4', '/5', '/6'] as const;
+const LANDING_PATHS = ['/', '/2', '/3', '/4', '/5', '/6', '/7'] as const;
 
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
   for (const p of LANDING_PATHS) revalidatePath(p);

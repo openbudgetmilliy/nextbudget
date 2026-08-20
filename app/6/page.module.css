@@ -88,14 +88,17 @@
 }
 
 .sNum {
+  /* Boshqa shrift — stiker sahifadagi yagona Space Grotesk elementi */
+  font-family: var(--f-sg), var(--f-b);
   font-size: clamp(2rem, 9.5vw, 2.5rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   letter-spacing: -0.035em;
   color: var(--blue);
 }
 
 .sLab {
+  font-family: var(--f-sg), var(--f-b);
   margin-top: 4px;
   font-size: 0.75rem;
   font-weight: 700;
