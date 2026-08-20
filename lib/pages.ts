@@ -33,9 +33,9 @@ export type LandingPage = {
 export const LANDING_PAGES: LandingPage[] = [
   { path: '/', slug: 'p1', name: 'Milliy', note: 'Oq-moviy, bayroq lentasi' },
   { path: '/2', slug: 'p2', name: 'Energetik', note: 'Sariq, yuqori kontrast' },
-  { path: '/3', slug: 'p3', name: 'Gradient', note: 'Quyosh botishi, stories uslubi' },
+  { path: '/3', slug: 'p3', name: 'Gradient', note: 'Yashil-ko‘k stories, hamyon + 10k banknota' },
   { path: '/4', slug: 'p4', name: 'Zamonaviy', note: 'Qora-oq, minimal' },
-  { path: '/5', slug: 'p5', name: 'Fintech', note: 'Bank ilovasi, push-xabar' },
+  { path: '/5', slug: 'p5', name: 'Fintech', note: 'Telegram chat screenshot, to\'lov kvitansiyasi' },
   { path: '/6', slug: 'p6', name: 'Poster', note: 'Tayyor kreativ: tangali banka' },
   { path: '/7', slug: 'p7', name: 'Telegram', note: 'Tayyor kreativ: qora-yashil bot' },
   { path: '/8', slug: 'p8', name: 'Taymer', note: "Yorug' ko'k-firuza, muddat taymeri bilan" },

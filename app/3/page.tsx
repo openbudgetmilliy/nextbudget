@@ -16,15 +16,13 @@ import { env, GATE_ON } from '@/lib/env';
 import c from './page.module.css';
 
 /**
- * `/3` — bitta ekranli «Gradient» slayd (quyosh botishi, stories uslubi).
+ * `/3` — bitta ekranli «Gradient» slayd (stories uslubi).
  *
- * Uslub manbasi: `files/mobil/10-gradient.html`. To'liq ekranli issiq
- * gradient — Instagram stories'ning o'z tili, lentada reklama emas,
- * "kontent" bo'lib ko'rinadi. Oq stiker ichidagi gradient raqam — yagona
- * kompozitsion urg'u. `/` («Milliy») va `/2` («Energetik») bilan skelet
- * bir xil, matn ham o'sha admin sozlamalaridan keladi.
+ * Yashil–ko‘k gradient fon, chapda matn, o‘rta-o‘ngda hamyondan
+ * chiqib turgan 10 000 so‘mlik banknotalar maketi. Manba aslida
+ * `files/mobil/10-gradient.html`; vizual yangilandi.
  *
- * Reklama kampaniyalarida muqobil kadr — shu sabab `/2` kabi index'lanmaydi.
+ * Reklama kampaniyalarida muqobil kadr — `/2` kabi index'lanmaydi.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
@@ -38,14 +36,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-/** Ildiz oq — bu marshrut brauzer chrome'ini gradient boshiga bo'yaydi */
+/** Ildiz — yashil/ko‘k gradient, brauzer chrome shu rangga bo‘yaladi */
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#ea5410',
+  themeColor: '#0d9488',
   colorScheme: 'light',
 };
+
+/** Hamyondan chiqib turgan banknotalar — faqat dekor, 10 000 so'm */
+const WALLET_NOTE_COUNT = 4;
 
 /**
  * Sarlavha shrifti FAQAT shu marshrutda yuklanadi: root layout'ga qo'shilsa
@@ -79,8 +80,25 @@ export default async function GradientPage() {
     <div className={`${display.variable} ${c.screen}`}>
       {/* Global body foni oq («Milliy») — overscroll'da gradient ortida oq
           yaltirab qolmasin. Body'ga ham xuddi shu gradient beriladi. */}
-      <style>{'body{background:linear-gradient(165deg,#ea5410 0%,#d22a5c 48%,#8e1d92 112%)}'}</style>
+      <style>
+        {'body{background:linear-gradient(165deg,#0d9488 0%,#059669 42%,#0284c7 112%)}'}
+      </style>
       <div className={c.glow} aria-hidden />
+
+      {/* O‘rta-o‘ng: hamyondan 4 ta 10 000 banknotaning yuqori o‘ng burchagi */}
+      <div className={c.walletScene} aria-hidden>
+        <div className={c.walletNotes}>
+          {Array.from({ length: WALLET_NOTE_COUNT }, (_, i) => (
+            <span key={i} className={c.walletNote}>
+              <span className={c.walletNoteAmt}>10 000</span>
+              <span className={c.walletNoteSub}>so‘m</span>
+            </span>
+          ))}
+        </div>
+        <div className={c.walletBody}>
+          <span className={c.walletFlap} />
+        </div>
+      </div>
 
       <div className={c.wrap}>
         <header className={c.head}>

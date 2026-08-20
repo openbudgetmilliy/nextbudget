@@ -15,13 +15,13 @@ import { env, GATE_ON } from '@/lib/env';
 import c from './page.module.css';
 
 /**
- * `/5` — bitta ekranli «Fintech» slayd (bank ilovasi tili).
+ * `/5` — bitta ekranli «Fintech» slayd.
  *
- * Uslub manbasi: `files/mobil/9-fintech.html`. Kulrang fon, oq
- * kartochkalar, moviy urg'u — Payme/Click estetikasi. Markazda «to'lov
- * tushdi» bildirishnomasi maketi: natija so'z bilan emas, tanish
- * push-xabar ko'rinishida ko'rsatiladi. Logo — sarlavha oldida, oq
- * kartochka-plitada. Matn o'sha admin sozlamalaridan.
+ * Markazdagi blok — Telegram «Сообщение» chatidan olingan screenshot
+ * maketi: qorong'i suhbat oynasi, xabar pufakchalari va oxirida to'lov
+ * kvitansiyasi. Foydalanuvchi tugmani bosgach qayerga tushishini ko'radi.
+ * Manba: `files/mobil/13-suhbat.html` (suhbat), tashqi ramka —
+ * `files/mobil/9-fintech.html` (kulrang fon, moviy urg'u).
  *
  * Reklama kampaniyalarida muqobil kadr — `/2`–`/4` kabi index'lanmaydi.
  */
@@ -60,7 +60,12 @@ export default async function FintechPage() {
 
       <div className={c.wrap}>
         <header className={c.head}>
-          <span className={c.brand}>{SITE.brand}</span>
+          <div className={c.brand}>
+            <span className={c.mark}>
+              <Logo size={34} className="" />
+            </span>
+            {SITE.brand}
+          </div>
           <span className={c.safe}>
             <svg
               width="13"
@@ -80,11 +85,6 @@ export default async function FintechPage() {
         </header>
 
         <div className={c.mid}>
-          {/* Logo sarlavha oldida — oq kartochka-plitada */}
-          <span className={c.mark}>
-            <Logo size={34} className="" />
-          </span>
-
           <h1 className={c.title}>
             {lines.map((line, i) => (
               // Indeks kalitda: titleLines ikkita bir xil qator qaytarishi
@@ -97,55 +97,43 @@ export default async function FintechPage() {
 
           <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
 
-          {/* Bildirishnoma maketi — jarayon push-xabar tilida ko'rsatiladi */}
-          <div className={c.stack}>
-            <div className={c.notif}>
-              <span className={`${c.nIco} ${c.nVote}`} aria-hidden>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m20 6-11 11-5-5" />
-                </svg>
-              </span>
-              <span className={c.nCol}>
-                <span className={c.nT}>Ovoz tasdiqlandi</span>
-                <span className={c.nS}>{SITE.brand} · hozirgina</span>
-              </span>
-              <span className={c.nOk}>✓</span>
-            </div>
+          {/* Telegram chat screenshot — «Сообщение» tabidagi suhbat ko'rinishi */}
+          <div className={c.chatFrame} aria-hidden>
+            <div className={c.thread}>
+              <span className={c.day}>Bugun</span>
 
-            <div className={c.notif}>
-              <span className={`${c.nIco} ${c.nIn}`} aria-hidden>
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 5v14m0 0-6-6m6 6 6-6" />
-                </svg>
-              </span>
-              <span className={c.nCol}>
-                <span className={c.nT}>To‘lov tushdi</span>
-                <span className={c.nS}>Uzcard •• 8600 · 2 daqiqada</span>
-              </span>
-              <span className={`${c.nAmt} tnum`}>+{s.price_one_vote}</span>
-            </div>
+              <div className={`${c.msg} ${c.msgOut}`}>
+                Ovoz berdim
+                <span className={c.msgT}>14:30 &#10003;&#10003;</span>
+              </div>
 
-            <p className={c.total}>
-              Jami <b>{s.reviews_count}</b> ishtirokchiga to‘lab berildi
-            </p>
+              <div className={`${c.msg} ${c.msgIn}`}>
+                Ovozingiz qabul qilindi. To‘lov yuborilyapti&hellip;
+                <span className={c.msgT}>14:33</span>
+              </div>
+
+              <div className={c.pay}>
+                <span className={c.payIco} aria-hidden>
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m20 6-11 11-5-5" />
+                  </svg>
+                </span>
+                <span className={c.payCol}>
+                  <b>To‘lov o‘tkazildi</b>
+                  <small>Uzcard •• 8600 · hozirgina</small>
+                </span>
+                <span className={`${c.payAmt} tnum`}>+{s.price_one_vote}</span>
+              </div>
+            </div>
           </div>
         </div>
 

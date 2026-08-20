@@ -91,36 +91,38 @@ export default async function PosterPage() {
           foiz rasmning aynan shu joyiga tushadi (/7 dagi usul). */}
       <div className={c.price}>
         <div className={c.sticker}>
-          <p className={`${c.sNum} tnum`}>{s.price_one_vote} so‘m</p>
-          <p className={c.sLab}>har bir ovoz uchun</p>
+          <span className={`${c.sNum} tnum`}>{s.price_one_vote} so‘m</span>
+          <span className={c.sLab}>har bir ovoz uchun</span>
         </div>
       </div>
 
       <div className={c.wrap}>
         <div className={c.cta}>
-          <Timer
-            classes={{
-              box: c.tm,
-              caption: c.tmCap,
-              grid: c.tmGrid,
-              cell: c.tmCell,
-              num: `${c.tmNum} tnum`,
-              lab: c.tmLab,
-              over: c.tmOver,
-            }}
-          />
+          <div className={c.ctaDock}>
+            <Timer
+              classes={{
+                box: c.tm,
+                caption: c.tmCap,
+                grid: c.tmGrid,
+                cell: c.tmCell,
+                num: `${c.tmNum} tnum`,
+                lab: c.tmLab,
+                over: c.tmOver,
+              }}
+            />
 
-          <a
-            href={tg}
-            className={c.btn}
-            data-t="cta"
-            data-t-id="bot"
-            data-tg
-            rel="noopener"
-          >
-            <Telegram size={19} />
-            Botga o‘tish
-          </a>
+            <a
+              href={tg}
+              className={c.btn}
+              data-t="cta"
+              data-t-id="bot"
+              data-tg
+              rel="noopener"
+            >
+              <Telegram size={19} />
+              Botga o‘tish
+            </a>
+          </div>
         </div>
       </div>
 

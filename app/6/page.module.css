@@ -34,10 +34,11 @@
 
 .bg {
   position: absolute;
-  inset: 0;
+  inset: auto 0 0 0;
+  top: -4%;
   z-index: 0;
   width: 100%;
-  height: 100%;
+  height: 104%;
   object-fit: cover;
   object-position: center top;
 }
@@ -68,9 +69,7 @@
 
 /* ── Narx ─────────────────────────────────────────────────────────────── */
 
-/* «OPEN BUDJET BOSHLANDI» bloki 23%da tugaydi, banka 34%da boshlanadi —
-   stiker shu bo'sh yo'lakning o'rtasida (28.6%). Telefonlarda fon doim
-   balandlik bo'yicha o'lchanadi, foiz rasmga aniq mos tushadi. */
+/* Narx — chapda, alohida plitada, tugmadan boshqa rangda ajralib turadi */
 .price {
   position: absolute;
   z-index: 2;
@@ -79,8 +78,7 @@
   right: 0;
   transform: translateY(-50%);
   display: flex;
-  /* Gorizontal markazda — mobil kadrda eng barqaror joy */
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0 20px;
   pointer-events: none;
 }
@@ -89,38 +87,57 @@
 
 .cta {
   margin-top: auto;
-  display: grid;
-  justify-items: center;
-  padding-bottom: 4dvh;
+  align-self: stretch;
+  width: 100%;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
 }
 
-/* Narx — kartasiz, to'g'ridan-to'g'ri poster kulrangi ustida (fon shaffof,
-   ramkasiz). Bu joy rasmda bo'sh, shuning uchun plashka shart emas —
-   matn poster matnlari bilan bir tilda turadi. */
-.sticker {
+/* Tugma + taymer — bitta shisha plitada, poster fonidan ajralib turadi */
+.ctaDock {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
   background: transparent;
-  text-align: center;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Narx — vertikal stek + chap ko‘k chiziq (minimal, ramkasiz) */
+.sticker {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: 100%;
+  padding: 2px 0 2px 16px;
+  border-left: 5px solid #0c8a52;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
 }
 
 .sNum {
-  /* Boshqa shrift — stiker sahifadagi yagona Space Grotesk elementi */
   font-family: var(--f-sg), var(--f-b);
-  font-size: clamp(2rem, 9.5vw, 2.5rem);
-  font-weight: 700;
+  font-size: clamp(2rem, 9.8vw, 2.375rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
   line-height: 1;
-  letter-spacing: -0.035em;
-  color: var(--blue);
+  color: #0c8a52;
+  white-space: nowrap;
 }
 
 .sLab {
   font-family: var(--f-sg), var(--f-b);
-  margin-top: 4px;
-  font-size: 0.75rem;
+  font-size: 0.78125rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
-  /* Plashka yo'q — kulrang fonda o'qilsin deb --dim dan to'qroq */
+  line-height: 1.2;
   color: #44505c;
+  white-space: nowrap;
 }
 
 /* Barmoq zonasi: 60px, to'liq kenglik. 19px matn — WCAG katta qalin matn */
@@ -150,6 +167,8 @@
 /* Keng ekran: rasm butunicha ko'rinsin, yon bo'shliqlar poster kulrangi */
 @media (min-width: 720px) {
   .bg {
+    top: 0;
+    height: 100%;
     object-fit: contain;
   }
 
@@ -158,7 +177,7 @@
   }
 
   .cta {
-    padding-bottom: 6dvh;
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
   }
 }
 
@@ -168,9 +187,16 @@
     font-size: 1.75rem;
   }
 
-  .cta {
+  .sLab {
+    font-size: 0.6875rem;
+  }
+
+  .ctaDock {
     gap: 10px;
-    padding-bottom: 10px;
+  }
+
+  .cta {
+    padding-bottom: max(2px, env(safe-area-inset-bottom));
   }
 
   .btn {
@@ -184,14 +210,11 @@
   display: grid;
   gap: 7px;
   justify-items: center;
+  width: 100%;
 }
 
 .tmCap {
-  font-size: 0.78125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #44505c;
+  display: none;
 }
 
 .tmGrid {
@@ -204,11 +227,11 @@
 
 .tmCell {
   border-radius: 12px;
-  background: #fff;
-  border: 0;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   padding: 11px 2px 9px;
   text-align: center;
-  box-shadow: 0 6px 16px rgba(5, 25, 66, 0.12);
+  box-shadow: 0 4px 12px rgba(5, 25, 66, 0.08);
 }
 
 .tmNum {
@@ -239,10 +262,6 @@
 
 /* Past ekranda taymer ixchamlashadi — slayd sig'imi buzilmasin */
 @media (max-height: 700px) {
-  .tmCap {
-    display: none;
-  }
-
   .tmCell {
     padding: 7px 2px 6px;
   }

@@ -1,14 +1,10 @@
 /* ==========================================================================
-   `/5` — «Fintech»: bitta ekranli bank-ilova slaydi.
+   `/5` — «Fintech + Telegram chat»: bitta ekranli slayd.
 
-   Manba: files/mobil/9-fintech.html (mobil variantlar to'plamidagi 9-si).
-   Kulrang fon (#eef1f6), oq kartochkalar, moviy urg'u, «to'lov tushdi»
-   bildirishnomasi maketi. Skelet boshqa kadrlar bilan bir xil, ranglar
-   modulga muhrlangan.
-
-   Kontrast: xira matn #5d6673 (5.3:1 kulrangda), yashil summa #0c8a52
-   19px/800 da (WCAG katta qalin matn, 4.4:1 ≥ 3:1), tugma oq/#1a6df0
-   19px da 4.68:1 — hammasi o'z chegarasidan o'tadi.
+   Tashqi qatlam — files/mobil/9-fintech.html (kulrang fon, moviy urg'u).
+   Markazdagi blok — files/mobil/13-suhbat.html: Telegram «Сообщение»
+   chatidan olingan screenshot maketi (qorong'i oyna, pufakchalar, to'lov
+   kvitansiyasi). Skelet boshqa kadrlar bilan bir xil.
    ========================================================================== */
 
 .screen {
@@ -54,9 +50,25 @@
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  min-width: 0;
+}
+
+.mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  flex: none;
+  box-shadow: 0 10px 26px rgba(16, 22, 35, 0.07);
 }
 
 .safe {
@@ -87,19 +99,6 @@
   padding: 20px 0;
 }
 
-/* Logo sarlavha oldida — oq kartochka-plitada, kulrang fondan ajralib turadi */
-.mark {
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  display: grid;
-  place-items: center;
-  margin-bottom: 16px;
-  box-shadow: 0 10px 26px rgba(16, 22, 35, 0.07);
-}
-
 /* Qator uzilishini kod hal qiladi (`titleLines`) — har qator alohida span */
 .title {
   font-size: clamp(1.9375rem, 9.2vw, 2.375rem);
@@ -126,88 +125,128 @@
   max-width: 22em;
 }
 
-/* ── Bildirishnoma maketi ─────────────────────────────────────────────── */
+/* ── Telegram chat screenshot (Сообщение) ─────────────────────────────── */
 
-.stack {
+.chatFrame {
+  --chat-bg: #0d1620;
+  --chat-in: #1b2836;
+  --chat-out: #2f5b84;
+  --chat-ink: #e7edf3;
+  --chat-dim: #7d93a6;
+  --chat-ok: #4fd08a;
+
   align-self: stretch;
   margin-top: 22px;
-  display: grid;
-  gap: 10px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--chat-bg);
+  color: var(--chat-ink);
+  box-shadow:
+    0 18px 40px rgba(16, 22, 35, 0.18),
+    0 0 0 1px rgba(16, 22, 35, 0.06);
 }
 
-.notif {
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 12px 16px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.day {
+  align-self: center;
+  font-size: 0.71875rem;
+  color: var(--chat-dim);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 4px 12px;
+  margin-bottom: 2px;
+}
+
+.msg {
+  max-width: 86%;
+  padding: 9px 12px 7px;
+  border-radius: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.42;
+}
+
+.msgIn {
+  align-self: flex-start;
+  background: var(--chat-in);
+  border-bottom-left-radius: 5px;
+}
+
+.msgOut {
+  align-self: flex-end;
+  background: var(--chat-out);
+  border-bottom-right-radius: 5px;
+}
+
+.msg b {
+  font-weight: 700;
+}
+
+.msgT {
+  display: block;
+  margin-top: 3px;
+  text-align: right;
+  font-size: 0.6875rem;
+  color: var(--chat-dim);
+}
+
+.msgOut .msgT {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pay {
+  align-self: flex-start;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 13px 16px;
-  box-shadow: 0 10px 26px rgba(16, 22, 35, 0.07);
+  gap: 11px;
+  background: var(--chat-in);
+  border-left: 3px solid var(--chat-ok);
+  max-width: 92%;
+  padding: 11px 13px;
+  border-radius: 0 14px 14px 0;
 }
 
-.nIco {
-  width: 40px;
-  height: 40px;
+.payIco {
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   flex: none;
   display: grid;
   place-items: center;
+  background: rgba(79, 208, 138, 0.15);
+  color: var(--chat-ok);
 }
 
-.nVote {
-  background: rgba(26, 109, 240, 0.12);
-  color: var(--az-d);
-}
-
-.nIn {
-  background: rgba(12, 138, 82, 0.12);
-  color: var(--ok);
-}
-
-.nCol {
+.payCol {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.nT {
-  display: block;
+.payCol b {
   font-size: 0.90625rem;
   font-weight: 600;
 }
 
-.nS {
-  display: block;
-  font-size: 0.78125rem;
-  color: var(--dim);
-  margin-top: 2px;
+.payCol small {
+  font-size: 0.75rem;
+  color: var(--chat-dim);
+  margin-top: 1px;
 }
 
-/* 19px/800 — WCAG "katta qalin matn": #0c8a52 (4.4:1) 3:1 dan bemalol o'tadi */
-.nAmt {
-  font-size: 1.1875rem;
-  font-weight: 800;
-  color: var(--ok);
-  letter-spacing: -0.02em;
-  white-space: nowrap;
-}
-
-.nOk {
-  font-size: 1.0625rem;
-  font-weight: 800;
-  color: var(--az-d);
-}
-
-.total {
-  text-align: center;
-  font-size: 0.78125rem;
-  color: var(--dim);
-  margin-top: 4px;
-}
-
-.total b {
-  color: var(--ink);
+.payAmt {
+  font-size: 1rem;
   font-weight: 700;
+  color: var(--chat-ok);
+  white-space: nowrap;
 }
 
 /* ── Pastki harakat zonasi ────────────────────────────────────────────── */
@@ -288,9 +327,8 @@
   }
 
   .mark {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 12px;
+    width: 36px;
+    height: 36px;
   }
 
   .title {
@@ -302,18 +340,22 @@
     font-size: 0.9375rem;
   }
 
-  .stack {
+  .chatFrame {
     margin-top: 14px;
-    gap: 8px;
   }
 
-  .notif {
-    padding: 10px 14px;
+  .thread {
+    padding: 10px 10px 12px;
+    gap: 6px;
   }
 
-  .nIco {
-    width: 34px;
-    height: 34px;
+  .msg {
+    font-size: 0.875rem;
+    padding: 8px 11px 6px;
+  }
+
+  .pay {
+    padding: 9px 11px;
   }
 
   .cta {
