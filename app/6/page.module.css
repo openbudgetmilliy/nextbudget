@@ -79,9 +79,9 @@
   right: 0;
   transform: translateY(-50%);
   display: flex;
-  /* Chapga — posterdagi «OPEN BUDJET» yozuvi bilan bir chiziqda */
-  justify-content: flex-start;
-  padding: 0 24px;
+  /* Gorizontal markazda — mobil kadrda eng barqaror joy */
+  justify-content: center;
+  padding: 0 20px;
   pointer-events: none;
 }
 
@@ -99,7 +99,7 @@
    matn poster matnlari bilan bir tilda turadi. */
 .sticker {
   background: transparent;
-  text-align: left;
+  text-align: center;
 }
 
 .sNum {
