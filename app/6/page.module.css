@@ -177,3 +177,76 @@
     min-height: 54px;
   }
 }
+
+/* ── Muddat taymeri (kampaniya oynasi — lib/campaign.ts) ─────────────── */
+
+.tm {
+  display: grid;
+  gap: 7px;
+  justify-items: center;
+}
+
+.tmCap {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #44505c;
+}
+
+.tmGrid {
+  align-self: stretch;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.tmCell {
+  border-radius: 10px;
+  background: #fff;
+  border: 0;
+  padding: 7px 2px 6px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(5, 25, 66, 0.12);
+}
+
+.tmNum {
+  font-family: var(--f-sg), var(--f-b);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--blue);
+}
+
+.tmLab {
+  margin-top: 3px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #44505c;
+}
+
+.tmOver {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--blue);
+}
+
+/* Past ekranda taymer ixchamlashadi — slayd sig'imi buzilmasin */
+@media (max-height: 700px) {
+  .tmCap {
+    display: none;
+  }
+
+  .tmCell {
+    padding: 5px 2px 4px;
+  }
+
+  .tmNum {
+    font-size: 1.05rem;
+  }
+}

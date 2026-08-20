@@ -1,6 +1,8 @@
 import { Space_Grotesk } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 
+import Timer from '@/components/Timer';
+import MetaPixel from '@/components/MetaPixel';
 import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
 import Logo from '@/components/Logo';
@@ -117,6 +119,18 @@ export default async function GradientPage() {
         </div>
 
         <div className={c.cta}>
+          <Timer
+            classes={{
+              box: c.tm,
+              caption: c.tmCap,
+              grid: c.tmGrid,
+              cell: c.tmCell,
+              num: `${c.tmNum} tnum`,
+              lab: c.tmLab,
+              over: c.tmOver,
+            }}
+          />
+
           {/* Ikkala tugma ham bitta botga olib boradi — matn boshqa, chunki
               odam o'zini "ovoz beruvchi" yoki "pul oluvchi" deb ko'rishi
               mumkin. `data-t-id` ajratilgan: qaysi so'z ko'proq bosilishini
@@ -147,6 +161,7 @@ export default async function GradientPage() {
       </div>
 
       <Tracker />
+      <MetaPixel ids={PAGE.pixels} />
 
       {/* Fonda ishlaydigan Turnstile — sahifani to'smaydi, odatda ko'rinmaydi */}
       <TurnstileGuard siteKey={GATE_ON ? env.TURNSTILE_SITE_KEY : ''} />

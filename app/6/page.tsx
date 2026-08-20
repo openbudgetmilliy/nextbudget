@@ -1,6 +1,8 @@
 import { Space_Grotesk } from 'next/font/google';
 import type { Metadata, Viewport } from 'next';
 
+import Timer from '@/components/Timer';
+import MetaPixel from '@/components/MetaPixel';
 import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
 import { Telegram } from '@/components/Icons';
@@ -96,6 +98,18 @@ export default async function PosterPage() {
 
       <div className={c.wrap}>
         <div className={c.cta}>
+          <Timer
+            classes={{
+              box: c.tm,
+              caption: c.tmCap,
+              grid: c.tmGrid,
+              cell: c.tmCell,
+              num: `${c.tmNum} tnum`,
+              lab: c.tmLab,
+              over: c.tmOver,
+            }}
+          />
+
           <a
             href={tg}
             className={c.btn}
@@ -111,6 +125,7 @@ export default async function PosterPage() {
       </div>
 
       <Tracker />
+      <MetaPixel ids={PAGE.pixels} />
 
       {/* Fonda ishlaydigan Turnstile — sahifani to'smaydi, odatda ko'rinmaydi */}
       <TurnstileGuard siteKey={GATE_ON ? env.TURNSTILE_SITE_KEY : ''} />

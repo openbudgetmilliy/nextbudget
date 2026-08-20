@@ -40,10 +40,13 @@
 
 .bg {
   position: absolute;
-  inset: 0;
+  /* Pastga langar + 105% bo'y: rasm ekrandan 5% yuqoriga chiqib ketadi,
+     ya'ni butun kadr ~5% TEPAGA suriladi (tepadagi banknota burchagi
+     qirqiladi, telefon maketi va yozuvlar yuqoriroq turadi). */
+  inset: auto 0 0 0;
   z-index: 0;
   width: 100%;
-  height: 100%;
+  height: 105%;
   object-fit: cover;
   object-position: center top;
 }
@@ -95,11 +98,14 @@
 .sNum {
   /* Boshqa shrift — stiker sahifadagi yagona Space Grotesk elementi */
   font-family: var(--f-sg), var(--f-b);
-  font-size: clamp(2rem, 9.5vw, 2.5rem);
+  /* Kattaroq — kadrda birinchi bo'lib ko'zga tashlansin */
+  font-size: clamp(2.625rem, 12.5vw, 3.375rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.035em;
   color: var(--grn-l);
+  /* Yashil nur — qora fonda raqamni yanada ajratib turadi */
+  text-shadow: 0 0 28px rgba(62, 224, 122, 0.4);
 }
 
 .sLab {
@@ -129,7 +135,8 @@
   margin-top: auto;
   display: grid;
   justify-items: center;
-  padding-bottom: 4dvh;
+  /* Tugma pastki chetdan balandroq tursin — banknotalar zonasidan chiqadi */
+  padding-bottom: 8dvh;
 }
 
 /* Barmoq zonasi: 60px, to'liq kenglik. 19px matn — WCAG katta qalin matn.
@@ -161,6 +168,9 @@
 /* Keng ekran: rasm butunicha ko'rinsin, yon bo'shliqlar qora bilan to'ladi */
 @media (min-width: 720px) {
   .bg {
+    /* Keng ekranda surish kerak emas — rasm butunicha ko'rinadi */
+    inset: 0;
+    height: 100%;
     object-fit: contain;
   }
 
@@ -180,7 +190,7 @@
   }
 
   .sNum {
-    font-size: 1.75rem;
+    font-size: 2.25rem;
   }
 
   .sLab {
@@ -194,5 +204,79 @@
 
   .btn {
     min-height: 54px;
+  }
+}
+
+/* ── Muddat taymeri (kampaniya oynasi — lib/campaign.ts) ─────────────── */
+
+.tm {
+  display: grid;
+  gap: 7px;
+  justify-items: center;
+}
+
+.tmCap {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.tmGrid {
+  align-self: stretch;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.tmCell {
+  border-radius: 10px;
+  background: rgba(6, 10, 7, 0.72);
+  border: 0;
+  padding: 7px 2px 6px;
+  text-align: center;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.tmNum {
+  font-family: var(--f-sg), var(--f-b);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--grn-l);
+}
+
+.tmLab {
+  margin-top: 3px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.tmOver {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--grn-l);
+}
+
+/* Past ekranda taymer ixchamlashadi — slayd sig'imi buzilmasin */
+@media (max-height: 700px) {
+  .tmCap {
+    display: none;
+  }
+
+  .tmCell {
+    padding: 5px 2px 4px;
+  }
+
+  .tmNum {
+    font-size: 1.05rem;
   }
 }
