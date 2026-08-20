@@ -30,7 +30,7 @@ import c from './page.module.css';
  * tugaganda o'sha yerda yangilanadi.
  *
  * MATNLAR HAM QO'LDA — buyurtma shunday: bu kadr namunaning kampaniya
- * matnini so'zma-so'z takrorlaydi (500 000 so'mgacha, iPhone 17 Pro Max,
+ * matnini so'zma-so'z takrorlaydi (100 000 so'mgacha, iPhone 17 Pro Max,
  * 30-avgust muddati). Admin sozlamalari bu kadr matniga ta'sir qilmaydi;
  * faqat bot havolasi odatdagidek sozlamadan olinadi.
  */
@@ -79,11 +79,11 @@ export default async function TaymerPage() {
 
           {/* Gradient faqat summa bo'lagida — namunadagidek */}
           <h1 className={c.title}>
-            Ovoz bering va <b className={c.grad}>500 000 so‘mgacha</b> pul oling
+            Ovoz bering va <b className={c.grad}>100 000 so‘mgacha</b> pul oling
           </h1>
 
           <p className={c.sub}>
-            Open Budgetga ovoz berib 500 000 so‘mgacha pul oling. Undan tashqari iPhone 17 Pro
+            Open Budgetga ovoz berib 100 000 so‘mgacha pul oling. Undan tashqari iPhone 17 Pro
             Max g‘olibiga ham aylanishingiz mumkin.
           </p>
 
