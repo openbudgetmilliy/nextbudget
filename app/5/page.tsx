@@ -49,9 +49,12 @@ export default async function FintechPage() {
   const bot = botUsername(s.bot_username || env.BOT);
   // Admin '@' bilan saqlagan bo'lsa ham havola buzilmasin
   const channel = (s.tg_channel || '').replace(/^@/, '');
-  const vars = { narx: s.price_one_vote };
+  /** `/5` kadrida mukofot — 35 000 so'm (boshqa kadrlardan mustaqil) */
+  const PAGE_PRICE = '35 000';
+  const vars = { narx: PAGE_PRICE };
 
-  const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
+  /** `/5` ga xos sarlavha — mukofot summasi ikkinchi qatorda urg'u bilan */
+  const lines = titleLines(applyVars('Bizga ovoz bering — va {narx} oling', vars));
 
   return (
     <div className={c.screen}>
@@ -131,7 +134,7 @@ export default async function FintechPage() {
                   <b>To‘lov o‘tkazildi</b>
                   <small>Uzcard •• 8600 · hozirgina</small>
                 </span>
-                <span className={`${c.payAmt} tnum`}>+{s.price_one_vote}</span>
+                <span className={`${c.payAmt} tnum`}>+{PAGE_PRICE}</span>
               </div>
             </div>
           </div>
@@ -162,7 +165,7 @@ export default async function FintechPage() {
             data-tg
             rel="noopener"
           >
-            {s.cta_primary}
+            Ovoz berish
           </a>
           <a
             href={tg}
