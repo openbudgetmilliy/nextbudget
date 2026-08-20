@@ -3,9 +3,13 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * Bu ikki maydon YETTALA kadrga birdek tegadi — shuning uchun yorliqda ham
+ * shu aytilgan. Ilgari `/6` va `/7` da narx kodda qotib turgan edi.
+ */
 const LABELS: Record<string, string> = {
-  bot_username: 'Bot username (@ siz)',
-  price_one_vote: '1 ovoz narxi ({narx} o‘rniga qo‘yiladi)',
+  bot_username: 'Bot havolasi yoki username — 7 ta sahifada ham o‘zgaradi',
+  price_one_vote: '1 ovoz narxi — 7 ta sahifada ham o‘zgaradi ({narx})',
   hero_badge: 'Yuqori yozuv (sarlavha ustida)',
   hero_title: 'Sarlavha',
   hero_sub: 'Tavsif (sarlavha ostida)',
@@ -97,8 +101,12 @@ export default function SettingsForm({ values }: { values: Record<string, string
         </div>
 
         <p style={{ fontSize: 12.5, color: '#59637a', marginTop: 16, lineHeight: 1.6 }}>
-          Saqlangach landing qayta build bo’ladi va Cloudflare keshi tozalanadi — o’zgarish ~5
-          sekundda ko’rinadi.
+          Saqlangach yettala kadr (<code>/</code>, <code>/2</code>…<code>/7</code>) qayta build
+          bo’ladi va Cloudflare keshi tozalanadi — o’zgarish ~5 sekundda ko’rinadi. Narx va bot
+          havolasi hamma sahifada bir vaqtda yangilanadi.
+          <br />
+          Bot maydoniga <code>@Bot</code>, <code>Bot</code> yoki to’liq
+          <code> https://t.me/Bot</code> — uchalasi ham ishlaydi.
         </p>
       </div>
     </div>

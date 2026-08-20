@@ -133,26 +133,33 @@ export function track(e: Ev): void {
  * Telegram deep link'ga trafik manbasini qo'shish.
  *
  * SSG sahifa foydalanuvchining UTM'ini bilmaydi, shuning uchun server
- * `?start=p_ovoz_10` kabi bazaviy qiymat qo'yadi — biz uni ALMASHTIRMAYMIZ,
- * ustiga manba qo'shamiz: `p_ovoz_10-ig-reel3`.
- * Natijada botda ham qaysi paket, ham qaysi kreativ ko'rinadi.
+ * bazaviy qiymat qo'yadi — u KADR slug'i (`?start=p7`, `lib/pages.ts`).
+ * Biz uni almashtirmaymiz, ustiga manba qo'shamiz: `p7-ig-reel3`.
+ * Natijada botda ham qaysi kadrdan kelgani, ham qaysi kreativ ko'rinadi.
+ *
+ * `utm_content` odatda o'sha slug bilan BIR XIL bo'ladi (reklama havolasini
+ * admin panel shunday yasaydi), shuning uchun u bazaga teng bo'lsa
+ * qo'shilmaydi — aks holda har havola `p7-p7` bo'lib chiqardi.
+ *
  * Telegram start param: A-Za-z0-9_- va maks. 64 belgi.
  */
 function stampTelegramLinks(): void {
   const p = new URLSearchParams(location.search);
   const src = p.get('utm_source') || (/instagram/i.test(document.referrer) ? 'ig' : '');
   const creative = p.get('utm_content') || p.get('utm_campaign') || '';
-  const tag = [src, creative]
-    .filter(Boolean)
-    .join('-')
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-    .slice(0, 40);
-  if (!tag) return;
+  const clean = (v: string) => v.replace(/[^a-zA-Z0-9_-]/g, '');
 
   document.querySelectorAll<HTMLAnchorElement>('a[data-tg]').forEach((a) => {
     try {
       const u = new URL(a.href);
       const base = u.searchParams.get('start') || 'web';
+      const tag = [src, creative === base ? '' : creative]
+        .filter(Boolean)
+        .map(clean)
+        .filter(Boolean)
+        .join('-')
+        .slice(0, 40);
+      if (!tag) return;
       u.searchParams.set('start', `${base}-${tag}`.slice(0, 64));
       a.href = u.toString();
     } catch {

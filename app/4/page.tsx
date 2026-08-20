@@ -7,7 +7,8 @@ import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
-import { tgLink } from '@/lib/tg';
+import { botUsername, tgLink } from '@/lib/tg';
+import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
 import c from './page.module.css';
@@ -25,6 +26,9 @@ import c from './page.module.css';
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
+
+/** Shu kadrning ro'yxatdagi o'rni — `?start=` va reklama havolasi shundan */
+const PAGE = pageAt('/4');
 
 export const metadata: Metadata = {
   robots: { index: false, follow: true },
@@ -56,8 +60,8 @@ const TILES = [
 
 export default async function ZamonaviyPage() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
+  const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  const bot = botUsername(s.bot_username || env.BOT);
   // Admin '@' bilan saqlagan bo'lsa ham havola buzilmasin
   const channel = (s.tg_channel || '').replace(/^@/, '');
   const vars = { narx: s.price_one_vote };

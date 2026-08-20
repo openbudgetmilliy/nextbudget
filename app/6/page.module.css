@@ -66,25 +66,40 @@
   margin: 0 auto;
 }
 
+/* ── Narx ─────────────────────────────────────────────────────────────── */
+
+/* «OPEN BUDJET BOSHLANDI» bloki 23%da tugaydi, banka 34%da boshlanadi —
+   stiker shu bo'sh yo'lakning o'rtasida (28.6%). Telefonlarda fon doim
+   balandlik bo'yicha o'lchanadi, foiz rasmga aniq mos tushadi. */
+.price {
+  position: absolute;
+  z-index: 2;
+  top: 28.6%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  /* Chapga — posterdagi «OPEN BUDJET» yozuvi bilan bir chiziqda */
+  justify-content: flex-start;
+  padding: 0 24px;
+  pointer-events: none;
+}
+
 /* ── Pastki harakat zonasi ────────────────────────────────────────────── */
 
 .cta {
   margin-top: auto;
   display: grid;
   justify-items: center;
-  gap: 14px;
   padding-bottom: 4dvh;
 }
 
-/* Narx stikeri — banka ustida ham o'qiladigan yaxlit oq qog'oz.
-   Ozgina qiyshiq: rasmda osilgan «Milliy» yorlig'iga ohang beradi. */
+/* Narx — kartasiz, to'g'ridan-to'g'ri poster kulrangi ustida (fon shaffof,
+   ramkasiz). Bu joy rasmda bo'sh, shuning uchun plashka shart emas —
+   matn poster matnlari bilan bir tilda turadi. */
 .sticker {
-  transform: rotate(-2deg);
-  background: #fff;
-  border-radius: 16px;
-  padding: 12px 22px;
-  text-align: center;
-  box-shadow: 0 16px 38px rgba(5, 25, 66, 0.28);
+  background: transparent;
+  text-align: left;
 }
 
 .sNum {
@@ -104,7 +119,8 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--dim);
+  /* Plashka yo'q — kulrang fonda o'qilsin deb --dim dan to'qroq */
+  color: #44505c;
 }
 
 /* Barmoq zonasi: 60px, to'liq kenglik. 19px matn — WCAG katta qalin matn */
@@ -148,10 +164,6 @@
 
 /* Past bo'yli ekranlar — stiker va tugma ixchamlashadi */
 @media (max-height: 700px) {
-  .sticker {
-    padding: 9px 18px;
-  }
-
   .sNum {
     font-size: 1.75rem;
   }

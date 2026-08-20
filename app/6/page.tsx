@@ -7,7 +7,8 @@ import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { SITE } from '@/lib/content';
-import { tgLink } from '@/lib/tg';
+import { botUsername, tgLink } from '@/lib/tg';
+import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
 import c from './page.module.css';
@@ -20,14 +21,18 @@ import c from './page.module.css';
  * Sarlavha, logo va brend rasmda tayyor turibdi, shuning uchun sahifada
  * faqat ikki narsa bor: narx stikeri va «Botga o'tish» tugmasi.
  *
- * Narx ATAYIN qo'lda yozilgan (admin sozlamasidan EMAS) — buyurtma shunday:
- * rasm ustida qat'iy «30 000 so'm» tursin. Admin narxni o'zgartirsa bu kadr
- * o'zgarmaydi; kerak bo'lsa shu yerda qo'lda yangilanadi.
+ * Narx — qolgan kadrlar bilan bitta manbadan: `price_one_vote` sozlamasi
+ * (`/admin/settings`). Ilgari bu yerda narx qo'lda, kodda yozilgan edi va
+ * admin uni o'zgartirganda yettita kadrdan beshtasi yangilanib, ikkitasi
+ * eski narx bilan qolib ketardi — reklamada eng qimmat xato shu.
  *
  * Reklama kampaniyalarida muqobil kadr — `/2`–`/5` kabi index'lanmaydi.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
+
+/** Shu kadrning ro'yxatdagi o'rni — `?start=` va reklama havolasi shundan */
+const PAGE = pageAt('/6');
 
 export const metadata: Metadata = {
   robots: { index: false, follow: true },
@@ -51,13 +56,10 @@ const display = Space_Grotesk({
   display: 'swap',
 });
 
-/** Rasm ustidagi qo'lda yozilgan narx (yuqoridagi izohga qarang) */
-const PRICE = '30 000';
-
 export default async function PosterPage() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
+  const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  const bot = botUsername(s.bot_username || env.BOT);
 
   return (
     <div className={`${display.variable} ${c.screen}`}>
@@ -78,16 +80,22 @@ export default async function PosterPage() {
       />
 
       <h1 className={c.srOnly}>
-        Open Budjet boshlandi — har bir ovoz {PRICE} so‘m. {SITE.brand} botida qatnashing.
+        Open Budjet boshlandi — har bir ovoz {s.price_one_vote} so‘m. {SITE.brand} botida qatnashing.
       </h1>
+
+      {/* Narx — brend yozuvi («OPEN BUDJET BOSHLANDI», 23%da tugaydi) bilan
+          banka (34%da boshlanadi) orasidagi bo'sh kulrang yo'lakda. Fon
+          telefonlarda doim balandlik bo'yicha o'lchanadi, shuning uchun
+          foiz rasmning aynan shu joyiga tushadi (/7 dagi usul). */}
+      <div className={c.price}>
+        <div className={c.sticker}>
+          <p className={`${c.sNum} tnum`}>{s.price_one_vote} so‘m</p>
+          <p className={c.sLab}>har bir ovoz uchun</p>
+        </div>
+      </div>
 
       <div className={c.wrap}>
         <div className={c.cta}>
-          <div className={c.sticker}>
-            <p className={`${c.sNum} tnum`}>{PRICE} so‘m</p>
-            <p className={c.sLab}>har bir ovoz uchun</p>
-          </div>
-
           <a
             href={tg}
             className={c.btn}

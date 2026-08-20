@@ -5,7 +5,8 @@ import { ArrowDown } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
-import { tgLink } from '@/lib/tg';
+import { botUsername, tgLink } from '@/lib/tg';
+import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 import type { Metadata, Viewport } from 'next';
 
@@ -41,6 +42,9 @@ import c from './page.module.css';
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
+/** Shu kadrning ro'yxatdagi o'rni — `?start=` va reklama havolasi shundan */
+const PAGE = pageAt('/2');
+
 export const metadata: Metadata = {
   // Canonical ATAYIN yo'q: noindex bilan birga o'z-o'ziga canonical qarama-
   // qarshi signal bo'lardi. Qidiruvga bosh sahifa chiqadi, bu — reklama kadri.
@@ -64,8 +68,8 @@ const PILLS = ['2 daqiqa', 'Uzcard · Humo', 'Hujjat kerak emas'] as const;
 
 export default async function HomePage() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
+  const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  const bot = botUsername(s.bot_username || env.BOT);
   // Admin '@' bilan saqlagan bo'lsa ham havola buzilmasin
   const channel = (s.tg_channel || '').replace(/^@/, '');
   const vars = { narx: s.price_one_vote };

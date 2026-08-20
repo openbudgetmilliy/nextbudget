@@ -1,8 +1,10 @@
 import AutoRefresh from '@/components/admin/AutoRefresh';
 import DbDown from '@/components/admin/DbDown';
+import PageStats, { mergePageRows } from '@/components/admin/PageStats';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
 import TrafficChart from '@/components/admin/TrafficChart';
-import { hourly, onlineNow, overview, recentCta, scrollFunnel } from '@/lib/stats';
+import { pageLabel } from '@/lib/pages';
+import { hourly, onlineNow, overview, pageStats, recentCta, scrollFunnel } from '@/lib/stats';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Dashboard' };
@@ -16,14 +18,15 @@ export default async function Dashboard({
 
   let data;
   try {
-    const [ov, online, hrs, cta, scroll] = await Promise.all([
+    const [ov, online, hrs, cta, scroll, pages] = await Promise.all([
       overview(hours),
       onlineNow(),
       hourly(hours),
       recentCta(12),
       scrollFunnel(hours),
+      pageStats(hours),
     ]);
-    data = { ov, online, hrs, cta, scroll };
+    data = { ov, online, hrs, cta, scroll, pages };
   } catch (err) {
     return (
       <>
@@ -33,7 +36,7 @@ export default async function Dashboard({
     );
   }
 
-  const { ov, online, hrs, cta, scroll } = data;
+  const { ov, online, hrs, cta, scroll, pages } = data;
   const maxScroll = Math.max(...scroll.map((s) => s.users), 1);
 
   return (
@@ -83,6 +86,11 @@ export default async function Dashboard({
         </div>
       </div>
 
+      {/* Asosiy kesim: yettita kadr alohida reklama qilinadi, shuning uchun
+          «qaysi kadrdan qancha odam keldi va tugmasi nechta bosildi» —
+          birinchi ko'rinadigan jadval */}
+      <PageStats rows={mergePageRows(pages)} hours={hours} />
+
       <div className="a-panel">
         <div className="a-panel-h">Soatlar bo’yicha trafik</div>
         <div className="a-panel-b">
@@ -99,9 +107,9 @@ export default async function Dashboard({
                 <thead>
                   <tr>
                     <th>Vaqt</th>
+                    <th>Sahifa</th>
                     <th>Tugma</th>
                     <th>Kreativ</th>
-                    <th>Qurilma</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,10 +122,10 @@ export default async function Dashboard({
                         })}
                       </td>
                       <td>
-                        <span className="a-tag">{c.elId ?? '—'}</span>
+                        <span className="a-tag">{pageLabel(c.page)}</span>
                       </td>
+                      <td className="muted">{c.elId ?? '—'}</td>
                       <td className="muted">{c.utmContent ?? '—'}</td>
-                      <td className="muted">{c.device ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>

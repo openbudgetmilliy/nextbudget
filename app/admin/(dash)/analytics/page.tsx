@@ -1,6 +1,8 @@
 import DbDown from '@/components/admin/DbDown';
+import PageStats, { mergePageRows } from '@/components/admin/PageStats';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
-import { breakdown, creatives, scrollFunnel, topButtons } from '@/lib/stats';
+import { pageLabel } from '@/lib/pages';
+import { breakdown, creatives, pageButtons, pageStats, scrollFunnel } from '@/lib/stats';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Analitika' };
@@ -14,16 +16,17 @@ export default async function AnalyticsPage({
 
   let d;
   try {
-    const [cre, btns, scroll, device, browser, os, source] = await Promise.all([
+    const [cre, btns, pages, scroll, device, browser, os, source] = await Promise.all([
       creatives(hours),
-      topButtons(hours),
+      pageButtons(hours),
+      pageStats(hours),
       scrollFunnel(hours),
       breakdown('device', hours),
       breakdown('browser', hours),
       breakdown('os', hours),
       breakdown('utmSource', hours),
     ]);
-    d = { cre, btns, scroll, device, browser, os, source };
+    d = { cre, btns, pages, scroll, device, browser, os, source };
   } catch (err) {
     return (
       <>
@@ -44,6 +47,9 @@ export default async function AnalyticsPage({
       <div className="a-row">
         <RangePicker base="/admin/analytics" hours={hours} />
       </div>
+
+      {/* ── Sahifalar ── asosiy kesim, shuning uchun eng tepada */}
+      <PageStats rows={mergePageRows(d.pages)} hours={hours} />
 
       {/* ── Kreativlar ── */}
       <div className="a-panel">
@@ -103,26 +109,40 @@ export default async function AnalyticsPage({
       <div className="a-grid-2">
         {/* ── Tugmalar ── */}
         <div className="a-panel">
-          <div className="a-panel-h">Tugmalar reytingi</div>
+          <div className="a-panel-h">
+            <span>Tugmalar reytingi</span>
+            <span style={{ fontSize: 12.5, fontWeight: 400, color: '#59637a' }}>
+              sahifa bo’yicha ajratilgan
+            </span>
+          </div>
           {d.btns.length ? (
             <div className="a-tw">
               <table className="a-t">
                 <thead>
                   <tr>
+                    <th>Sahifa</th>
                     <th>Tugma</th>
-                    <th>Matn</th>
                     <th className="num">Bosish</th>
                     <th className="num">Foydalanuvchi</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {/* `elId` kadrlarda takrorlanadi (`/6` va `/7` da ham `bot`),
+                      shuning uchun qator kaliti sahifa bilan birga */}
                   {d.btns.map((b, i) => (
-                    <tr key={`${b.elId}-${i}`}>
+                    <tr key={`${b.page}-${b.elId}-${i}`}>
                       <td>
-                        <span className="a-tag">{b.elId ?? '—'}</span>
+                        <span className="a-tag">{pageLabel(b.page)}</span>
                       </td>
-                      <td className="muted">{b.elText ?? '—'}</td>
-                      <td className="num">{b.clicks}</td>
+                      <td className="muted">
+                        {b.elId ?? '—'}
+                        <span className="muted" style={{ display: 'block', fontSize: 12 }}>
+                          {b.elText ?? ''}
+                        </span>
+                      </td>
+                      <td className="num" style={{ fontWeight: 700 }}>
+                        {b.clicks}
+                      </td>
                       <td className="num">{b.users}</td>
                     </tr>
                   ))}

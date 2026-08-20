@@ -1,6 +1,7 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
 import { env } from './env';
+import { LANDING_PATHS } from './pages';
 
 /**
  * Narx o'zgarganda ikki qatlamli cache'ni tozalash.
@@ -41,12 +42,11 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
 /**
  * Landing'ni to'liq yangilash: ISR + CF edge.
  *
- * Barcha landing kadrlar yangilanadi: `/` («Milliy») va muqobil reklama
- * kadrlari — `/2` «Energetik», `/3` «Gradient», `/4` «Zamonaviy»,
- * `/5` «Fintech», `/6` «Poster», `/7` «Telegram». CF'da shular va sitemap
- * purge qilinadi.
+ * Barcha kadrlar yangilanadi — ro'yxat `lib/pages.ts` da. Narx yoki bot
+ * havolasi sozlamada bir marta o'zgarganda YETTALASI ham yangilanishi shu
+ * yerda ta'minlanadi; birortasi tushib qolsa eski narx bilan qolib ketardi.
+ * CF'da shu yo'llar va sitemap purge qilinadi.
  */
-const LANDING_PATHS = ['/', '/2', '/3', '/4', '/5', '/6', '/7'] as const;
 
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
   for (const p of LANDING_PATHS) revalidatePath(p);

@@ -6,6 +6,8 @@ import {
   hourly,
   onlineNow,
   overview,
+  pageButtons,
+  pageStats,
   recentCta,
   scrollFunnel,
   sessionList,
@@ -39,6 +41,9 @@ export async function GET(req: Request): Promise<Response> {
         return json({ ...(await overview(hours)), online: await onlineNow() });
       case 'buttons':
         return json(await topButtons(hours));
+      // Sahifalar kesimi — har kadr alohida reklama qilingani uchun
+      case 'pages':
+        return json({ pages: await pageStats(hours), buttons: await pageButtons(hours) });
       case 'creatives':
         return json(await creatives(hours, q.get('source') ?? 'instagram'));
       case 'scroll':

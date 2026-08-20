@@ -158,13 +158,15 @@ export type RecentCta = {
   elId: string | null;
   elText: string | null;
   sessionId: string;
+  /** Qaysi kadrdagi tugma bosilgan — lentaning eng foydali ustuni */
+  page: string | null;
   utmContent: string | null;
   device: string | null;
 };
 
 export async function recentCta(limit = 12): Promise<RecentCta[]> {
   return prisma.$queryRaw<RecentCta[]>`
-    SELECT e.ts, e."elId", e."elText", e."sessionId", s."utmContent", s.device
+    SELECT e.ts, e."elId", e."elText", e."sessionId", e.page, s."utmContent", s.device
     FROM "Event" e
     JOIN "Session" s ON s.id = e."sessionId"
     WHERE e.type = 'cta'
@@ -215,4 +217,92 @@ export async function sessionTimeline(id: string) {
     }),
   ]);
   return { session, events };
+}
+
+/**
+ * Sahifalar (reklama kadrlari) bo'yicha kesim — analitikaning ASOSIY jadvali.
+ *
+ * Yettita kadr yettita alohida reklama joyidan yuritiladi, shuning uchun
+ * birinchi savol doim bitta: qaysi kadrdan qancha odam keldi va qaysisining
+ * tugmasi necha marta bosildi. Ikkalasi ikki xil jadvalda yotadi:
+ *
+ *   · kim kelgani  — `Session.landedAt` (odam tushgan birinchi sahifa)
+ *   · tugma bosishi — `Event.page` (type = 'cta')
+ *
+ * Shuning uchun FULL JOIN: kadr ochilgan-u, tugmasi bosilmagan bo'lishi
+ * mumkin (yoki teskarisi — eski sessiya, yangi klik). INNER JOIN bo'lsa
+ * aynan eng yomon kadr jadvaldan tushib qolardi.
+ *
+ * `rtrim(path, '/')` — `/7` va `/7/` bitta qator bo'lsin; ildiz uchun
+ * natija bo'sh satr bo'ladi, uni `NULLIF` orqali `/` ga qaytaramiz.
+ */
+export type PageRow = {
+  page: string;
+  sessions: number;
+  conv: number;
+  clicks: number;
+  clickUsers: number;
+  cr: number;
+};
+
+export async function pageStats(hours = 168): Promise<PageRow[]> {
+  return prisma.$queryRaw<PageRow[]>`
+    WITH s AS (
+      SELECT CASE WHEN "landedAt" IS NULL THEN '—'
+                  ELSE COALESCE(NULLIF(rtrim("landedAt", '/'), ''), '/') END AS page,
+             count(*)::int                          AS sessions,
+             count(*) FILTER (WHERE converted)::int AS conv
+      FROM "Session"
+      WHERE "createdAt" >= now() - (${hours}::int * interval '1 hour')
+      GROUP BY 1
+    ),
+    c AS (
+      SELECT CASE WHEN page IS NULL THEN '—'
+                  ELSE COALESCE(NULLIF(rtrim(page, '/'), ''), '/') END AS page,
+             count(*)::int                    AS clicks,
+             count(DISTINCT "sessionId")::int AS users
+      FROM "Event"
+      WHERE type = 'cta' AND ts >= now() - (${hours}::int * interval '1 hour')
+      GROUP BY 1
+    )
+    SELECT COALESCE(s.page, c.page)                          AS page,
+           COALESCE(s.sessions, 0)                           AS sessions,
+           COALESCE(s.conv, 0)                               AS conv,
+           COALESCE(c.clicks, 0)                             AS clicks,
+           COALESCE(c.users, 0)                              AS "clickUsers",
+           COALESCE(round(100.0 * s.conv / NULLIF(s.sessions, 0), 2), 0)::float8 AS cr
+    FROM s FULL JOIN c ON c.page = s.page
+    ORDER BY sessions DESC, clicks DESC
+  `;
+}
+
+/**
+ * Sahifa × tugma — bitta kadrda bir nechta tugma bo'lganda kerak.
+ *
+ * `/5` da ikkita CTA bor («Botda ovoz olish» va «Pulni olish»), `/6`–`/7` da
+ * bittadan. `elId` ular orasida takrorlanadi (`bot`, `cta`), shuning uchun
+ * faqat `elId` bo'yicha guruhlash kadrlarni bir-biriga qo'shib yuborardi —
+ * bu yerda sahifa ham guruhga kiradi.
+ */
+export type PageButtonRow = {
+  page: string;
+  elId: string | null;
+  elText: string | null;
+  clicks: number;
+  users: number;
+};
+
+export async function pageButtons(hours = 168, limit = 40): Promise<PageButtonRow[]> {
+  return prisma.$queryRaw<PageButtonRow[]>`
+    SELECT CASE WHEN page IS NULL THEN '—'
+                ELSE COALESCE(NULLIF(rtrim(page, '/'), ''), '/') END AS page,
+           "elId", "elText",
+           count(*)::int                    AS clicks,
+           count(DISTINCT "sessionId")::int AS users
+    FROM "Event"
+    WHERE type = 'cta' AND ts >= now() - (${hours}::int * interval '1 hour')
+    GROUP BY 1, "elId", "elText"
+    ORDER BY clicks DESC
+    LIMIT ${limit}::int
+  `;
 }
