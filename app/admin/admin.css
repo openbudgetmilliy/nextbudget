@@ -476,9 +476,25 @@ table.a-t {
 }
 
 .a-bar-f {
+  /* `display` MAJBURIY: `.a-bar-f` — `<span>`, ya'ni inline element, va
+     inline elementda `width`/`height` umuman ishlamaydi. Usiz barcha
+     diagrammalar (voronka, taqsimotlar, kreativlar, sahifalar) bo'sh chiziq
+     bo'lib ko'rinardi — track bor, to'ldiruvchi yo'q. Raqamlar yonida
+     turgani uchun nosozlik «ma'lumot yo'q» ga o'xshamasdi ham. */
+  display: block;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #2aabee, #7fd0f7);
+}
+
+/* Jadval ichidagi ustuncha — `.a-bar` gridida emas, `td` ichida turadi.
+   `td` kengligi MAZMUNIGA qarab hisoblanadi, ustuncha esa bo'sh element:
+   min-content kengligi nol. `th` dagi `width` faqat tavsiya — jadval
+   torayganda (masalan analitikadagi «Reklama havolasi» ustuni qo'shilgach)
+   brauzer bu ustunni nolgacha siqib qo'yishi mumkin. Shuning uchun eng
+   kichik kenglik shu yerda qat'iy beriladi. */
+.a-t .a-bar-t {
+  min-width: 110px;
 }
 
 .a-bar-n {
