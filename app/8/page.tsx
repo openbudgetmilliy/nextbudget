@@ -7,7 +7,7 @@ import Logo from '@/components/Logo';
 
 import { getSettings, pagePixels } from '@/lib/data';
 import { SITE } from '@/lib/content';
-import { tgLink } from '@/lib/tg';
+import { botUsername, tgLink } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -54,7 +54,8 @@ export const viewport: Viewport = {
 export default async function TaymerPage() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
+  // botUsername(): admin to'liq havola yozsa ham JSON-LD'ga toza username tushsin
+  const bot = botUsername(s.bot_username || env.BOT);
   const channel = (s.tg_channel || '').replace(/^@/, '');
 
   return (
