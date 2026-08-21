@@ -8,7 +8,7 @@ import { Telegram } from '@/components/Icons';
 
 import { getSettings, pagePixels } from '@/lib/data';
 import { SITE } from '@/lib/content';
-import { botUsername, tgLink } from '@/lib/tg';
+import { botUsername, fixedStart, tgLink } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -61,6 +61,9 @@ const display = Space_Grotesk({
 export default async function TelegramPosterPage() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  // Sozlamada qat'iy `?start=` bo'lsa UTM qo'shimchasi yopishmasin —
+  // kod botga toza yetib borishi kerak (`data-tg` bo'lmasa stamping tegmaydi)
+  const tgStamp = fixedStart(s.bot_username || env.BOT) === null;
   const bot = botUsername(s.bot_username || env.BOT);
 
   return (
@@ -102,7 +105,7 @@ export default async function TelegramPosterPage() {
             className={c.btn}
             data-t="cta"
             data-t-id="bot"
-            data-tg
+            data-tg={tgStamp ? '' : undefined}
             rel="noopener"
           >
             <Telegram size={19} />

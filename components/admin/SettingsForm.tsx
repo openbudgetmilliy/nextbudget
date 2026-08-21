@@ -13,8 +13,8 @@ import { LANDING_PAGES } from '@/lib/pages';
  * qolganini tasodifan buzib qo'yish xavfi bor edi.
  */
 const LABELS: Record<string, string> = {
-  price_one_vote: '1 ovoz narxi — sakkizala sahifada o‘zgaradi',
-  bot_username: 'Bot username — tugma bosilganda shu botga o‘tadi',
+  price_one_vote: '1 ovoz narxi — hamma sahifada o‘zgaradi',
+  bot_username: 'Bot havolasi — tugma bosilganda shu manzilga o‘tadi',
 };
 
 export default function SettingsForm({ values }: { values: Record<string, string> }) {
@@ -90,6 +90,19 @@ export default function SettingsForm({ values }: { values: Record<string, string
           <br />
           Bot maydoniga <code>@Bot</code>, <code>Bot</code> yoki to’liq
           <code> https://t.me/Bot</code> — uchalasi ham ishlaydi.
+          <br />
+          <br />
+          <b style={{ color: '#c7d0de' }}>Havolada <code>?start=…</code> bo’lsa</b> — masalan
+          <code> https://t.me/Bot?start=abu1</code> — hamma kadr AYNAN shu kod bilan botga
+          boradi, ustiga hech narsa qo’shilmaydi. Bot o’sha kod bo’yicha nechta odam
+          kelganini sanaydi. Kodni o’zgartirsangiz hamma sahifada birdan o’zgaradi.
+          <br />
+          <code>?start=</code> yozilmasa — har kadr o’z belgisini yuboradi
+          (<code>p1</code>…<code>p9</code>) va ustiga trafik manbasi qo’shiladi
+          (<code>p6-instagram</code>).
+          <br />
+          Admin paneldagi «qaysi kadrdan qancha odam keldi» jadvali ikkala holatda
+          ham to’liq ishlaydi — u boshqa manbadan hisoblanadi.
         </p>
       </div>
     </div>

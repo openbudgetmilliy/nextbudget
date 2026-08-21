@@ -7,7 +7,7 @@ import { ArrowDown } from '@/components/Icons';
 
 import { getSettings, pagePixels } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
-import { botUsername, tgLink } from '@/lib/tg';
+import { botUsername, fixedStart, tgLink } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 import type { Metadata, Viewport } from 'next';
@@ -71,6 +71,9 @@ const PILLS = ['2 daqiqa', 'Uzcard · Humo', 'Hujjat kerak emas'] as const;
 export default async function HomePage() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  // Sozlamada qat'iy `?start=` bo'lsa UTM qo'shimchasi yopishmasin —
+  // kod botga toza yetib borishi kerak (`data-tg` bo'lmasa stamping tegmaydi)
+  const tgStamp = fixedStart(s.bot_username || env.BOT) === null;
   const bot = botUsername(s.bot_username || env.BOT);
   // Admin '@' bilan saqlagan bo'lsa ham havola buzilmasin
   const channel = (s.tg_channel || '').replace(/^@/, '');
@@ -147,7 +150,7 @@ export default async function HomePage() {
             className={`${c.btn} ${c.primary}`}
             data-t="cta"
             data-t-id="ovoz"
-            data-tg
+            data-tg={tgStamp ? '' : undefined}
             rel="noopener"
           >
             {s.cta_primary}
@@ -157,7 +160,7 @@ export default async function HomePage() {
             className={`${c.btn} ${c.ghost}`}
             data-t="cta"
             data-t-id="pul"
-            data-tg
+            data-tg={tgStamp ? '' : undefined}
             rel="noopener"
           >
             Pulni olish

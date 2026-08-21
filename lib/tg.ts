@@ -49,10 +49,43 @@ export function botUsername(raw: string): string {
   return VALID_USERNAME.test(clean) ? clean : '';
 }
 
+/** Telegram `start` uchun ruxsat: A-Za-z0-9_- va 64 belgi */
+function cleanStart(v: string): string {
+  return v.replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 64);
+}
+
+/**
+ * Sozlamadagi qiymatda QAT'IY `start` bormi.
+ *
+ * Admin bot maydoniga to'liq havolani `?start=abu1` bilan yozsa — bu
+ * «hamma kadr aynan shu kod bilan botga borsin» degani (bot o'sha kod
+ * bo'yicha nechta odam kelganini sanaydi). Shunda kadr slug'i ham, UTM
+ * qo'shimchasi ham qo'yilmaydi: kod botga TOZA yetib borishi kerak.
+ *
+ * Havolada `start` bo'lmasa — har kadr o'z slug'ini yuboradi (`p1`…`p9`)
+ * va ustiga trafik manbasi yopishadi (`p6-instagram`).
+ *
+ * Kadr kesimidagi o'z statistikamiz bunga BOG'LIQ EMAS — u `landedAt` va
+ * `Event.page` ustiga qurilgan, ya'ni admin paneldagi jadval ikkala
+ * rejimda ham to'liq ishlaydi.
+ */
+export function fixedStart(bot: string): string | null {
+  const m = (bot || '').match(/[?&]start=([^&#\s]+)/i);
+  if (!m) return null;
+  let raw = m[1];
+  try {
+    raw = decodeURIComponent(raw);
+  } catch {
+    /* xom holicha ishlatamiz */
+  }
+  return cleanStart(raw) || null;
+}
+
 /**
  * @param bot   sozlamadagi xom qiymat (`@Bot`, `Bot` yoki to'liq havola)
- * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p7`).
- *              Bot tomonda «bu odam qaysi reklamadan keldi» shundan bilinadi.
+ * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p9`).
+ *              Sozlamada qat'iy `?start=` bo'lsa BU parametr e'tiborsiz
+ *              qoladi va hamma kadr bitta kod bilan botga boradi.
  */
 export function tgLink(bot: string, start = 'web'): string {
   // Uch qavatli zaxira. Sozlamaga bo'sh joy yoki `@` yozib qo'yilsa
@@ -60,6 +93,6 @@ export function tgLink(bot: string, start = 'web'): string {
   // bo'lib, Telegram BOSH SAHIFASIGA olib borardi va butun voronka
   // to'qqizala kadrda bir vaqtda jim o'lardi (hech qayerda xato ko'rinmay).
   const b = botUsername(bot) || botUsername(env.BOT) || 'OpenBudgetBot';
-  const s = start.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 60) || 'web';
+  const s = fixedStart(bot) ?? (cleanStart(start) || 'web');
   return `https://t.me/${b}?start=${s}`;
 }

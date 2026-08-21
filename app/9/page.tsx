@@ -8,7 +8,7 @@ import { Telegram } from '@/components/Icons';
 
 import { getSettings, pagePixels } from '@/lib/data';
 import { SITE } from '@/lib/content';
-import { botUsername, tgLink } from '@/lib/tg';
+import { botUsername, fixedStart, tgLink } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -45,6 +45,9 @@ export const viewport: Viewport = {
 export default async function BanknotaPage() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
+  // Sozlamada qat'iy `?start=` bo'lsa UTM qo'shimchasi yopishmasin —
+  // kod botga toza yetib borishi kerak (`data-tg` bo'lmasa stamping tegmaydi)
+  const tgStamp = fixedStart(s.bot_username || env.BOT) === null;
   // botUsername(): admin to'liq havola yozsa ham JSON-LD'ga toza username tushsin
   const bot = botUsername(s.bot_username || env.BOT);
   const channel = (s.tg_channel || '').replace(/^@/, '');
@@ -90,7 +93,7 @@ export default async function BanknotaPage() {
             className={c.btn}
             data-t="cta"
             data-t-id="pul"
-            data-tg
+            data-tg={tgStamp ? '' : undefined}
             rel="noopener"
           >
             <Telegram size={20} />
