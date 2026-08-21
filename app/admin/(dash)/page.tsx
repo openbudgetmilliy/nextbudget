@@ -1,10 +1,10 @@
 import AutoRefresh from '@/components/admin/AutoRefresh';
 import DbDown from '@/components/admin/DbDown';
-import PageStats, { mergePageRows } from '@/components/admin/PageStats';
+import PageStats from '@/components/admin/PageStats';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
 import TrafficChart from '@/components/admin/TrafficChart';
 import { pageLabel } from '@/lib/pages';
-import { hourly, onlineNow, overview, pageStats, recentCta, scrollFunnel } from '@/lib/stats';
+import { hourly, mergePageRows, onlineNow, overview, pageStats, recentCta, scrollFunnel } from '@/lib/stats';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Dashboard' };
@@ -89,7 +89,7 @@ export default async function Dashboard({
       {/* Asosiy kesim: yettita kadr alohida reklama qilinadi, shuning uchun
           «qaysi kadrdan qancha odam keldi va tugmasi nechta bosildi» —
           birinchi ko'rinadigan jadval */}
-      <PageStats rows={mergePageRows(pages)} hours={hours} />
+      <PageStats rows={mergePageRows(pages)} />
 
       <div className="a-panel">
         <div className="a-panel-h">Soatlar bo’yicha trafik</div>

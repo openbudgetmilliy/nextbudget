@@ -1,10 +1,10 @@
 import AdLinks from '@/components/admin/AdLinks';
 import DbDown from '@/components/admin/DbDown';
-import PageStats, { mergePageRows } from '@/components/admin/PageStats';
+import PageStats from '@/components/admin/PageStats';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
 import { env } from '@/lib/env';
 import { LANDING_PAGES } from '@/lib/pages';
-import { pageButtons, pageStats } from '@/lib/stats';
+import { mergePageRows, pageButtons, pageStats } from '@/lib/stats';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Reklama' };
@@ -52,7 +52,7 @@ export default async function AdsPage({
         <RangePicker base="/admin/reklama" hours={hours} />
       </div>
 
-      <PageStats rows={merged} hours={hours} />
+      <PageStats rows={merged} />
 
       <div className="a-panel">
         <div className="a-panel-h">Sahifa × tugma</div>

@@ -245,6 +245,58 @@ table.a-t {
   color: #6f7b8f;
 }
 
+/* ── Saralanadigan ustun sarlavhasi (Ads Manager uslubi) ──────────────────
+   Sarlavhaning O'ZI tugma: bosilsa ko'pdan ozga, yana bosilsa teskarisi.
+   Tugma `th` ning butun matn maydonini egallaydi, shuning uchun teginish
+   nishoni sarlavha kattaligida bo'ladi — alohida ikonkani nishonlash shart
+   emas. Faol ustun ko'k rangda va strelkasi to'liq ko'rinadi; qolganlarida
+   xira `↕` turadi, ya'ni «bu ham bosiladi» belgisi doim ko'rinib turadi. */
+
+.a-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+/* Raqamli ustun o'ngga tekislangan — strelka matnning chap tomonida tursin */
+.a-t th.num .a-sort {
+  flex-direction: row-reverse;
+}
+
+.a-sort:hover {
+  color: #c7d0de;
+}
+
+.a-sort.on {
+  color: #7dd3fc;
+}
+
+.a-sort-i {
+  font-size: 9px;
+  line-height: 1;
+  opacity: 0.35;
+}
+
+.a-sort.on .a-sort-i {
+  opacity: 1;
+}
+
+.a-sort:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
 /* ── Boshqaruv elementlari ── */
 
 .a-in {

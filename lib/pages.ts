@@ -76,3 +76,31 @@ export function pageAt(path: string): LandingPage {
   if (!p) throw new Error(`lib/pages.ts: "${path}" kadri ro'yxatda yo'q`);
   return p;
 }
+
+/**
+ * Kadr uchun reklama havolasi.
+ *
+ * Ilgari bu `components/admin/AdLinks.tsx` ichida yashiringan edi. Endi
+ * analitika jadvali ham xuddi shu havolani ko'rsatadi — ikki joyda ikki xil
+ * havola chiqmasligi uchun qoida SHU YERDA, bitta nusxada.
+ *
+ * `utm_content` HAR DOIM kadr slug'i (`p7`) — statistikaning kaliti shu:
+ * Meta kabinetidagi kesim bilan bizning jadval aynan shu maydon orqali
+ * bog'lanadi. Bo'sh UTM'lar havolaga qo'shilmaydi: quruq `utm_medium=`
+ * reklama kabinetlarida alohida qiymat deb hisoblanib, hisobotni
+ * ifloslantiradi.
+ */
+export type AdUtm = { source?: string; medium?: string; campaign?: string };
+
+export function adLink(siteUrl: string, page: LandingPage, utm: AdUtm = {}): string {
+  const u = new URL(page.path, siteUrl);
+  const put = (k: string, v?: string) => {
+    const t = (v ?? '').trim();
+    if (t) u.searchParams.set(k, t);
+  };
+  put('utm_source', utm.source ?? 'instagram');
+  put('utm_medium', utm.medium);
+  put('utm_campaign', utm.campaign);
+  u.searchParams.set('utm_content', page.slug);
+  return u.toString();
+}

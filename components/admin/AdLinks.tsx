@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { LandingPage } from '@/lib/pages';
+import { adLink, type LandingPage } from '@/lib/pages';
+import { copyText } from './CopyLink';
 
 /**
  * Har kadr uchun tayyor reklama havolasi.
@@ -20,51 +21,6 @@ import type { LandingPage } from '@/lib/pages';
 
 const SOURCES = ['instagram', 'telegram', 'facebook', 'tiktok', 'youtube'];
 
-function buildUrl(
-  siteUrl: string,
-  page: LandingPage,
-  utm: { source: string; medium: string; campaign: string },
-): string {
-  const u = new URL(page.path, siteUrl);
-  if (utm.source) u.searchParams.set('utm_source', utm.source);
-  if (utm.medium) u.searchParams.set('utm_medium', utm.medium);
-  if (utm.campaign) u.searchParams.set('utm_campaign', utm.campaign);
-  // `utm_content` HAR DOIM kadr slug'i — statistikaning kaliti shu
-  u.searchParams.set('utm_content', page.slug);
-  return u.toString();
-}
-
-/**
- * Nusxalash. `navigator.clipboard` FAQAT xavfsiz kontekstda ishlaydi —
- * admin panel hali HTTPS'siz IP orqali ochilgan bo'lsa, u `undefined`
- * bo'ladi. Shuning uchun eski `execCommand` zaxirasi qoldirilgan: tugma
- * "bosilyapti-yu, hech narsa nusxalanmayapti" holatiga tushmasin.
- */
-async function copy(text: string): Promise<boolean> {
-  try {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  } catch {
-    /* zaxiraga tushamiz */
-  }
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.setAttribute('readonly', '');
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    const ok = document.execCommand('copy');
-    document.body.removeChild(ta);
-    return ok;
-  } catch {
-    return false;
-  }
-}
-
 export default function AdLinks({ siteUrl, pages }: { siteUrl: string; pages: LandingPage[] }) {
   const [source, setSource] = useState('instagram');
   const [medium, setMedium] = useState('cpc');
@@ -73,13 +29,13 @@ export default function AdLinks({ siteUrl, pages }: { siteUrl: string; pages: La
 
   const utm = { source, medium, campaign };
   const links = useMemo(
-    () => pages.map((p) => ({ page: p, url: buildUrl(siteUrl, p, utm) })),
+    () => pages.map((p) => ({ page: p, url: adLink(siteUrl, p, utm) })),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [pages, siteUrl, source, medium, campaign],
   );
 
   async function onCopy(key: string, text: string) {
-    const ok = await copy(text);
+    const ok = await copyText(text);
     setCopied(ok ? key : 'err');
     setTimeout(() => setCopied(null), 1600);
   }

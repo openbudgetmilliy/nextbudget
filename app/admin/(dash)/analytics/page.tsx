@@ -1,12 +1,19 @@
+import ButtonStats from '@/components/admin/ButtonStats';
+import CreativeStats from '@/components/admin/CreativeStats';
 import DbDown from '@/components/admin/DbDown';
-import PageStats, { mergePageRows } from '@/components/admin/PageStats';
+import PageStats from '@/components/admin/PageStats';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
-import { pageLabel } from '@/lib/pages';
-import { breakdown, creatives, pageButtons, pageStats, scrollFunnel } from '@/lib/stats';
+import { breakdown, creatives, mergePageRows, pageButtons, pageStats, scrollFunnel } from '@/lib/stats';
+import { env } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Analitika' };
 
+/**
+ * Jadvallar (kadrlar, kreativlar, tugmalar) alohida komponentlarda —
+ * ularning ustun sarlavhalari saralash tugmasi va shuning uchun mijoz
+ * tomonida ishlaydi. Bu sahifa faqat ma'lumot yig'adi va joylashtiradi.
+ */
 export default async function AnalyticsPage({
   searchParams,
 }: {
@@ -37,122 +44,28 @@ export default async function AnalyticsPage({
   }
 
   const maxScroll = Math.max(...d.scroll.map((s) => s.users), 1);
-  const bestCr = Math.max(...d.cre.map((c) => c.cr), 0);
 
   return (
     <>
       <h1 className="a-h1">Analitika</h1>
-      <p className="a-sub">Qaysi kreativ pul olib kelayotganini shu yerda ko’rasiz</p>
+      <p className="a-sub">
+        Qaysi sahifa va qaysi kreativ pul olib kelayotganini shu yerda ko’rasiz · ustun nomini
+        bosib saralang
+      </p>
 
       <div className="a-row">
         <RangePicker base="/admin/analytics" hours={hours} />
       </div>
 
-      {/* ── Sahifalar ── asosiy kesim, shuning uchun eng tepada */}
-      <PageStats rows={mergePageRows(d.pages)} hours={hours} />
+      {/* Har sahifa alohida reklama qilinadi — havolasi ham, raqami ham shu yerda */}
+      <PageStats rows={mergePageRows(d.pages)} siteUrl={env.SITE_URL} showLinks />
 
       {/* ── Kreativlar ── */}
-      <div className="a-panel">
-        <div className="a-panel-h">
-          <span>Instagram kreativlari bo’yicha konversiya</span>
-          <span style={{ fontSize: 12.5, fontWeight: 400, color: '#59637a' }}>
-            kamida 3 sessiya bo’lganlar
-          </span>
-        </div>
-        {d.cre.length ? (
-          <div className="a-tw">
-            <table className="a-t">
-              <thead>
-                <tr>
-                  <th>utm_content (kreativ)</th>
-                  <th>Kampaniya</th>
-                  <th className="num">Sessiya</th>
-                  <th className="num">Botga o’tdi</th>
-                  <th className="num">CR</th>
-                  <th style={{ width: 160 }} />
-                </tr>
-              </thead>
-              <tbody>
-                {d.cre.map((c, i) => (
-                  <tr key={`${c.utmContent}-${c.utmCampaign}-${i}`}>
-                    <td>
-                      <span className="a-tag ig">{c.utmContent ?? 'utm yo’q'}</span>
-                    </td>
-                    <td className="muted">{c.utmCampaign ?? '—'}</td>
-                    <td className="num">{c.sessions}</td>
-                    <td className="num">{c.conv}</td>
-                    <td className="num" style={{ fontWeight: 700, color: c.cr >= bestCr && bestCr > 0 ? '#34d399' : undefined }}>
-                      {c.cr}%
-                    </td>
-                    <td>
-                      <span className="a-bar-t" style={{ display: 'block' }}>
-                        <span
-                          className="a-bar-f"
-                          style={{ width: `${bestCr ? Math.round((c.cr / bestCr) * 100) : 0}%` }}
-                        />
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="a-empty">
-            Kreativ ma’lumoti yo’q. Har reklama havolasiga <code>utm_content</code> qo’ying:
-            <br />
-            <code>https://milliyjamoasi.uz/?utm_source=instagram&amp;utm_content=reel_01</code>
-          </div>
-        )}
-      </div>
+      <CreativeStats rows={d.cre} />
 
       <div className="a-grid-2">
         {/* ── Tugmalar ── */}
-        <div className="a-panel">
-          <div className="a-panel-h">
-            <span>Tugmalar reytingi</span>
-            <span style={{ fontSize: 12.5, fontWeight: 400, color: '#59637a' }}>
-              sahifa bo’yicha ajratilgan
-            </span>
-          </div>
-          {d.btns.length ? (
-            <div className="a-tw">
-              <table className="a-t">
-                <thead>
-                  <tr>
-                    <th>Sahifa</th>
-                    <th>Tugma</th>
-                    <th className="num">Bosish</th>
-                    <th className="num">Foydalanuvchi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* `elId` kadrlarda takrorlanadi (`/6` va `/7` da ham `bot`),
-                      shuning uchun qator kaliti sahifa bilan birga */}
-                  {d.btns.map((b, i) => (
-                    <tr key={`${b.page}-${b.elId}-${i}`}>
-                      <td>
-                        <span className="a-tag">{pageLabel(b.page)}</span>
-                      </td>
-                      <td className="muted">
-                        {b.elId ?? '—'}
-                        <span className="muted" style={{ display: 'block', fontSize: 12 }}>
-                          {b.elText ?? ''}
-                        </span>
-                      </td>
-                      <td className="num" style={{ fontWeight: 700 }}>
-                        {b.clicks}
-                      </td>
-                      <td className="num">{b.users}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <div className="a-empty">CTA bosilmagan</div>
-          )}
-        </div>
+        <ButtonStats rows={d.btns} />
 
         {/* ── Scroll voronka ── */}
         <div className="a-panel">

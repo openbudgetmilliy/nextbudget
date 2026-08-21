@@ -1,5 +1,6 @@
 import 'server-only';
 import { prisma } from './prisma';
+import { LANDING_PAGES, pageOf } from './pages';
 
 /**
  * Analitika so'rovlari — xom SQL.
@@ -237,11 +238,17 @@ export async function sessionTimeline(id: string) {
  * natija bo'sh satr bo'ladi, uni `NULLIF` orqali `/` ga qaytaramiz.
  */
 export type PageRow = {
+  /** Sessiya aynan shu sahifadan boshlangan — «Kirdi» */
   page: string;
   sessions: number;
+  /** Sahifani ochgan NOYOB foydalanuvchilar — «Ko'rdi» */
+  viewers: number;
   conv: number;
+  /** Shu sahifadagi tugma necha marta bosilgan — «Bosildi» */
   clicks: number;
+  /** Tugmani bosgan NOYOB foydalanuvchilar — «Bosgan odam» */
   clickUsers: number;
+  /** `Bosgan odam / Ko'rdi` — sahifani ko'rganlarning qanchasi bosgani */
   cr: number;
 };
 
@@ -259,21 +266,73 @@ export async function pageStats(hours = 168): Promise<PageRow[]> {
     c AS (
       SELECT CASE WHEN page IS NULL THEN '—'
                   ELSE COALESCE(NULLIF(rtrim(page, '/'), ''), '/') END AS page,
-             count(*)::int                    AS clicks,
-             count(DISTINCT "sessionId")::int AS users
+             count(DISTINCT "sessionId") FILTER (WHERE type = 'view')::int AS viewers,
+             count(*) FILTER (WHERE type = 'cta')::int                     AS clicks,
+             count(DISTINCT "sessionId") FILTER (WHERE type = 'cta')::int  AS users
       FROM "Event"
-      WHERE type = 'cta' AND ts >= now() - (${hours}::int * interval '1 hour')
+      WHERE type IN ('view', 'cta') AND ts >= now() - (${hours}::int * interval '1 hour')
       GROUP BY 1
     )
     SELECT COALESCE(s.page, c.page)                          AS page,
            COALESCE(s.sessions, 0)                           AS sessions,
+           COALESCE(c.viewers, 0)                            AS viewers,
            COALESCE(s.conv, 0)                               AS conv,
            COALESCE(c.clicks, 0)                             AS clicks,
            COALESCE(c.users, 0)                              AS "clickUsers",
-           COALESCE(round(100.0 * s.conv / NULLIF(s.sessions, 0), 2), 0)::float8 AS cr
+           COALESCE(round(100.0 * c.users / NULLIF(c.viewers, 0), 2), 0)::float8 AS cr
     FROM s FULL JOIN c ON c.page = s.page
-    ORDER BY sessions DESC, clicks DESC
+    ORDER BY COALESCE(c.viewers, 0) DESC, COALESCE(s.sessions, 0) DESC
   `;
+}
+
+/**
+ * `pageStats()` qatorlarini kadr ro'yxati bilan birlashtiradi.
+ *
+ * Komponentda emas, shu yerda: uni server sahifalar chaqiradi, jadval
+ * komponenti esa endi mijoz tomonida (saralash uchun) va `server-only`
+ * modulini qiymat sifatida import qila olmaydi.
+ *
+ * MUHIM: statistikasi NOL bo'lgan kadr ham qatorda qoladi. Nol — bu
+ * ma'lumot yo'qligi emas, «bu kadrga reklama umuman kelmayapti» degani,
+ * aynan shuni ko'rish kerak. Faqat bazadagi qatorlarni chizsak, o'lik kadr
+ * jadvaldan yo'qolib ketardi.
+ *
+ * Tartib — `LANDING_PAGES` bo'yicha, ro'yxatda yo'q yo'llar oxirida. Bu
+ * BOSHLANG'ICH tartib, xolos: jadvalda foydalanuvchi ustun sarlavhasini
+ * bosib o'zi saralaydi (`components/admin/useSort.tsx`).
+ */
+export type MergedRow = PageRow & { name: string; note: string; known: boolean; slug?: string };
+
+export function mergePageRows(rows: PageRow[]): MergedRow[] {
+  const byPath = new Map(rows.map((r) => [r.page, r]));
+
+  const known: MergedRow[] = LANDING_PAGES.map((p) => {
+    const r = byPath.get(p.path);
+    byPath.delete(p.path);
+    return {
+      page: p.path,
+      sessions: r?.sessions ?? 0,
+      viewers: r?.viewers ?? 0,
+      conv: r?.conv ?? 0,
+      clicks: r?.clicks ?? 0,
+      clickUsers: r?.clickUsers ?? 0,
+      cr: r?.cr ?? 0,
+      name: p.name,
+      note: p.note,
+      known: true,
+      slug: p.slug,
+    };
+  });
+
+  // Ro'yxatda yo'q yo'llar (o'chirilgan kadr, bot, `—`) — oxirida, alohida
+  const rest: MergedRow[] = [...byPath.values()].map((r) => ({
+    ...r,
+    name: pageOf(r.page)?.name ?? '—',
+    note: 'Ro’yxatda yo’q sahifa',
+    known: false,
+  }));
+
+  return [...known, ...rest];
 }
 
 /**
