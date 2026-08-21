@@ -7,9 +7,9 @@ import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
 import Logo from '@/components/Logo';
 
-import { getSettings, pagePixels } from '@/lib/data';
+import { getSettings, pageCta, pagePixels } from '@/lib/data';
 import { SITE, applyVars, titleLines } from '@/lib/content';
-import { botUsername, fixedStart, tgLink } from '@/lib/tg';
+import { botUsername } from '@/lib/tg';
 import { pageAt } from '@/lib/pages';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -62,10 +62,11 @@ const TILES = [
 
 export default async function ZamonaviyPage() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, PAGE.slug);
-  // Sozlamada qat'iy `?start=` bo'lsa UTM qo'shimchasi yopishmasin —
-  // kod botga toza yetib borishi kerak (`data-tg` bo'lmasa stamping tegmaydi)
-  const tgStamp = fixedStart(s.bot_username || env.BOT) === null;
+  // Tugma manzili: kadrga xos havola bo'lsa (`link_p…`, /admin/settings)
+  // o'sha, bo'lmasa umumiy bot sozlamasi. `stamp` — UTM yopishtiriladimi:
+  // qat'iy `?start=` yoki telegramdan boshqa havolada tegilmaydi (`data-tg`
+  // bo'lmasa `lib/track.ts` stamping'i o'tib ketadi).
+  const { href: tg, stamp: tgStamp } = pageCta(s, PAGE.slug);
   const bot = botUsername(s.bot_username || env.BOT);
   // Admin '@' bilan saqlagan bo'lsa ham havola buzilmasin
   const channel = (s.tg_channel || '').replace(/^@/, '');

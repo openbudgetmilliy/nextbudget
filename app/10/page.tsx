@@ -15,29 +15,27 @@ import Countdown from './Countdown';
 import c from './page.module.css';
 
 /**
- * `/8` — «Taymer» kadri: yorug' ko'k-firuza, muddat taymeri bilan.
+ * `/10` — «Taymer 2» kadri: `/8` ning aynan nusxasi, alohida kampaniya uchun.
  *
- * Uslub manbasi — foydalanuvchi ko'rsatgan namuna (openbudget.lol/enter,
- * «variant 4»): oq-havorang fon, xiralashgan ko'k-firuza dog'lar, qora
- * qalin sarlavhaning gradient bo'lagi, katta gradient CTA va muddat
- * taymeri kartochkasi. Rasm-kod ko'chirilmagan — faqat dizayn tili;
- * matn odatdagidek admin sozlamalaridan, tugma bot havolasiga boradi.
+ * Nusxa nima uchun: dizayn `/8` bilan bir xil bo'lsa ham, bu MUSTAQIL kadr —
+ * o'z slug'i (`p10`), o'z Meta Pixeli (`pixel_p10`) va admin paneldagi o'z
+ * qatori bor. Ya'ni bitta dizaynni ikki reklama akkaunti / ikki kampaniya
+ * bilan alohida o'lchash mumkin. `/8` ga bu fayl umuman tegmaydi.
  *
- * Boshqa kadrlardan farqi: bu BITTA ekran emas — hero + taymer kartasi,
- * sahifa ozgina skroll bo'ladi (namunadagi tuzilish shunday).
+ * Uslub `./page.module.css` da — `/8` nikidan ko'chirilgan, import emas:
+ * kelajakda birining rangi o'zgarsa, ikkinchisi tegilmagan qolishi kerak.
  *
- * Taymer sanasi `Countdown.tsx` da QO'LDA yozilgan — kampaniya oynasi
- * tugaganda o'sha yerda yangilanadi.
+ * Taymer sanasi umumiy — `lib/campaign.ts` (hamma kadr bitta sanaga sanaydi).
  *
- * MATNLAR HAM QO'LDA — buyurtma shunday: bu kadr namunaning kampaniya
- * matnini so'zma-so'z takrorlaydi (100 000 so'mgacha, iPhone 17 Pro Max,
- * 30-avgust muddati). Admin sozlamalari bu kadr matniga ta'sir qilmaydi;
- * faqat bot havolasi odatdagidek sozlamadan olinadi.
+ * MATNLAR QO'LDA — `/8` dagidek: kampaniya matni so'zma-so'z takrorlanadi
+ * (100 000 so'mgacha, iPhone 17 Pro Max, 30-avgust muddati). Admin
+ * sozlamalari bu kadr matniga ta'sir qilmaydi; faqat bot havolasi
+ * odatdagidek sozlamadan olinadi.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
-const PAGE = pageAt('/8');
+const PAGE = pageAt('/10');
 
 export const metadata: Metadata = {
   robots: { index: false, follow: true },
@@ -51,7 +49,7 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-export default async function TaymerPage() {
+export default async function Taymer2Page() {
   const s = await getSettings();
   // Tugma manzili: kadrga xos havola bo'lsa (`link_p…`, /admin/settings)
   // o'sha, bo'lmasa umumiy bot sozlamasi. `stamp` — UTM yopishtiriladimi:

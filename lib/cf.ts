@@ -43,7 +43,7 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
  * Landing'ni to'liq yangilash: ISR + CF edge.
  *
  * Barcha kadrlar yangilanadi — ro'yxat `lib/pages.ts` da. Narx yoki bot
- * havolasi sozlamada bir marta o'zgarganda YETTALASI ham yangilanishi shu
+ * havolasi sozlamada bir marta o'zgarganda HAMMASI ham yangilanishi shu
  * yerda ta'minlanadi; birortasi tushib qolsa eski narx bilan qolib ketardi.
  * CF'da shu yo'llar va sitemap purge qilinadi.
  */

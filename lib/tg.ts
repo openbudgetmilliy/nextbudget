@@ -8,7 +8,7 @@ import { env } from './env';
  * ichidagi `stampTelegramLinks()` uning ustiga trafik manbasini qo'shadi.
  * JS ishlamasa ham havola ishlaydi.
  *
- * Havola YETTALA kadrda bitta manbadan keladi — `bot_username` sozlamasi
+ * Havola HAMMA kadrda bitta manbadan keladi — `bot_username` sozlamasi
  * (`/admin/settings`). Admin uni o'zgartirsa, `refreshLanding()` hamma
  * kadrni qayta build qiladi va tugmalar birdek yangi botga ketadi.
  */
@@ -62,7 +62,7 @@ function cleanStart(v: string): string {
  * bo'yicha nechta odam kelganini sanaydi). Shunda kadr slug'i ham, UTM
  * qo'shimchasi ham qo'yilmaydi: kod botga TOZA yetib borishi kerak.
  *
- * Havolada `start` bo'lmasa — har kadr o'z slug'ini yuboradi (`p1`…`p9`)
+ * Havolada `start` bo'lmasa — har kadr o'z slug'ini yuboradi (`p1`…`p10`)
  * va ustiga trafik manbasi yopishadi (`p6-instagram`).
  *
  * Kadr kesimidagi o'z statistikamiz bunga BOG'LIQ EMAS — u `landedAt` va
@@ -83,7 +83,7 @@ export function fixedStart(bot: string): string | null {
 
 /**
  * @param bot   sozlamadagi xom qiymat (`@Bot`, `Bot` yoki to'liq havola)
- * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p9`).
+ * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p10`).
  *              Sozlamada qat'iy `?start=` bo'lsa BU parametr e'tiborsiz
  *              qoladi va hamma kadr bitta kod bilan botga boradi.
  */
@@ -91,8 +91,45 @@ export function tgLink(bot: string, start = 'web'): string {
   // Uch qavatli zaxira. Sozlamaga bo'sh joy yoki `@` yozib qo'yilsa
   // `botUsername` bo'sh qaytaradi — busiz havola `https://t.me/?start=p1`
   // bo'lib, Telegram BOSH SAHIFASIGA olib borardi va butun voronka
-  // to'qqizala kadrda bir vaqtda jim o'lardi (hech qayerda xato ko'rinmay).
+  // hamma kadrda bir vaqtda jim o'lardi (hech qayerda xato ko'rinmay).
   const b = botUsername(bot) || botUsername(env.BOT) || 'OpenBudgetBot';
   const s = fixedStart(bot) ?? (cleanStart(start) || 'web');
   return `https://t.me/${b}?start=${s}`;
+}
+
+/** Brauzer ocha oladigan manzil. `javascript:`, `data:` va h.k. shu yerda kesiladi. */
+const SAFE_URL = /^https?:\/\//i;
+
+/**
+ * KADR TUGMASINING manzili — umumiy bot sozlamasining kadrga xos ustuni.
+ *
+ * `/admin/settings` da har kadr uchun alohida havola maydoni bor
+ * (`link_p1`…`link_p10`). Bo'sh bo'lsa — hech narsa o'zgarmaydi, kadr
+ * umumiy `bot_username` sozlamasiga boradi. To'ldirilsa — FAQAT o'sha kadr
+ * boshqa manzilga ketadi (boshqa bot, kanal yoki butunlay boshqa sayt).
+ *
+ * Qiymat uch xil bo'lishi mumkin:
+ *
+ *   · Telegram bot nomi yoki havolasi (`@Bot`, `Bot`, `https://t.me/Bot`)
+ *     — umumiy maydondagi qoidalar bilan ishlanadi: kadr slug'i `?start=`
+ *     ga tushadi va ustiga trafik manbasi yopishadi. Havolada qat'iy
+ *     `?start=abu1` bo'lsa — kod toza ketadi, hech narsa qo'shilmaydi.
+ *   · Har qanday boshqa `http(s)` havola (kanal taklifi `t.me/+…`, tashqi
+ *     sayt) — XOM HOLICHA. UTM yopishtirilmaydi: bu Telegram `start` kodi
+ *     emas, begona manzilga tegishimiz noto'g'ri bo'lardi.
+ *   · Tushunarsiz qiymat (sxemasiz matn, `javascript:` va h.k.) — e'tiborsiz
+ *     qoldiriladi va kadr umumiy botga qaytadi. Tugma HECH QACHON o'lik
+ *     qolmasligi kerak: admin xato yozgani butun voronkani to'xtatmasin.
+ *
+ * @returns `href` — tugmaning manzili; `stamp` — `data-tg` qo'yiladimi,
+ *          ya'ni `lib/track.ts` UTM'ni ustiga yopishtiradimi.
+ */
+export function ctaLink(raw: string, bot: string, slug: string): { href: string; stamp: boolean } {
+  const viaBot = (v: string) => ({ href: tgLink(v, slug), stamp: fixedStart(v) === null });
+
+  const v = (raw || '').trim();
+  if (!v) return viaBot(bot);
+  if (botUsername(v)) return viaBot(v);
+  if (SAFE_URL.test(v)) return { href: v, stamp: false };
+  return viaBot(bot);
 }

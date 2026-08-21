@@ -98,11 +98,16 @@ export default function SettingsForm({ values }: { values: Record<string, string
           kelganini sanaydi. Kodni o’zgartirsangiz hamma sahifada birdan o’zgaradi.
           <br />
           <code>?start=</code> yozilmasa — har kadr o’z belgisini yuboradi
-          (<code>p1</code>…<code>p9</code>) va ustiga trafik manbasi qo’shiladi
+          (<code>p1</code>…<code>p10</code>) va ustiga trafik manbasi qo’shiladi
           (<code>p6-instagram</code>).
           <br />
           Admin paneldagi «qaysi kadrdan qancha odam keldi» jadvali ikkala holatda
           ham to’liq ishlaydi — u boshqa manbadan hisoblanadi.
+          <br />
+          <br />
+          <b style={{ color: '#c7d0de' }}>Bitta kadr boshqa manzilga ketishi kerak bo’lsa</b> —
+          pastdagi «Kadr havolalari» panelidan yozing: u SHU maydondan ustun turadi va faqat
+          o’sha kadrga tegadi.
         </p>
       </div>
     </div>

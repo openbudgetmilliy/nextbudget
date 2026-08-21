@@ -1,5 +1,6 @@
 import { prisma } from './prisma';
 import { env } from './env';
+import { ctaLink } from './tg';
 
 /**
  * Landing uchun ma'lumot o'qish.
@@ -43,6 +44,25 @@ export const DEFAULT_SETTINGS = {
   pixel_p7: '',
   pixel_p8: '',
   pixel_p9: '',
+  pixel_p10: '',
+
+  /**
+   * Kadr havolalari — «tugma bosilganda qayerga ketadi», har kadrga alohida.
+   * Bo'sh bo'lsa kadr umumiy `bot_username` ga boradi (odatdagi holat).
+   * To'ldirilsa faqat O'SHA kadr boshqa manzilga ketadi: boshqa bot, kanal
+   * yoki tashqi sayt. Qabul qilinadigan ko'rinishlar — `lib/tg.ts` →
+   * `ctaLink`. Admin /admin/settings dan yozadi, deploy shart emas.
+   */
+  link_p1: '',
+  link_p2: '',
+  link_p3: '',
+  link_p4: '',
+  link_p5: '',
+  link_p6: '',
+  link_p7: '',
+  link_p8: '',
+  link_p9: '',
+  link_p10: '',
 } as const;
 
 export type Settings = Record<keyof typeof DEFAULT_SETTINGS, string>;
@@ -83,4 +103,16 @@ export function pagePixels(s: Settings, slug: string): string[] {
     .split(',')
     .map((x) => x.trim())
     .filter(Boolean);
+}
+
+/**
+ * Kadr tugmasining manzili — `link_<slug>` bo'lsa o'sha, bo'lmasa umumiy bot.
+ *
+ * Hamma kadr SHU yagona funksiyani chaqiradi: qoida bitta joyda tursin,
+ * aks holda o'nta sahifada o'nta xil xulq paydo bo'lardi. Qaror mantig'i —
+ * `lib/tg.ts` → `ctaLink`.
+ */
+export function pageCta(s: Settings, slug: string): { href: string; stamp: boolean } {
+  const raw = (s as Record<string, string>)[`link_${slug}`] ?? '';
+  return ctaLink(raw, s.bot_username || env.BOT, slug);
 }
