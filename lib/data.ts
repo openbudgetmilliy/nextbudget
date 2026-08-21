@@ -50,13 +50,28 @@ export type Settings = Record<keyof typeof DEFAULT_SETTINGS, string>;
 export async function getSettings(): Promise<Settings> {
   const out: Settings = { ...DEFAULT_SETTINGS };
   if (!env.DATABASE_URL) return out;
-  try {
-    const rows = await prisma.setting.findMany();
-    for (const r of rows) {
-      if (r.key in out && r.value) out[r.key as keyof Settings] = r.value;
+
+  /**
+   * Uch marta urinamiz. Nega: sahifalar `force-static` + `revalidate = 60`,
+   * ya'ni ISR yangilanishi paytidagi BIR LAHZALIK DB uzilishi zaxira
+   * qiymatlarni (boshqa bot, boshqa narx) statik HTML'ga muhrlab qo'yardi
+   * va u keyingi muvaffaqiyatli revalidate'gacha shu holda tarqalardi.
+   * Xato hech qayerda ko'rinmasdi — 200, tugma joyida, faqat manzil boshqa.
+   */
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const rows = await prisma.setting.findMany();
+      for (const r of rows) {
+        if (r.key in out && r.value.trim()) out[r.key as keyof Settings] = r.value;
+      }
+      return out;
+    } catch (err) {
+      if (attempt === 3) {
+        console.warn('[build] sozlamalar DB dan olinmadi:', (err as Error).message);
+        break;
+      }
+      await new Promise((r) => setTimeout(r, 300 * attempt));
     }
-  } catch (err) {
-    console.warn('[build] sozlamalar DB dan olinmadi:', (err as Error).message);
   }
   return out;
 }

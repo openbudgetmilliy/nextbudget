@@ -1,3 +1,5 @@
+import { env } from './env';
+
 /**
  * Telegram deep link.
  *
@@ -19,12 +21,32 @@
  * ni qo'yadi. Uchalasi ham ishlashi kerak — aks holda tugma butun saytda
  * buzuq havolaga aylanadi va buni faqat mijoz sezadi.
  */
+/** Telegram qoidasi: 5–32 belgi, harf bilan boshlanadi, faqat harf/raqam/`_` */
+const VALID_USERNAME = /^[a-zA-Z][a-zA-Z0-9_]{4,31}$/;
+
 export function botUsername(raw: string): string {
   const v = (raw || '').trim();
-  // To'liq havola (yoki `t.me/...` sxemasiz) — yo'lning birinchi bo'lagini olamiz
-  const m = v.match(/(?:^|\/\/|\s)(?:t(?:elegram)?\.me|telegram\.dog)\/([^/?#\s]+)/i);
-  const name = m ? m[1] : v;
-  return name.replace(/^@/, '').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 32);
+  if (!v) return '';
+
+  let name = v;
+
+  // Qiymat havolaga o'xshasa — FAQAT t.me yo'lidan olamiz. Ilgari bunday
+  // emasdi va tanimagan havoladan «nom» yasab qo'yardi: `https://t.me/`
+  // → `httpstme`, Telegram Web havolasi → `httpswebtelegramorgk...`.
+  // Ya'ni havola ko'rinishida, lekin butunlay boshqa manzil.
+  if (/[/.:]/.test(v)) {
+    const m = v.match(/(?:^|\/\/|\s)(?:t(?:elegram)?\.me|telegram\.dog)\/([^/?#\s]+)/i);
+    if (!m) return '';
+    name = m[1];
+    // `t.me/+AbCd` — bu taklif havolasi, bot nomi emas
+    if (name.startsWith('+')) return '';
+  }
+
+  const clean = name.replace(/^@/, '').replace(/[^a-zA-Z0-9_]/g, '');
+  // Qoidaga tushmasa — YO'Q deb hisoblaymiz. Yarim tozalangan nomni
+  // qaytarish eng yomoni edi: havola ishlaydigandek ko'rinib, hech qayerga
+  // olib bormasdi.
+  return VALID_USERNAME.test(clean) ? clean : '';
 }
 
 /**
@@ -33,7 +55,11 @@ export function botUsername(raw: string): string {
  *              Bot tomonda «bu odam qaysi reklamadan keldi» shundan bilinadi.
  */
 export function tgLink(bot: string, start = 'web'): string {
-  const b = botUsername(bot);
+  // Uch qavatli zaxira. Sozlamaga bo'sh joy yoki `@` yozib qo'yilsa
+  // `botUsername` bo'sh qaytaradi — busiz havola `https://t.me/?start=p1`
+  // bo'lib, Telegram BOSH SAHIFASIGA olib borardi va butun voronka
+  // to'qqizala kadrda bir vaqtda jim o'lardi (hech qayerda xato ko'rinmay).
+  const b = botUsername(bot) || botUsername(env.BOT) || 'OpenBudgetBot';
   const s = start.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 60) || 'web';
   return `https://t.me/${b}?start=${s}`;
 }

@@ -3,6 +3,8 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { LANDING_PAGES } from '@/lib/pages';
+
 /**
  * ATAYIN faqat ikki maydon: narx va bot manzili — ikkalasi SAKKIZALA
  * kadrga birdek tegadi. Qolgan matn sozlamalari (sarlavha, tavsif, tugma
@@ -83,8 +85,8 @@ export default function SettingsForm({ values }: { values: Record<string, string
         </div>
 
         <p style={{ fontSize: 12.5, color: '#59637a', marginTop: 16, lineHeight: 1.6 }}>
-          Saqlangach sakkizala kadr (<code>/</code>, <code>/2</code>…<code>/8</code>) qayta
-          build bo’ladi — o’zgarish bir necha sekundda hamma sahifada ko’rinadi.
+          Saqlangach barcha {LANDING_PAGES.length} ta kadr qayta build bo’ladi — o’zgarish
+          bir necha sekundda hamma sahifada ko’rinadi.
           <br />
           Bot maydoniga <code>@Bot</code>, <code>Bot</code> yoki to’liq
           <code> https://t.me/Bot</code> — uchalasi ham ishlaydi.

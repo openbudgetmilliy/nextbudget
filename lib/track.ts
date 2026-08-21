@@ -153,14 +153,22 @@ function stampTelegramLinks(): void {
     try {
       const u = new URL(a.href);
       const base = u.searchParams.get('start') || 'web';
-      const tag = [src, creative === base ? '' : creative]
+      // Kreativ kadr nomining o'zi bo'lsa takrorlamaymiz. Solishtirish
+      // tozalangan va kichik harfda — `P6` yoki `p6 ` ham o'sha kadr
+      // (xom solishtiruv `p6-instagram-P6` chiqarib yuborardi).
+      const dup = clean(creative).toLowerCase() === clean(base).toLowerCase();
+      const tag = [src, dup ? '' : creative]
         .filter(Boolean)
         .map(clean)
         .filter(Boolean)
         .join('-')
         .slice(0, 40);
       if (!tag) return;
-      u.searchParams.set('start', `${base}-${tag}`.slice(0, 64));
+      const next = `${base}-${tag}`.slice(0, 64);
+      // Ikki marta yopishtirmaymiz: erta inline skript (app/layout.tsx)
+      // allaqachon qo'ygan bo'lishi mumkin — aks holda `p6-ig-ig` chiqardi
+      if (base === next || base.endsWith(`-${tag}`)) return;
+      u.searchParams.set('start', next);
       a.href = u.toString();
     } catch {
       /* jim */

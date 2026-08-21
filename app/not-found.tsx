@@ -1,3 +1,4 @@
+import { getSettings } from '@/lib/data';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 import { Telegram } from '@/components/Icons';
@@ -11,7 +12,12 @@ import { Telegram } from '@/components/Icons';
  */
 export const metadata = { title: 'Sahifa topilmadi', robots: { index: false } };
 
-export default function NotFound() {
+export default async function NotFound() {
+  // Bot manzili sozlamadan — ilgari bu yagona tugma `env.BOT` ga qarardi va
+  // admin botni almashtirgach 404 sahifasi ESKI botga yuboraverardi.
+  const s = await getSettings();
+  const tg = tgLink(s.bot_username || env.BOT, 'web_404');
+
   return (
     <main className="nf">
       <div>
@@ -27,7 +33,7 @@ export default function NotFound() {
             Bosh sahifa
           </a>
           <a
-            href={tgLink(env.BOT, 'web_404')}
+            href={tg}
             className="nf-btn nf-btn-ink"
             rel="noopener"
           >

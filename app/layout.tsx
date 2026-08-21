@@ -71,6 +71,30 @@ const PIXEL_SNIPPET =
       `fbq('track','PageView');`
     : '';
 
+/**
+ * Telegram havolalariga trafik manbasini ERTA yopishtiradi.
+ *
+ * Nega inline: `lib/track.ts` dagi o'sha mantiq React hydration'idan keyin
+ * ishlaydi, ya'ni HTML chizilgandan to JS yuklanguncha bo'lgan oraliqda
+ * bosilgan tugma botga manbasiz (`?start=p6`) ketardi. Bu skript HTML
+ * o'qilishi bilan, hydration'gacha ishlaydi. Ikkalasi ham idempotent —
+ * qaysi biri oldin ishlasa ham natija bitta.
+ */
+const EARLY_STAMP = `(function(){try{
+var p=new URLSearchParams(location.search),
+    src=p.get('utm_source')||(/instagram/i.test(document.referrer)?'ig':''),
+    cr=p.get('utm_content')||p.get('utm_campaign')||'',
+    cl=function(v){return v.replace(/[^a-zA-Z0-9_-]/g,'')};
+document.querySelectorAll('a[data-tg]').forEach(function(a){try{
+var u=new URL(a.href),b=u.searchParams.get('start')||'web',
+    dup=cl(cr).toLowerCase()===cl(b).toLowerCase(),
+    t=[src,dup?'':cr].filter(Boolean).map(cl).filter(Boolean).join('-').slice(0,40);
+if(!t)return;
+var n=(b+'-'+t).slice(0,64);
+if(b===n||b.slice(-(t.length+1))==='-'+t)return;
+u.searchParams.set('start',n);a.href=u.toString();
+}catch(e){}});}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="uz" className={fontVars}>
@@ -90,6 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        <script dangerouslySetInnerHTML={{ __html: EARLY_STAMP }} />
         {PIXEL_IDS.length > 0 && (
           <noscript>
             {/* JS o'chirilgan brauzer uchun zaxira — hech bo'lmasa PageView yetib borsin */}
