@@ -1,45 +1,63 @@
 import type { Metadata, Viewport } from 'next';
 
+import Logo from '@/components/Logo';
 import MetaPixel from '@/components/MetaPixel';
 import Tracker from '@/components/Tracker';
 import TurnstileGuard from '@/components/TurnstileGuard';
-import Logo from '@/components/Logo';
+import Countdown from '@/components/landing/Countdown';
 
-import { getSettings, pageCta, pagePixels } from '@/lib/data';
+import { CAMPAIGN, campaignLeft, deadlineLabel, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
-import { botUsername } from '@/lib/tg';
-import { pageAt } from '@/lib/pages';
+import { getSettings, pageCta, pagePixels } from '@/lib/data';
 import { env, GATE_ON } from '@/lib/env';
+import { pageAt } from '@/lib/pages';
+import { botUsername } from '@/lib/tg';
 
-import Countdown from './Countdown';
 import c from './page.module.css';
 
 /**
- * `/8` — «Taymer» kadri: yorug' ko'k-firuza, muddat taymeri bilan.
+ * `/8` — «Neon» kadri.
  *
- * Uslub manbasi — foydalanuvchi ko'rsatgan namuna (openbudget.lol/enter,
- * «variant 4»): oq-havorang fon, xiralashgan ko'k-firuza dog'lar, qora
- * qalin sarlavhaning gradient bo'lagi, katta gradient CTA va muddat
- * taymeri kartochkasi. Rasm-kod ko'chirilmagan — faqat dizayn tili;
- * matn odatdagidek admin sozlamalaridan, tugma bot havolasiga boradi.
+ * milliyjamosimiz.uz loyihasidagi `/8` dan ko'chirilgan. Yondashuv: BITTA
+ * GAP, IKKI EKRAN. Bo'lim yo'q, menyu yo'q — sarlavha, tugma va bitta
+ * karta. Sovuq trafik uchun qisqa kadr: o'qish kam bo'lsa, tugmagacha
+ * yo'l ham qisqa.
  *
- * Boshqa kadrlardan farqi: bu BITTA ekran emas — hero + taymer kartasi,
- * sahifa ozgina skroll bo'ladi (namunadagi tuzilish shunday).
+ * Bu kadr ilgari «Taymer» (yorug' ko'k-firuza) edi. O'sha dizayn YO'QOLMADI
+ * — u `/10` da turibdi va o'z pixeli bilan alohida o'lchanadi.
  *
- * Taymer sanasi `Countdown.tsx` da QO'LDA yozilgan — kampaniya oynasi
- * tugaganda o'sha yerda yangilanadi.
+ * MATN AKSIYAGA BOG'LANGAN, narx sozlamasiga emas. Qolgan kadrlar bitta
+ * ovoz narxini ko'rsatadi; bu sahifa esa aksiyaning yuqori chegarasini va
+ * sovrinni aytadi — ikkalasi boshqa gap, shuning uchun matn
+ * `lib/campaign.ts` da.
  *
- * MATNLAR HAM QO'LDA — buyurtma shunday: bu kadr namunaning kampaniya
- * matnini so'zma-so'z takrorlaydi (100 000 so'mgacha, iPhone 17 Pro Max,
- * 30-avgust muddati). Admin sozlamalari bu kadr matniga ta'sir qilmaydi;
- * faqat bot havolasi odatdagidek sozlamadan olinadi.
+ * Muddat o'tsa taymer o'rniga ko'rsatkichlar chiqadi: nol turgan taymer
+ * «aksiya tugagan» degan xabar bo'lardi va reklama trafigini bekorga
+ * yoqib yuborardi.
+ *
+ * Sahifa statik (SSG); client kod — Tracker, taymer va Turnstile.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
 const PAGE = pageAt('/8');
 
+/**
+ * Muddat o'tganda ko'rsatiladigan raqamlar.
+ *
+ * Uchtasi qat'iy (loyiha bo'yicha umumiy hisobot), to'rtinchisi admin
+ * sozlamasidan — shu sabab u yerda o'zgartirilsa sahifada ham o'zgaradi.
+ */
+const liveStats = (reviews: string) => [
+  { num: '12 500+', lab: 'Ovoz berildi' },
+  { num: '437 mln+', lab: 'So‘m to‘landi' },
+  { num: reviews, lab: 'Qatnashuvchi' },
+  { num: '97%', lab: 'To‘lovni oldi' },
+];
+
+/** A/B kadri — qidiruvga chiqmasin, indeks faqat asosiy sahifada */
 export const metadata: Metadata = {
+  title: `Ovoz bering va ${CAMPAIGN.ceiling} pul oling`,
   robots: { index: false, follow: true },
 };
 
@@ -47,113 +65,125 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#f8fafc',
-  colorScheme: 'light',
+  themeColor: '#05060c',
+  colorScheme: 'dark',
 };
 
-export default async function TaymerPage() {
+/** Tugmadagi strelka — matn rangini `currentColor` orqali oladi */
+function Arrow() {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={c.arrow}
+    >
+      <path d="M5 12h13M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+export default async function NeonPage() {
   const s = await getSettings();
-  // Tugma manzili: kadrga xos havola bo'lsa (`link_p…`, /admin/settings)
-  // o'sha, bo'lmasa umumiy bot sozlamasi. `stamp` — UTM yopishtiriladimi:
-  // qat'iy `?start=` yoki telegramdan boshqa havolada tegilmaydi (`data-tg`
-  // bo'lmasa `lib/track.ts` stamping'i o'tib ketadi).
+  // Tugma manzili: kadrga xos havola bo'lsa (`link_p8`) o'sha, bo'lmasa
+  // umumiy bot sozlamasi. `stamp` — UTM yopishtiriladimi
   const { href: tg, stamp: tgStamp } = pageCta(s, PAGE.slug);
-  // botUsername(): admin to'liq havola yozsa ham JSON-LD'ga toza username tushsin
+  // botUsername(): admin to'liq havola yozsa ham toza username chiqsin
   const bot = botUsername(s.bot_username || env.BOT);
   const channel = (s.tg_channel || '').replace(/^@/, '');
 
+  // Serverdagi boshlang'ich qiymat — client birinchi renderda AYNAN shuni
+  // chizadi, ya'ni gidratatsiya mos keladi
+  const left = campaignLeft();
+  const open = isOpen();
+
+  const cta = (
+    <a
+      href={tg}
+      className={c.cta}
+      data-t="cta"
+      data-t-id="ovoz"
+      data-tg={tgStamp ? '' : undefined}
+      rel="noopener"
+    >
+      Ovoz berish
+      <Arrow />
+    </a>
+  );
+
   return (
     <div className={c.page}>
-      <style>{'body{background:#f8fafc}'}</style>
+      {/* Global body foni oq — bu kadr to'q, overscroll mos tursin */}
+      <style>{'body{background:#05060c}'}</style>
 
-      {/* ── Hero ── */}
-      <section className={c.hero}>
-        <div className={`${c.blob} ${c.blobA}`} aria-hidden />
-        <div className={`${c.blob} ${c.blobB}`} aria-hidden />
+      {/* Fon: tepada ko'k-moviy, karta atrofida siyoh-binafsha yog'du.
+          Alohida qatlam — matn ustiga tushmasin. */}
+      <div className={c.sky} aria-hidden />
 
-        <div className={c.heroIn}>
-          <div className={c.brand}>
-            <Logo size={30} className="" />
-            {SITE.brand}
+      <main className={c.wrap}>
+        <header className={c.head}>
+          <div className={c.brandRow}>
+            <span className={c.mark}>
+              <Logo size={28} className={c.markImg} />
+            </span>
+            <span className={c.brand}>{SITE.brand}</span>
           </div>
 
-          <p className={c.pill}>
-            <span className={c.dot} aria-hidden />
-            21–30-avgust, 23:59 gacha · Ishonchli
-          </p>
-
-          {/* Gradient faqat summa bo'lagida — namunadagidek */}
           <h1 className={c.title}>
-            Ovoz bering va <b className={c.grad}>100 000 so‘mgacha</b> pul oling
+            Ovoz bering va <span className={c.grad}>{CAMPAIGN.ceiling}</span> pul oling
           </h1>
 
           <p className={c.sub}>
-            Open Budgetga ovoz berib 100 000 so‘mgacha pul oling. Undan tashqari iPhone 17 Pro
-            Max g‘olibiga ham aylanishingiz mumkin.
+            Open Budgetga ovoz berib {CAMPAIGN.ceiling} pul oling. Undan tashqari {CAMPAIGN.prize}{' '}
+            g‘olibiga ham aylanishingiz mumkin.
           </p>
+        </header>
 
-          <a
-            href={tg}
-            className={c.btn}
-            data-t="cta"
-            data-t-id="ovoz"
-            data-tg={tgStamp ? '' : undefined}
-            rel="noopener"
-          >
-            Ovoz berish
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="m13 7 5 5m0 0-5 5m5-5H6" />
-            </svg>
-          </a>
-          <p className={c.note}>Ishtirok butunlay bepul · Ovoz berish 30 soniya</p>
-        </div>
-      </section>
+        {open ? (
+          <section className={c.card} aria-label="Ovoz berish muddati">
+            <h2 className={c.h2}>Ovozingizni hoziroq bering</h2>
 
-      {/* ── Taymer kartasi ── */}
-      <section className={c.cdSec}>
-        <div className={c.card}>
-          <h2 className={c.h2}>Ovozingizni hoziroq bering</h2>
-          <p className={c.cdHint}>Ovoz berish tugashiga qolgan vaqt:</p>
+            <Countdown
+              initial={left}
+              lead=""
+              classes={{
+                grid: `${c.tiles} ${c.tiles4}`,
+                cell: c.tile,
+                num: `${c.tileNum} ${c.grad} ${c.tnum}`,
+                lab: c.tileLab,
+              }}
+            />
 
-          <Countdown />
+            {cta}
 
-          <a
-            href={tg}
-            className={c.btn}
-            data-t="cta"
-            data-t-id="yakun"
-            data-tg={tgStamp ? '' : undefined}
-            rel="noopener"
-          >
-            Ovoz berish
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="m13 7 5 5m0 0-5 5m5-5H6" />
-            </svg>
-          </a>
+            <p className={c.micro}>100% bepul · Muddat {deadlineLabel()} da tugaydi.</p>
+          </section>
+        ) : (
+          <section className={c.card} aria-label="Ko‘rsatkichlar">
+            <h2 className={c.h2}>Hozirgacha qanday ketyapti</h2>
+            <p className={c.cardSub}>Loyiha bo‘yicha joriy ko‘rsatkichlar:</p>
 
-          <p className={c.note}>100% bepul · Muddat 30-avgust, 23:59 da tugaydi</p>
-        </div>
-      </section>
+            <ul className={c.tiles}>
+              {liveStats(s.reviews_count).map((it) => (
+                <li key={it.lab} className={c.tile}>
+                  <span className={`${c.tileNum} ${c.grad}`}>{it.num}</span>
+                  <span className={c.tileLab}>{it.lab}</span>
+                </li>
+              ))}
+            </ul>
+
+            {cta}
+
+            <p className={c.micro}>Komissiyasiz · Uzcard va Humo{bot ? ` · @${bot}` : ''}</p>
+          </section>
+        )}
+      </main>
 
       <Tracker />
       <MetaPixel ids={pagePixels(s, PAGE.slug)} />

@@ -38,9 +38,9 @@ export const LANDING_PAGES: LandingPage[] = [
   { path: '/5', slug: 'p5', name: 'Fintech', note: 'Telegram chat screenshot, to\'lov kvitansiyasi' },
   { path: '/6', slug: 'p6', name: 'Poster', note: 'Tayyor kreativ: tangali banka' },
   { path: '/7', slug: 'p7', name: 'Telegram', note: 'Tayyor kreativ: qora-yashil bot' },
-  { path: '/8', slug: 'p8', name: 'Taymer', note: "Yorug' ko'k-firuza, muddat taymeri bilan" },
+  { path: '/8', slug: 'p8', name: 'Neon', note: "To'q neon, bitta ekran, aksiya taymeri" },
   { path: '/9', slug: 'p9', name: 'Banknota', note: "To'q fon, 100 ming so'mlik, qizil tugma" },
-  { path: '/10', slug: 'p10', name: 'Taymer 2', note: "«/8» nusxasi — alohida pixel va statistika" },
+  { path: '/10', slug: 'p10', name: 'Taymer', note: "Yorug' ko'k-firuza, muddat taymeri bilan" },
   { path: '/11', slug: 'p11', name: 'Moviy', note: 'Ko‘k gradient stories, oq stikerdagi summa' },
   { path: '/12', slug: 'p12', name: 'Karta', note: 'To‘q fon, bank kartasi va tushayotgan to‘lov' },
 ];

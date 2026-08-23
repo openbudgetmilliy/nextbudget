@@ -1,273 +1,333 @@
 /* ==========================================================================
-   `/8` — «Taymer»: yorug' ko'k-firuza kadr, muddat taymeri bilan.
+   `/8` — «Neon». milliyjamosimiz.uz loyihasidagi `/8` dan ko'chirilgan.
 
-   Namunaning dizayn tili: #f8fafc fon, blur(80px) ko'k-firuza dog'lar,
-   qora qalin sarlavhaning gradient bo'lagi (#2563eb→#0891b2), katta
-   gradient CTA, oq kartada taymer plitkalari. Bu kadr bitta ekran emas —
-   hero + karta, ozgina skroll bo'ladi.
+   Qisqa kadr: sarlavha, tugma, bitta karta. Bo'lim ham, menyu ham yo'q —
+   izohi `page.tsx` da.
 
-   Kontrast: sarlavha #0f172a (17:1), tavsif #475569 (7.5:1), tugma oq
-   matni gradientning firuza uchida ham 3.4:1 (19px/700 — WCAG katta qalin
-   matn, 3:1 yetadi), taymer raqamlari katta kegl.
+   UCH QOIDA:
+
+   1. BITTA GRADIENT, IKKI JOY. `--grad` sarlavhadagi summada va tugmada
+      ishlaydi, xolos. Uchinchi joyga qo'yilsa u urg'u bo'lishdan to'xtaydi
+      va sahifa «neon shovqin»ga aylanadi.
+   2. FON QATLAM — MATN EMAS. Yog'du `.sky` da, alohida elementda; matn
+      hech qachon gradient ustida yozilmaydi, faqat quyuq fonda.
+   3. RADIUS QO'LDA — har bir yumaloqlik shu yerda ATAYIN yoziladi, global
+      qiymatga tayanilmaydi.
+
+   Kontrast (fon #05060c): ink #e2e8f0 15.8:1 · dim #94a3b8 7.6:1 ·
+   oq matn tugmada (#7c3aed..#d946ef) 5.1:1 dan past tushmaydi ·
+   gradient matn eng to'q nuqtasida (#a78bfa) 7.9:1.
    ========================================================================== */
 
 .page {
-  --ink: #0f172a;
-  --dim: #475569;
-  --faint: #64748b;
-  --line: #e2e8f0;
-  --g1: #2563eb;
-  --g2: #0891b2;
+  --bg: #05060c;
+  --ink: #e2e8f0;
+  --dim: #94a3b8;
+  --line: rgba(255, 255, 255, 0.08);
+  --tile: rgba(255, 255, 255, 0.043);
+
+  /* Urg'u gradienti — matn uchun (och tonlar, to'q fonda o'qiladi) */
+  --grad: linear-gradient(100deg, #a78bfa, #22d3ee 50%, #f0abfc);
+  /* Tugma uchun — binafshadan siyohrangga. Matn gradientidagi moviy shu
+     yerda ATAYIN yo'q: oq harflar #06b6d4 ustida 2.6:1 beradi, ya'ni
+     tugmaning o'ng uchidagi matn o'qilmay qolardi. */
+  --grad-btn: linear-gradient(100deg, #7c3aed, #a03bee 45%, #d946ef);
 
   position: relative;
-  overflow: hidden;
+  isolation: isolate;
   min-height: 100dvh;
-  background: #f8fafc;
+  overflow-x: hidden;
+  background: var(--bg);
   color: var(--ink);
+  font-family: var(--f8-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-.page :focus-visible {
-  outline-color: var(--g1);
-}
-
-/* ── Hero ─────────────────────────────────────────────────────────────── */
-
-.hero {
-  position: relative;
-  padding: max(40px, env(safe-area-inset-top)) 20px 44px;
-}
-
-/* Xiralashgan rang dog'lari — namunadagi .blob */
-.blob {
+/* Yog'du: tepada ko'k-moviy (sarlavha zonasi), pastroqda binafsha (karta
+   zonasi), eng pastda deyarli qora. Foizlarda — sahifa balandligi
+   o'zgarganda ham nisbat saqlanadi. */
+.sky {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.32;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
+  background: radial-gradient(115% 42% at 50% -4%, rgba(37, 78, 128, 0.55), transparent 62%),
+    radial-gradient(85% 30% at 8% 16%, rgba(14, 78, 108, 0.45), transparent 66%),
+    radial-gradient(95% 34% at 50% 62%, rgba(88, 28, 135, 0.5), transparent 68%),
+    radial-gradient(70% 24% at 50% 100%, rgba(12, 12, 22, 0.9), transparent 70%);
 }
 
-.blobA {
-  top: -64px;
-  left: 8%;
-  width: 340px;
-  height: 340px;
-  background: #3b82f6;
-}
-
-.blobB {
-  top: 64px;
-  right: 6%;
-  width: 300px;
-  height: 300px;
-  background: #06b6d4;
-}
-
-.heroIn {
+.wrap {
   position: relative;
-  max-width: 640px;
+  z-index: 1;
+  width: 100%;
+  max-width: 780px;
   margin: 0 auto;
-  text-align: center;
+  padding: clamp(20px, 5vh, 40px) 20px clamp(40px, 8vh, 80px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
+}
+
+/* ── Header: logo + sarlavha ── */
+
+.head {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.markImg {
+  display: block;
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 0.9375rem;
+  font-family: var(--f8-display), var(--f8-body), sans-serif;
+  font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  margin-bottom: 22px;
 }
 
-.pill {
+/* ── Yorliq ── */
+
+.badge {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  height: 36px;
-  padding: 0 16px 0 12px;
-  border-radius: 999px;
-  background: #fff;
+  padding: 11px 18px;
   border: 1px solid var(--line);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: #334155;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #cbd5e1;
+  text-align: left;
 }
 
 .dot {
-  position: relative;
   width: 8px;
   height: 8px;
+  flex: none;
   border-radius: 50%;
-  background: var(--g1);
+  background: #d946ef;
+  box-shadow: 0 0 10px 1px rgba(217, 70, 239, 0.85);
 }
 
-.dot::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: #3b82f6;
-  opacity: 0.75;
-  animation: ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-
-@keyframes ping {
-  75%,
-  100% {
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
+/* ── Sarlavha ── */
 
 .title {
-  margin-top: 26px;
-  font-size: clamp(2.375rem, 11vw, 3.25rem);
-  line-height: 1.08;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  margin-top: clamp(18px, 4vh, 28px);
+  width: 100%;
+  font-family: var(--f8-display), var(--f8-body), sans-serif;
+  font-size: clamp(34px, 10.2vw, 66px);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-align: left;
   text-wrap: balance;
 }
 
+/* Summa qatorga sig'masa butunligicha keyingi qatorga o'tsin — «30 000»
+   ikkiga bo'linib qolsa raqam o'qilmaydi */
+.title .grad {
+  white-space: nowrap;
+}
+
+/* Gradient matn. `color: transparent` bilan birga ATAYIN `background-clip`
+   ikki yozuvda: eski WebKit faqat prefiksli variantni biladi va prefiks
+   bo'lmasa matn butunlay ko'rinmay qolardi. */
 .grad {
-  font-weight: inherit;
-  background: linear-gradient(95deg, var(--g1), var(--g2));
+  background-image: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  /* Gradient qo'llanmasa (juda eski brauzer) matn oq bo'lib qolsin */
+  -webkit-text-fill-color: transparent;
 }
 
 .sub {
   margin-top: 18px;
-  font-size: 1.0625rem;
+  max-width: 30em;
+  font-size: clamp(15px, 4.2vw, 17px);
   line-height: 1.6;
   color: var(--dim);
-  max-width: 34em;
+  text-align: left;
+  text-wrap: pretty;
 }
 
-/* ── CTA (ikkala bo'limda bitta uslub) ────────────────────────────────── */
+/* ── Tugma ──
+   Barmoq zonasi 60px dan katta (64px): reklama trafigi shoshib bosadi. */
 
-.btn {
+.cta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   width: 100%;
-  min-height: 62px;
-  margin-top: 34px;
-  padding: 0 28px;
+  max-width: 420px;
+  min-height: 64px;
+  margin-top: 30px;
+  padding: 0 30px;
   border-radius: 16px;
-  font-size: 1.1875rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  text-transform: uppercase;
+  background-image: var(--grad-btn);
   color: #fff;
-  background: linear-gradient(95deg, var(--g1), var(--g2));
-  box-shadow: 0 10px 28px -8px rgba(37, 99, 235, 0.6);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  font-family: var(--f8-display), var(--f8-body), sans-serif;
+  font-size: clamp(16px, 4.6vw, 18px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 30px -8px rgba(139, 92, 246, 0.85);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
 
-.btn:active {
-  transform: scale(0.975);
+.cta:hover {
+  box-shadow: 0 12px 38px -8px rgba(139, 92, 246, 0.95);
 }
 
-.btn svg {
-  transition: transform 0.15s ease;
+.cta:active {
+  transform: scale(0.985);
 }
 
-.btn:hover svg {
-  transform: translateX(4px);
+.arrow {
+  flex: none;
 }
 
-.note {
-  margin-top: 16px;
-  font-size: 0.8125rem;
-  color: var(--faint);
-  text-align: center;
+.micro {
+  margin-top: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #7c8798;
 }
 
-/* ── Taymer kartasi ───────────────────────────────────────────────────── */
-
-.cdSec {
-  position: relative;
-  padding: 8px 20px max(56px, env(safe-area-inset-bottom));
-}
+/* ── Karta ── */
 
 .card {
-  max-width: 640px;
-  margin: 0 auto;
-  background: #fff;
+  width: 100%;
+  margin-top: clamp(36px, 8vh, 56px);
+  padding: clamp(26px, 6vw, 44px) clamp(18px, 5vw, 40px) clamp(24px, 5vw, 38px);
   border: 1px solid var(--line);
   border-radius: 24px;
-  padding: 30px 22px 34px;
-  box-shadow: 0 4px 24px -8px rgba(15, 23, 42, 0.1);
-  text-align: center;
+  background: linear-gradient(180deg, rgba(88, 28, 135, 0.16), rgba(255, 255, 255, 0.02) 62%);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .h2 {
-  font-size: clamp(1.75rem, 7.6vw, 2.375rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
+  font-family: var(--f8-display), var(--f8-body), sans-serif;
+  font-size: clamp(24px, 6.6vw, 36px);
+  font-weight: 700;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 
-.cdHint {
+.cardSub {
   margin-top: 10px;
-  font-size: 1rem;
+  font-size: clamp(14px, 3.9vw, 16px);
   color: var(--dim);
 }
 
-.cd {
-  align-self: stretch;
+/* Tor ekranda 2×2 — «437 mln+» to'rtga bo'lingan telefon enida sig'maydi */
+.tiles {
+  width: 100%;
+  margin-top: 24px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin-top: 26px;
 }
 
-.cdCell {
-  border-radius: 16px;
-  background: #f8fafc;
+@media (min-width: 520px) {
+  .tiles {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
+/* Taymer — HAR DOIM to'rtta ustun, hatto 320px da ham: kun/soat/daqiqa/
+   soniya ikkiga bo'linsa u sanoq bo'lib o'qilmay qoladi. Qiymatlar ikki
+   xonali, ya'ni tor katakka sig'adi. */
+.tiles4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (min-width: 400px) {
+  .tiles4 {
+    gap: 10px;
+  }
+}
+
+.tiles4 .tile {
+  padding: 16px 4px 13px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 18px 8px 15px;
   border: 1px solid var(--line);
-  padding: 16px 4px 14px;
+  border-radius: 16px;
+  background: var(--tile);
 }
 
-.cdNum {
-  font-size: clamp(1.75rem, 8.4vw, 2.5rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  background: linear-gradient(95deg, var(--g1), var(--g2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.cdLab {
-  margin-top: 7px;
-  font-size: 0.6875rem;
+.tileNum {
+  font-family: var(--f8-display), var(--f8-body), sans-serif;
+  font-size: clamp(21px, 6.4vw, 30px);
   font-weight: 700;
-  letter-spacing: 0.1em;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* Raqam har soniyada kengligini o'zgartirmasin — busiz kataklar sakraydi */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+.tileLab {
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: #7c8798;
+  text-align: center;
 }
 
-.cdOver {
+.card .cta {
   margin-top: 26px;
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--g1);
+  max-width: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dot::after {
-    animation: none;
+  .cta {
+    transition: none;
   }
 }
