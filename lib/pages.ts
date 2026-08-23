@@ -1,19 +1,19 @@
 /**
  * Landing kadrlari — YAGONA ro'yxat.
  *
- * Sayt bitta emas, o'nta bir ekranli slayddan iborat: har biri alohida
+ * Sayt bitta emas, o'n ikkita bir ekranli slayddan iborat: har biri alohida
  * reklama kadri. Ro'yxat shu yerda turadi va uch joyda ishlatiladi:
  *
  *   · `lib/cf.ts`            — narx o'zgarganda hammasini revalidate qilish
  *   · `/admin/reklama`       — har kadr uchun tayyor reklama havolasi
  *   · `lib/stats.ts` + admin — statistikada yo'lni odam tushunadigan nom bilan
  *
- * Yangi kadr qo'shilsa (`app/10/page.tsx`) — SHU RO'YXATGA bitta qator
+ * Yangi kadr qo'shilsa (`app/12/page.tsx`) — SHU RO'YXATGA bitta qator
  * qo'shiladi, qolgani o'zi ishlaydi.
  *
  * `slug` — Telegram `?start=` qiymati va standart `utm_content`. Faqat
  * `A-Za-z0-9_` bo'lishi shart (`tgLink` qolganini kesib tashlaydi), shu
- * sabab qisqa: `p1`…`p10`. Bot tomonda ham, analitikada ham bitta til.
+ * sabab qisqa: `p1`…`p12`. Bot tomonda ham, analitikada ham bitta til.
  */
 
 export type LandingPage = {
@@ -28,7 +28,7 @@ export type LandingPage = {
 };
 
 // Eslatma: kadr pixellari endi bu yerda EMAS — admin sozlamalarida
-// (`pixel_p1`…`pixel_p10`, lib/data.ts). Admin ularni deploy'siz o'zgartiradi.
+// (`pixel_p1`…`pixel_p12`, lib/data.ts). Admin ularni deploy'siz o'zgartiradi.
 
 export const LANDING_PAGES: LandingPage[] = [
   { path: '/', slug: 'p1', name: 'Milliy', note: 'Oq-moviy, bayroq lentasi' },
@@ -41,6 +41,8 @@ export const LANDING_PAGES: LandingPage[] = [
   { path: '/8', slug: 'p8', name: 'Taymer', note: "Yorug' ko'k-firuza, muddat taymeri bilan" },
   { path: '/9', slug: 'p9', name: 'Banknota', note: "To'q fon, 100 ming so'mlik, qizil tugma" },
   { path: '/10', slug: 'p10', name: 'Taymer 2', note: "«/8» nusxasi — alohida pixel va statistika" },
+  { path: '/11', slug: 'p11', name: 'Moviy', note: 'Ko‘k gradient stories, oq stikerdagi summa' },
+  { path: '/12', slug: 'p12', name: 'Karta', note: 'To‘q fon, bank kartasi va tushayotgan to‘lov' },
 ];
 
 export const LANDING_PATHS = LANDING_PAGES.map((p) => p.path);

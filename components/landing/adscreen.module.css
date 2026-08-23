@@ -1,0 +1,108 @@
+/* ==========================================================================
+   Reklama ekranlarining UMUMIY SKELETI (`/2`–`/5`).
+
+   Variantlar faqat rang va shrift bilan farq qiladi, tuzilishi esa bitta —
+   dizayn kanvasida reklama trafigi uchun tekshirilgan joylashuv. Shuning
+   uchun skelet shu yerda, bir nusxada: variantlar uni O'Z modulidagi
+   `.page` klassi bilan birga qo'llaydi (`class="screen v11"` kabi).
+
+   Uch qoida:
+
+   1. BITTA EKRAN. `.mid` cho'ziladi, `.cta` esa pastdan chekinadi —
+      tugmalar bosh barmoq yetadigan zonada qoladi va brauzer panetiga
+      yopishib qolmaydi. Chekinish `clamp` da: baland ekranda 26px,
+      past ekranda 12px gacha tushadi — aks holda 568px li telefonda
+      pastdagi taymer kadrdan chiqib ketardi.
+   2. BARMOQ ZONASI 60px. Apple/Google tavsiyasidan (44/48px) ancha katta:
+      reklama trafigi shoshib bosadi.
+   3. RADIUS QO'LDA. `globals.css` da `* { border-radius: 0 }` reseti bor,
+      shuning uchun har bir yumaloqlik variant modulida ATAYIN yoziladi.
+
+   Shriftni variant beradi: `.page { --ad-sans: var(--fN-body); }`. Skelet
+   uni `var()` orqali o'qiydi — ikkalasi bitta elementda tursa ham ishlaydi,
+   chunki maxsus xossa o'sha elementda e'lon qilinadi. */
+
+.screen {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+
+  /* Chap chekka alohida: `/5` (daftar) qizil hoshiya uchun kengroq joy
+     so'raydi va uni `--ad-pad-left` orqali o'zi belgilaydi */
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-right: 20px;
+  padding-bottom: max(14px, env(safe-area-inset-bottom));
+  padding-left: var(--ad-pad-left, 20px);
+
+  font-family: var(--ad-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.cta {
+  display: grid;
+  gap: 12px;
+  padding-bottom: clamp(12px, 3vh, 26px);
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 20px;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border: 0;
+  cursor: pointer;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.btn:active {
+  transform: scale(0.975);
+}
+
+.note {
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+}

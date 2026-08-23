@@ -62,7 +62,7 @@ function cleanStart(v: string): string {
  * bo'yicha nechta odam kelganini sanaydi). Shunda kadr slug'i ham, UTM
  * qo'shimchasi ham qo'yilmaydi: kod botga TOZA yetib borishi kerak.
  *
- * Havolada `start` bo'lmasa — har kadr o'z slug'ini yuboradi (`p1`…`p10`)
+ * Havolada `start` bo'lmasa — har kadr o'z slug'ini yuboradi (`p1`…`p12`)
  * va ustiga trafik manbasi yopishadi (`p6-instagram`).
  *
  * Kadr kesimidagi o'z statistikamiz bunga BOG'LIQ EMAS — u `landedAt` va
@@ -83,7 +83,7 @@ export function fixedStart(bot: string): string | null {
 
 /**
  * @param bot   sozlamadagi xom qiymat (`@Bot`, `Bot` yoki to'liq havola)
- * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p10`).
+ * @param start qaysi kadrdan kelgani — `lib/pages.ts` dagi `slug` (`p1`…`p12`).
  *              Sozlamada qat'iy `?start=` bo'lsa BU parametr e'tiborsiz
  *              qoladi va hamma kadr bitta kod bilan botga boradi.
  */

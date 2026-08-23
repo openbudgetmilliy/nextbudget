@@ -45,6 +45,8 @@ export const DEFAULT_SETTINGS = {
   pixel_p8: '',
   pixel_p9: '',
   pixel_p10: '',
+  pixel_p11: '',
+  pixel_p12: '',
 
   /**
    * Kadr havolalari — «tugma bosilganda qayerga ketadi», har kadrga alohida.
@@ -63,6 +65,8 @@ export const DEFAULT_SETTINGS = {
   link_p8: '',
   link_p9: '',
   link_p10: '',
+  link_p11: '',
+  link_p12: '',
 } as const;
 
 export type Settings = Record<keyof typeof DEFAULT_SETTINGS, string>;

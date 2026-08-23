@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
  * · To'ldirilsa — FAQAT o'sha kadr boshqa manzilga ketadi. Boshqa reklama
  *   akkaunti boshqa botga yursin desangiz yoki bitta kadrni kanalga /
  *   tashqi saytga burmoqchi bo'lsangiz shu yerda yoziladi.
- * · Saqlash — o'sha /api/admin/settings PATCH'i (`link_p1`…`link_p10`),
+ * · Saqlash — o'sha /api/admin/settings PATCH'i (`link_p1`…`link_p12`),
  *   saqlangach hamma kadr qayta build bo'ladi.
  * · Tekshirish — /api/admin/link-check jonli sahifani ochib, tugmaning
  *   HAQIQIY manzilini aytadi. Ya'ni «formada nima yozilgan» emas,

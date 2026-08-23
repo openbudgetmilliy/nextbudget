@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 /**
  * Kadr pixellari paneli — har kadr uchun Meta Pixel ID va «Tekshirish».
  *
- * · Saqlash — o'sha /api/admin/settings PATCH'i (`pixel_p1`…`pixel_p10`).
+ * · Saqlash — o'sha /api/admin/settings PATCH'i (`pixel_p1`…`pixel_p12`).
  *   Saqlangach server hamma kadrni qayta build qiladi, pixel bir necha
  *   soniyada jonli sahifada yonadi.
  * · Tekshirish — /api/admin/pixel-check jonli sahifani ochib, HTML'da

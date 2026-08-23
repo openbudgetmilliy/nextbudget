@@ -1,0 +1,78 @@
+/* ==========================================================================
+   Taymer SKELETI — `/1`–`/8` uchun umumiy.
+
+   Bu yerda FAQAT joylashuv bor: rang, chegara, shrift va o'lcham har
+   sahifaning o'z modulidan `classes` orqali keladi. Skelet rang bermaydi,
+   aks holda sakkizta variant bir xil ko'rinardi va «uslubga moslash»ning
+   ma'nosi qolmasdi.
+
+   SELEKTORLAR `:where()` ICHIDA — bu ATAYIN. Undagi maxsuslik nolga teng,
+   ya'ni variantning istalgan qoidasi skeletnikini bosib o'tadi. Busiz
+   natija CSS bundle'idagi tasodifiy tartibga bog'liq bo'lardi: `/3` ning
+   `.cdCell` padding'i skeletnikidan keyin tursa ishlar, oldin tursa —
+   yo'q. Aynan shunday bo'ldi ham, kataklar hech qanday ixchamlashmadi.
+
+   IKKI QOIDA:
+
+   1. TO'RT USTUN, HAR DOIM. 320px da ham ikkiga bo'linmaydi: kun/soat/
+      daqiqa/soniya ikki qatorga tushsa u sanoq bo'lib o'qilmay qoladi.
+      Shuning uchun kataklar tor, raqam esa `vw` ga bog'langan.
+   2. YORLIQ 11.5px DAN KICHIK EMAS. `2.7vw` bilan u 320px ekranda 8.6px
+      ga tushib ketardi — audit «tiny-text» deb belgiladi. Quyi chegara
+      shu sabab qat'iy.
+   3. RAQAM SAKRAMASIN. `tabular-nums` shu yerda, variantlarda emas —
+      unutilsa taymer har soniyada qimirlab turadi.
+   ========================================================================== */
+
+:where(.root) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+:where(.lead) {
+  font-size: clamp(11.5px, 3.2vw, 13px);
+  line-height: 1.4;
+}
+
+:where(.grid) {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(6px, 2vw, 10px);
+  width: 100%;
+  max-width: 340px;
+  margin-top: 8px;
+}
+
+:where(.cell) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: clamp(8px, 2.4vw, 12px) 2px clamp(6px, 1.8vw, 9px);
+  min-width: 0;
+}
+
+:where(.num) {
+  font-size: clamp(20px, 6.2vw, 26px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(.lab) {
+  font-size: clamp(11.5px, 3vw, 12px);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+:where(.note) {
+  margin-top: 9px;
+  font-size: clamp(11.5px, 3.1vw, 12.5px);
+  line-height: 1.45;
+}
