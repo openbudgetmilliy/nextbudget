@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 
 import AutoRefresh from '@/components/admin/AutoRefresh';
 import DbDown from '@/components/admin/DbDown';
-import RangePicker, { parseHours } from '@/components/admin/RangePicker';
+import RangePicker from '@/components/admin/RangePicker';
 import TrafficChart from '@/components/admin/TrafficChart';
 import { LANDING_PAGES } from '@/lib/pages';
 import { pageButtonsOf, pageHourly, pageOverview, pageRecentCta } from '@/lib/stats';
+import { parseRange, type RangeParams } from '@/lib/range';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,21 +23,21 @@ export default async function KadrPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ h?: string }>;
+  searchParams: Promise<RangeParams>;
 }) {
   const { slug } = await params;
   const page = LANDING_PAGES.find((p) => p.slug === slug);
   if (!page) notFound();
 
-  const hours = parseHours((await searchParams).h, 168);
+  const r = parseRange(await searchParams, 168);
 
   let data;
   try {
     const [ov, hrs, buttons, recent] = await Promise.all([
-      pageOverview(page.path, hours),
-      pageHourly(page.path, hours),
-      pageButtonsOf(page.path, hours),
-      pageRecentCta(page.path, 12),
+      pageOverview(page.path, r),
+      pageHourly(page.path, r),
+      pageButtonsOf(page.path, r),
+      pageRecentCta(page.path, r, 12),
     ]);
     data = { ov, hrs, buttons, recent };
   } catch (err) {
@@ -75,7 +76,7 @@ export default async function KadrPage({
       </p>
 
       <div className="a-row">
-        <RangePicker base={`/admin/kadr/${page.slug}`} hours={hours} />
+        <RangePicker base={`/admin/kadr/${page.slug}`} range={r} />
         <span style={{ marginLeft: 'auto' }} />
         <AutoRefresh seconds={30} />
       </div>
@@ -84,7 +85,7 @@ export default async function KadrPage({
         <div className="a-card">
           <div className="a-card-k">Kirdi</div>
           <div className="a-card-v">{ov.sessions.toLocaleString('ru-RU')}</div>
-          <div className="a-card-n">sessiya · {hours} soat</div>
+          <div className="a-card-n">sessiya · {r.label}</div>
         </div>
         <div className="a-card">
           <div className="a-card-k">Tugma bosildi</div>

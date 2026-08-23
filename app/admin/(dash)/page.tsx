@@ -1,10 +1,11 @@
 import AutoRefresh from '@/components/admin/AutoRefresh';
 import DbDown from '@/components/admin/DbDown';
 import PageStats from '@/components/admin/PageStats';
-import RangePicker, { parseHours } from '@/components/admin/RangePicker';
+import RangePicker from '@/components/admin/RangePicker';
 import TrafficChart from '@/components/admin/TrafficChart';
 import { pageLabel } from '@/lib/pages';
 import { hourly, mergePageRows, onlineNow, overview, pageStats, recentCta, scrollFunnel } from '@/lib/stats';
+import { parseRange, type RangeParams } from '@/lib/range';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Dashboard' };
@@ -12,19 +13,19 @@ export const metadata = { title: 'Dashboard' };
 export default async function Dashboard({
   searchParams,
 }: {
-  searchParams: Promise<{ h?: string }>;
+  searchParams: Promise<RangeParams>;
 }) {
-  const hours = parseHours((await searchParams).h, 24);
+  const r = parseRange(await searchParams, 24);
 
   let data;
   try {
     const [ov, online, hrs, cta, scroll, pages] = await Promise.all([
-      overview(hours),
+      overview(r),
       onlineNow(),
-      hourly(hours),
-      recentCta(12),
-      scrollFunnel(hours),
-      pageStats(hours),
+      hourly(r),
+      recentCta(r, 12),
+      scrollFunnel(r),
+      pageStats(r),
     ]);
     data = { ov, online, hrs, cta, scroll, pages };
   } catch (err) {
@@ -45,7 +46,7 @@ export default async function Dashboard({
       <p className="a-sub">Instagram trafigi va konversiya — real vaqtda</p>
 
       <div className="a-row">
-        <RangePicker base="/admin" hours={hours} />
+        <RangePicker base="/admin" range={r} />
         <span style={{ marginLeft: 'auto' }} />
         <AutoRefresh seconds={30} />
       </div>
@@ -62,7 +63,7 @@ export default async function Dashboard({
         <div className="a-card">
           <div className="a-card-k">Sessiyalar</div>
           <div className="a-card-v">{ov.sessions.toLocaleString('ru-RU')}</div>
-          <div className="a-card-n">{hours} soat ichida</div>
+          <div className="a-card-n">{r.label}</div>
         </div>
         <div className="a-card">
           <div className="a-card-k">Botga o’tish</div>

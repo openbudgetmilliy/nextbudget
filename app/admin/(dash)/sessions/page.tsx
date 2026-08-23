@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import DbDown from '@/components/admin/DbDown';
-import RangePicker, { parseHours } from '@/components/admin/RangePicker';
+import RangePicker from '@/components/admin/RangePicker';
 import { sessionList, sessionTimeline } from '@/lib/stats';
+import { parseRange, type RangeParams } from '@/lib/range';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Sessiyalar' };
@@ -17,16 +18,16 @@ const EV_LABEL: Record<string, string> = {
 export default async function SessionsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ h?: string; id?: string; conv?: string }>;
+  searchParams: Promise<RangeParams & { id?: string; conv?: string }>;
 }) {
   const sp = await searchParams;
-  const hours = parseHours(sp.h, 24);
+  const r = parseRange(sp, 24);
   const onlyConv = sp.conv === '1';
 
   let rows;
   let detail: Awaited<ReturnType<typeof sessionTimeline>> | null = null;
   try {
-    rows = await sessionList(hours, 80, onlyConv);
+    rows = await sessionList(r, 80, onlyConv);
     if (sp.id) detail = await sessionTimeline(sp.id);
   } catch (err) {
     return (
@@ -38,7 +39,9 @@ export default async function SessionsPage({
   }
 
   const qs = (extra: Record<string, string | undefined>) => {
-    const p = new URLSearchParams({ h: String(hours) });
+    // Davr parametrlari havolalarda saqlansin — filtr bosilganda
+    // tanlangan kun/soat yo'qolib ketmasin
+    const p = new URLSearchParams(r.q);
     if (onlyConv) p.set('conv', '1');
     for (const [k, v] of Object.entries(extra)) {
       if (v === undefined) p.delete(k);
@@ -53,7 +56,7 @@ export default async function SessionsPage({
       <p className="a-sub">Har bir foydalanuvchi nima qilganini qadam-baqadam ko’rish</p>
 
       <div className="a-row">
-        <RangePicker base="/admin/sessions" hours={hours} />
+        <RangePicker base="/admin/sessions" range={r} extra={onlyConv ? { conv: '1' } : {}} />
         <span style={{ marginLeft: 'auto' }} />
         <Link className={onlyConv ? 'a-btn p sm' : 'a-btn sm'} href={onlyConv ? qs({ conv: undefined }) : `${qs({})}&conv=1`}>
           Faqat konversiyalar

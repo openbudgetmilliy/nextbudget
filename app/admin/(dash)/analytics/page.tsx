@@ -2,9 +2,10 @@ import ButtonStats from '@/components/admin/ButtonStats';
 import CreativeStats from '@/components/admin/CreativeStats';
 import DbDown from '@/components/admin/DbDown';
 import PageStats from '@/components/admin/PageStats';
-import RangePicker, { parseHours } from '@/components/admin/RangePicker';
+import RangePicker from '@/components/admin/RangePicker';
 import { breakdown, creatives, mergePageRows, pageButtons, pageStats, scrollFunnel } from '@/lib/stats';
 import { env } from '@/lib/env';
+import { parseRange, type RangeParams } from '@/lib/range';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Analitika' };
@@ -17,21 +18,21 @@ export const metadata = { title: 'Analitika' };
 export default async function AnalyticsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ h?: string }>;
+  searchParams: Promise<RangeParams>;
 }) {
-  const hours = parseHours((await searchParams).h, 168);
+  const r = parseRange(await searchParams, 168);
 
   let d;
   try {
     const [cre, btns, pages, scroll, device, browser, os, source] = await Promise.all([
-      creatives(hours),
-      pageButtons(hours),
-      pageStats(hours),
-      scrollFunnel(hours),
-      breakdown('device', hours),
-      breakdown('browser', hours),
-      breakdown('os', hours),
-      breakdown('utmSource', hours),
+      creatives(r),
+      pageButtons(r),
+      pageStats(r),
+      scrollFunnel(r),
+      breakdown('device', r),
+      breakdown('browser', r),
+      breakdown('os', r),
+      breakdown('utmSource', r),
     ]);
     d = { cre, btns, pages, scroll, device, browser, os, source };
   } catch (err) {
@@ -54,7 +55,7 @@ export default async function AnalyticsPage({
       </p>
 
       <div className="a-row">
-        <RangePicker base="/admin/analytics" hours={hours} />
+        <RangePicker base="/admin/analytics" range={r} />
       </div>
 
       {/* Har sahifa alohida reklama qilinadi — havolasi ham, raqami ham shu yerda */}

@@ -1,10 +1,11 @@
 import AdLinks from '@/components/admin/AdLinks';
 import DbDown from '@/components/admin/DbDown';
 import PageStats from '@/components/admin/PageStats';
-import RangePicker, { parseHours } from '@/components/admin/RangePicker';
+import RangePicker from '@/components/admin/RangePicker';
 import { env } from '@/lib/env';
 import { LANDING_PAGES } from '@/lib/pages';
 import { mergePageRows, pageButtons, pageStats } from '@/lib/stats';
+import { parseRange, type RangeParams } from '@/lib/range';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Reklama' };
@@ -20,14 +21,14 @@ export const metadata = { title: 'Reklama' };
 export default async function AdsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ h?: string }>;
+  searchParams: Promise<RangeParams>;
 }) {
-  const hours = parseHours((await searchParams).h, 168);
+  const r = parseRange(await searchParams, 168);
 
   let rows;
   let btns;
   try {
-    [rows, btns] = await Promise.all([pageStats(hours), pageButtons(hours)]);
+    [rows, btns] = await Promise.all([pageStats(r), pageButtons(r)]);
   } catch (err) {
     return (
       <>
@@ -49,7 +50,7 @@ export default async function AdsPage({
       <AdLinks siteUrl={env.SITE_URL} pages={LANDING_PAGES} />
 
       <div className="a-row">
-        <RangePicker base="/admin/reklama" hours={hours} />
+        <RangePicker base="/admin/reklama" range={r} />
       </div>
 
       <PageStats rows={merged} />

@@ -68,22 +68,133 @@
   flex-wrap: wrap;
 }
 
-.a-nav a {
+.a-nav a,
+.a-nav button {
   padding: 7px 13px;
   border-radius: 9px;
   font-size: 13.5px;
   font-weight: 600;
   color: #93a1b8;
+  /* Tugma variantida brauzer o'z uslubini bermasin — davr tanlagich
+     havoladan tugmaga o'tdi (URL'ni JS yozadi) */
+  background: none;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
 }
 
-.a-nav a:hover {
+.a-nav a:hover,
+.a-nav button:hover {
   background: #141a25;
   color: #fff;
 }
 
-.a-nav a[aria-current='page'] {
+.a-nav a[aria-current='page'],
+.a-nav button[aria-current='page'] {
   background: #16293a;
   color: #7fd0f7;
+}
+
+/* ── Davr tanlagich ───────────────────────────────────────────────────────
+   Tayyor tugmalar bir qatorda, «Kun va soat» formasi esa yig'iladi: kunlik
+   ishda ko'pincha tayyor tugma yetadi, forma kerak bo'lgandagina ochiladi
+   va ekranni band qilmaydi. */
+
+.a-range {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* `100%` EMAS: `.a-row` da yonida boshqa boshqaruv turadi (avtoyangilash,
+     «faqat konversiyalar»). To'liq kenglik olsa ular har doim pastki qatorga
+     tushib ketardi. `1 1 320px` — joy bo'lsa yonma-yon, tor ekranda o'radi. */
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+/* Tanlagich ko'p qatorli — yonidagi tugmalar tepaga tekislansin, aks holda
+   ular tanlagichning o'rtasida osilib qolardi */
+.a-row:has(.a-range) {
+  align-items: flex-start;
+}
+
+.a-range-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.a-range-top .a-btn.on {
+  border-color: #2a5a7a;
+  color: #7fd0f7;
+}
+
+.a-range-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px solid #1b2331;
+  border-radius: 12px;
+  background: #0c1017;
+}
+
+.a-range-f {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.a-range-f > span:first-child {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6f7b8f;
+}
+
+/* Sana va soat maydonlari mazmuniga qarab tor bo'lsin — forma cho'zilib
+   ketmasin. `.a-in` dagi `min-width: 90px` shu yerda bosiladi. */
+.a-range-f .a-in {
+  min-width: 0;
+  width: auto;
+}
+
+.a-range-h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.a-range-h i {
+  font-style: normal;
+  color: #59637a;
+}
+
+.a-range-act {
+  display: flex;
+  gap: 8px;
+}
+
+.a-range-now {
+  font-size: 12.5px;
+  color: #93a1b8;
+}
+
+.a-range-now b {
+  color: #e6ecf5;
+}
+
+@media (max-width: 640px) {
+  .a-range-f,
+  .a-range-act {
+    flex: 1 1 100%;
+  }
+
+  .a-range-f .a-in {
+    width: 100%;
+  }
 }
 
 .a-main {
