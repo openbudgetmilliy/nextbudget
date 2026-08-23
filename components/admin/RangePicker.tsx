@@ -3,35 +3,29 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import {
-  TZ_LABEL,
-  dayLabel,
-  tashkentToday,
-  tashkentYesterday,
-  type Range,
-} from '@/lib/range';
+import { TZ_LABEL, dayLabel, tashkentToday, tashkentYesterday, type Range } from '@/lib/range';
 
 /**
- * DAVR TANLAGICH — analitikaning butun vaqt boshqaruvi shu yerda.
+ * DAVR TANLAGICH — analitikaning butun vaqt boshqaruvi.
  *
- * Uch usul, bittasi ishlaydi:
+ * Ikki xil narsa ATAYIN ikki guruhga ajratilgan, chunki ular boshqa-boshqa
+ * savolga javob beradi va aralashtirilsa chalkashlik chiqadi:
  *
- *   1. Tayyor tugmalar — «24 soat», «3 kun», «7 kun», «30 kun». Bular
- *      HOZIRDAN orqaga sanaydi (`?h=`), ya'ni «oxirgi sutka».
- *   2. «Bugun» / «Kecha» — TOSHKENT kuni: 00:00 dan 23:59 gacha (`?d=`).
- *      Bu «oxirgi 24 soat» dan boshqa narsa: soat 14:00 da «Bugun» —
- *      bu 00:00–14:00, kechagi tun emas.
- *   3. Kun (yoki kunlar oralig'i) + SOAT OYNASI — masalan 22-avgust,
- *      09:00 dan 18:59 gacha. Reklama qaysi soatlarda ishlayotganini
- *      shu bilan ko'rasiz.
+ *   «Oxirgi» — HOZIRDAN orqaga siljiydigan oyna (24 soat, 3/7/30 kun).
+ *              Soat 14:00 da «24 soat» — bu kechagi 14:00 dan beri.
+ *   «Kun»    — TAQVIM kuni, Toshkent bo'yicha 00:00 dan 23:59 gacha.
+ *              Soat 14:00 da «Bugun» — bu 00:00 dan 14:00 gacha.
  *
- * Soat oynasining ikkala uchi ham QO'SHIB hisoblanadi: `09`–`18` — bu
- * 09:00:00 dan 18:59:59 gacha, ya'ni o'n soat. `00`–`23` — to'liq kun.
+ * Kun tanlanganda yonida «‹ ›» chiqadi — kunma-kun orqaga/oldinga yurish
+ * uchun. Kelajakka o'tilmaydi: `nextDay` bugundan keyin `null` bo'ladi.
+ *
+ * Soat oynasi ikkala uchi bilan qo'shib hisoblanadi: `09`–`18` — bu
+ * 09:00:00 dan 18:59:59 gacha, o'n soat.
  *
  * Hisob-kitob bu yerda EMAS — `lib/range.ts` da, server bilan bitta
- * manbadan. Bu komponent faqat forma: qiymatlarni URL'ga yozadi, sahifa
- * esa o'sha URL'dan oraliqni qayta o'qiydi. Shu sabab tanlangan davr
- * havolada saqlanadi — uni yuborish ham, saqlab qo'yish ham mumkin.
+ * manbadan. Bu komponent faqat forma: qiymatni URL'ga yozadi, sahifa esa
+ * URL'dan oraliqni qayta o'qiydi. Shu sabab tanlangan davr havolada
+ * qoladi — yuborish ham, saqlab qo'yish ham mumkin.
  */
 const PRESETS = [
   { h: 24, label: '24 soat' },
@@ -56,11 +50,31 @@ export default function RangePicker({
   const [pending, startTransition] = useTransition();
 
   const today = tashkentToday();
-  const [open, setOpen] = useState(range.day !== null);
+  const yesterday = tashkentYesterday();
+
+  const [open, setOpen] = useState(range.day !== null && (range.day2 !== null || range.h1 !== 0 || range.h2 !== 23));
   const [d1, setD1] = useState(range.day ?? today);
   const [d2, setD2] = useState(range.day2 ?? range.day ?? today);
   const [h1, setH1] = useState(range.h1);
   const [h2, setH2] = useState(range.h2);
+
+  /**
+   * Forma URL bilan mos tursin.
+   *
+   * Tugmalar (Bugun / Kecha / ‹ ›) URL'ni o'zgartiradi, komponent esa qayta
+   * ULANMAYDI — holat eski qiymatda qolib ketardi va formani ochganda
+   * butunlay boshqa sana ko'rinardi. Bu React'ning «propdan holatni
+   * to'g'irlash» naqshi: renderda solishtirib, farq bo'lsa yangilaymiz.
+   */
+  const sig = `${range.day ?? ''}|${range.day2 ?? ''}|${range.h1}|${range.h2}|${range.preset ?? ''}`;
+  const [seen, setSeen] = useState(sig);
+  if (seen !== sig) {
+    setSeen(sig);
+    setD1(range.day ?? today);
+    setD2(range.day2 ?? range.day ?? today);
+    setH1(range.h1);
+    setH2(range.h2);
+  }
 
   function go(q: Record<string, string>) {
     const p = new URLSearchParams({ ...extra, ...q });
@@ -74,52 +88,93 @@ export default function RangePicker({
     go(q);
   }
 
-  const dayActive = (d: string) => range.day === d && !range.day2 && range.h1 === 0 && range.h2 === 23;
+  /** Shu kun to'liq holda tanlanganmi (soat oynasisiz, bitta kun) */
+  const isDay = (d: string) =>
+    range.day === d && !range.day2 && range.h1 === 0 && range.h2 === 23;
+
+  /** Kunma-kun siljish — soat oynasi saqlanadi */
+  function step(day: string | null) {
+    if (!day) return;
+    const q: Record<string, string> = { d: day };
+    if (range.h1 !== 0 || range.h2 !== 23) q.t = `${range.h1}-${range.h2}`;
+    go(q);
+  }
+
+  const custom = range.day !== null && !isDay(today) && !isDay(yesterday);
 
   return (
     <div className="a-range">
       <div className="a-range-top">
-        <div className="a-nav" role="group" aria-label="Davr">
-          {PRESETS.map((p) => (
+        <span className="a-range-g">
+          <b>Oxirgi</b>
+          <span className="a-nav" role="group" aria-label="Oxirgi davr">
+            {PRESETS.map((p) => (
+              <button
+                key={p.h}
+                type="button"
+                onClick={() => go({ h: String(p.h) })}
+                aria-current={range.preset === p.h ? 'page' : undefined}
+              >
+                {p.label}
+              </button>
+            ))}
+          </span>
+        </span>
+
+        <span className="a-range-g">
+          <b>Kun</b>
+          <span className="a-nav" role="group" aria-label="Taqvim kuni">
             <button
-              key={p.h}
               type="button"
-              onClick={() => go({ h: String(p.h) })}
-              aria-current={range.preset === p.h ? 'page' : undefined}
+              className="a-range-step"
+              onClick={() => step(range.prevDay)}
+              disabled={!range.prevDay}
+              title="Oldingi kun"
+              aria-label="Oldingi kun"
             >
-              {p.label}
+              ‹
             </button>
-          ))}
-          <button
-            type="button"
-            onClick={() => go({ d: today })}
-            aria-current={dayActive(today) ? 'page' : undefined}
-          >
-            Bugun
-          </button>
-          <button
-            type="button"
-            onClick={() => go({ d: tashkentYesterday() })}
-            aria-current={dayActive(tashkentYesterday()) ? 'page' : undefined}
-          >
-            Kecha
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => go({ d: today })}
+              aria-current={isDay(today) ? 'page' : undefined}
+            >
+              Bugun
+            </button>
+            <button
+              type="button"
+              onClick={() => go({ d: yesterday })}
+              aria-current={isDay(yesterday) ? 'page' : undefined}
+            >
+              Kecha
+            </button>
+            <button
+              type="button"
+              className="a-range-step"
+              onClick={() => step(range.nextDay)}
+              disabled={!range.nextDay}
+              title="Keyingi kun"
+              aria-label="Keyingi kun"
+            >
+              ›
+            </button>
+          </span>
+        </span>
 
         <button
           type="button"
-          className={open ? 'a-btn sm on' : 'a-btn sm'}
+          className={open || custom ? 'a-btn sm on' : 'a-btn sm'}
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
         >
-          Kun va soat {open ? '▴' : '▾'}
+          Sana va soat {open ? '▴' : '▾'}
         </button>
       </div>
 
       {open && (
         <div className="a-range-form">
           <label className="a-range-f">
-            <span>Kun</span>
+            <span>Sana</span>
             <input
               type="date"
               className="a-in"
@@ -127,14 +182,13 @@ export default function RangePicker({
               max={today}
               onChange={(e) => {
                 setD1(e.target.value);
-                // Ikkinchi sana birinchisidan oldin qolib ketmasin
                 if (e.target.value > d2) setD2(e.target.value);
               }}
             />
           </label>
 
           <label className="a-range-f">
-            <span>…gacha (ixtiyoriy)</span>
+            <span>…gacha</span>
             <input
               type="date"
               className="a-in"
@@ -178,6 +232,7 @@ export default function RangePicker({
                 setH2(23);
                 setD2(d1);
               }}
+              disabled={h1 === 0 && h2 === 23 && d1 === d2}
             >
               To’liq kun
             </button>
@@ -186,22 +241,13 @@ export default function RangePicker({
       )}
 
       <p className="a-range-now">
-        {range.day ? (
-          <>
-            <b>{range.day2 ? `${dayLabel(range.day)} – ${dayLabel(range.day2)}` : dayLabel(range.day)}</b>
-            {(range.h1 !== 0 || range.h2 !== 23) && (
-              <>
-                {' · '}
-                {String(range.h1).padStart(2, '0')}:00–{String(range.h2).padStart(2, '0')}:59
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <b>{range.label}</b> — hozirdan orqaga
-          </>
-        )}
-        <span className="muted"> · {TZ_LABEL} vaqti · {range.hours} soat</span>
+        <b>{range.fromLabel}</b> → <b>{range.isToday ? 'hozirgacha' : range.toLabel}</b>
+        <span className="muted">
+          {' · '}
+          {TZ_LABEL} vaqti
+          {range.day && (range.h1 !== 0 || range.h2 !== 23) ? ' · soat oynasi' : ''}
+          {range.isToday ? ` · ${dayLabel(range.day!)} hali tugamagan` : ` · ${range.hours} soat`}
+        </span>
       </p>
     </div>
   );

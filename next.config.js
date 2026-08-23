@@ -3,6 +3,24 @@ const nextConfig = {
   // PM2 + nginx uchun: node_modules'siz ishlaydigan bundle
   output: 'standalone',
 
+  /**
+   * Build natijasi qayerga yozilishi.
+   *
+   * Standart `.next`, lekin DEPLOY paytida `NEXT_DIST_DIR=.next-new` bilan
+   * yon papkaga yig'iladi va faqat build MUVAFFAQIYATLI tugagach bir
+   * lahzada almashtiriladi (`deploy.server.sh`).
+   *
+   * Nega kerak: ilgari build to'g'ridan-to'g'ri `.next` ustiga yozardi va
+   * eski jarayon o'sha paytda hali so'rovlarga javob berayotgan bo'lardi.
+   * 2026-08-23 da shu sababdan ikki marta nosozlik bo'ldi — bir marta sayt
+   * bir necha daqiqa CSS'siz qoldi (`.next/static` tozalangan), bir marta
+   * admin panel «column "hour" does not exist» xatosini berdi (yarim
+   * yozilgan chunk o'qildi). Ikkalasi ham kodga aloqasi yo'q edi.
+   *
+   * Ish vaqtida (`next start`) bu o'zgaruvchi qo'yilmaydi — `.next` o'qiladi.
+   */
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+
   // Siqishni nginx (gzip) va Cloudflare (brotli) qiladi — Node CPU'ni band qilmaymiz
   compress: false,
 

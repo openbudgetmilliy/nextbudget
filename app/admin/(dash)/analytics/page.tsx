@@ -1,19 +1,49 @@
+import AutoRefresh from '@/components/admin/AutoRefresh';
 import ButtonStats from '@/components/admin/ButtonStats';
 import CreativeStats from '@/components/admin/CreativeStats';
 import DbDown from '@/components/admin/DbDown';
 import PageStats from '@/components/admin/PageStats';
 import RangePicker from '@/components/admin/RangePicker';
-import { breakdown, creatives, mergePageRows, pageButtons, pageStats, scrollFunnel } from '@/lib/stats';
+import RecentCta from '@/components/admin/RecentCta';
+import ScrollFunnel from '@/components/admin/ScrollFunnel';
+import StatCards from '@/components/admin/StatCards';
+import TrafficChart from '@/components/admin/TrafficChart';
+
 import { env } from '@/lib/env';
 import { parseRange, type RangeParams } from '@/lib/range';
+import {
+  breakdown,
+  creatives,
+  hourly,
+  mergePageRows,
+  onlineNow,
+  overview,
+  pageButtons,
+  pageStats,
+  recentCta,
+  scrollFunnel,
+} from '@/lib/stats';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Analitika' };
 
 /**
- * Jadvallar (kadrlar, kreativlar, tugmalar) alohida komponentlarda —
- * ularning ustun sarlavhalari saralash tugmasi va shuning uchun mijoz
- * tomonida ishlaydi. Bu sahifa faqat ma'lumot yig'adi va joylashtiradi.
+ * ANALITIKA — to'liq kesim.
+ *
+ * Dashboard bilan bir xil bloklarni (ko'rsatkichlar, soatlik grafik, oxirgi
+ * bosishlar, scroll voronkasi) ko'rsatadi va USTIGA o'zinikilarni qo'shadi:
+ * reklama havolalari bilan sahifalar jadvali, kreativlar, tugmalar reytingi,
+ * qurilma/brauzer/OS/manba taqsimotlari.
+ *
+ * Bloklar takrorlanmasin deb umumiy komponentlarga chiqarilgan
+ * (`StatCards`, `RecentCta`, `ScrollFunnel`) — ilgari ular ikki sahifada
+ * ikki nusxada yotardi va biri o'zgarganda ikkinchisi eskirib qolardi.
+ *
+ * Dashboarddan farqi: bu yerda standart davr 7 kun (u yerda 24 soat) —
+ * kreativ va kadr solishtiruvi uchun bir kun kam.
+ *
+ * Sahifa faqat ma'lumot yig'adi va joylashtiradi; jadvallarning saralashi
+ * mijoz tomonida (`useSort`).
  */
 export default async function AnalyticsPage({
   searchParams,
@@ -24,17 +54,22 @@ export default async function AnalyticsPage({
 
   let d;
   try {
-    const [cre, btns, pages, scroll, device, browser, os, source] = await Promise.all([
-      creatives(r),
-      pageButtons(r),
-      pageStats(r),
-      scrollFunnel(r),
-      breakdown('device', r),
-      breakdown('browser', r),
-      breakdown('os', r),
-      breakdown('utmSource', r),
-    ]);
-    d = { cre, btns, pages, scroll, device, browser, os, source };
+    const [ov, online, hrs, cre, btns, pages, cta, scroll, device, browser, os, source] =
+      await Promise.all([
+        overview(r),
+        onlineNow(),
+        hourly(r),
+        creatives(r),
+        pageButtons(r),
+        pageStats(r),
+        recentCta(r, 12),
+        scrollFunnel(r),
+        breakdown('device', r),
+        breakdown('browser', r),
+        breakdown('os', r),
+        breakdown('utmSource', r),
+      ]);
+    d = { ov, online, hrs, cre, btns, pages, cta, scroll, device, browser, os, source };
   } catch (err) {
     return (
       <>
@@ -43,8 +78,6 @@ export default async function AnalyticsPage({
       </>
     );
   }
-
-  const maxScroll = Math.max(...d.scroll.map((s) => s.users), 1);
 
   return (
     <>
@@ -56,48 +89,41 @@ export default async function AnalyticsPage({
 
       <div className="a-row">
         <RangePicker base="/admin/analytics" range={r} />
+        <span style={{ marginLeft: 'auto' }} />
+        <AutoRefresh seconds={30} />
       </div>
+
+      <StatCards ov={d.ov} online={d.online} range={r} />
 
       {/* Har sahifa alohida reklama qilinadi — havolasi ham, raqami ham shu yerda */}
       <PageStats rows={mergePageRows(d.pages)} siteUrl={env.SITE_URL} showLinks />
 
-      {/* ── Kreativlar ── */}
-      <CreativeStats rows={d.cre} />
-
-      <div className="a-grid-2">
-        {/* ── Tugmalar ── */}
-        <ButtonStats rows={d.btns} />
-
-        {/* ── Scroll voronka ── */}
-        <div className="a-panel">
-          <div className="a-panel-h">Scroll voronkasi</div>
-          <div className="a-panel-b">
-            {d.scroll.length ? (
-              d.scroll.map((s) => (
-                <div className="a-bar" key={s.scrollPct}>
-                  <span className="muted">{s.scrollPct}%</span>
-                  <span className="a-bar-t">
-                    <span
-                      className="a-bar-f"
-                      style={{ width: `${Math.round((s.users / maxScroll) * 100)}%` }}
-                    />
-                  </span>
-                  <span className="a-bar-n">{s.users}</span>
-                </div>
-              ))
-            ) : (
-              <div className="a-empty">Ma’lumot yo’q</div>
-            )}
-          </div>
+      <div className="a-panel">
+        <div className="a-panel-h">
+          <span>Soatlar bo’yicha trafik</span>
+          <span style={{ fontSize: 12.5, fontWeight: 400, color: '#59637a' }}>Toshkent vaqti</span>
+        </div>
+        <div className="a-panel-b">
+          <TrafficChart data={d.hrs} />
         </div>
       </div>
 
-      {/* ── Taqsimotlar ── */}
+      <CreativeStats rows={d.cre} />
+
+      <div className="a-grid-2">
+        <ButtonStats rows={d.btns} />
+        <ScrollFunnel rows={d.scroll} />
+      </div>
+
+      <div className="a-grid-2">
+        <RecentCta rows={d.cta} />
+        <Breakdown title="Trafik manbasi (utm_source)" rows={d.source} />
+      </div>
+
       <div className="a-grid-2">
         <Breakdown title="Qurilma" rows={d.device} />
         <Breakdown title="Brauzer" rows={d.browser} note="instagram — in-app WebView" />
         <Breakdown title="OS" rows={d.os} />
-        <Breakdown title="Trafik manbasi (utm_source)" rows={d.source} />
       </div>
     </>
   );
@@ -122,7 +148,7 @@ function Breakdown({
       <div className="a-panel-b">
         {rows.length ? (
           rows.map((r) => (
-            <div className="a-bar" key={r.label} style={{ gridTemplateColumns: '104px 1fr 78px' }}>
+            <div className="a-bar" key={r.label} style={{ gridTemplateColumns: '104px 1fr 96px' }}>
               <span className="muted" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {r.label}
               </span>
@@ -130,7 +156,7 @@ function Breakdown({
                 <span className="a-bar-f" style={{ width: `${Math.round((r.n / total) * 100)}%` }} />
               </span>
               <span className="a-bar-n">
-                {r.n} · {Math.round((r.n / total) * 100)}%
+                {r.n.toLocaleString('ru-RU')} · {Math.round((r.n / total) * 100)}%
               </span>
             </div>
           ))

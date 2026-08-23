@@ -83,6 +83,16 @@ export type Range = {
   h2: number;
   /** Shu oraliqni bildiruvchi URL parametrlari */
   q: Record<string, string>;
+
+  /** Aniq boshlanish, Toshkent devor-soatida: «23-avgust 00:00» */
+  fromLabel: string;
+  /** Aniq tugash (oxirgi kiritilgan daqiqa): «23-avgust 23:59» */
+  toLabel: string;
+  /** Tanlangan kun bugunmi — «hozirgacha» deb yozish uchun */
+  isToday: boolean;
+  /** Kun rejimida oldingi/keyingi kun; yo'q bo'lsa `null` (kelajakka o'tilmaydi) */
+  prevDay: string | null;
+  nextDay: string | null;
 };
 
 export type RangeParams = { h?: string; d?: string; d2?: string; t?: string };
@@ -123,6 +133,18 @@ export function dayLabel(day: string): string {
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');
+
+/** Absolyut ms → «23-avgust 14:30» (Toshkent devor-soati) */
+function clockLabel(ms: number): string {
+  const t = new Date(ms + TZ_MS);
+  const day = t.toISOString().slice(0, 10);
+  return `${dayLabel(day)} ${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}`;
+}
+
+/** Kunni bir kunga siljitadi: `2026-08-23`, `-1` → `2026-08-22` */
+function shiftDay(day: string, by: number): string {
+  return new Date(Date.parse(`${day}T00:00:00.000Z`) + by * DAY).toISOString().slice(0, 10);
+}
 
 /** `?t=` ni o'qiydi. Noto'g'ri bo'lsa — to'liq kun */
 function parseHourWindow(v: string | undefined): [number, number] {
@@ -186,6 +208,9 @@ export function parseRange(sp: RangeParams, fallbackHours = 24): Range {
     if (b !== a) q.d2 = b;
     if (!whole) q.t = `${h1}-${h2}`;
 
+    const today = tashkentToday(now);
+    const single = a === b;
+
     return {
       from: new Date(fromMs),
       to: new Date(toMs),
@@ -195,10 +220,16 @@ export function parseRange(sp: RangeParams, fallbackHours = 24): Range {
       label,
       preset: null,
       day: a,
-      day2: b === a ? null : b,
+      day2: single ? null : b,
       h1,
       h2,
       q,
+      fromLabel: `${dayLabel(a)} ${pad(h1)}:00`,
+      toLabel: `${dayLabel(b)} ${pad(h2)}:59`,
+      isToday: single && a === today,
+      // Bir kunlik tanlovdagina siljitish mantiqiy; kelajakka o'tilmaydi
+      prevDay: single ? shiftDay(a, -1) : null,
+      nextDay: single && a < today ? shiftDay(a, 1) : null,
     };
   }
 
@@ -217,6 +248,11 @@ export function parseRange(sp: RangeParams, fallbackHours = 24): Range {
     h1: 0,
     h2: 23,
     q: { h: String(hours) },
+    fromLabel: clockLabel(fromMs),
+    toLabel: clockLabel(now),
+    isToday: false,
+    prevDay: null,
+    nextDay: null,
   };
 }
 
